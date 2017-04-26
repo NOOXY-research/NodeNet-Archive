@@ -3,8 +3,16 @@
 #include <string.h>//memcpy()
 #include <math.h>//pow()
 using namespace std;
-void training(double& weight_map, int layers_size, int *neurons_size) {
+void training(double& *weight_map, int wsize_sum) {
+  int block,times;
+  double size,*smallest_location;
+  smallest_location=new double[wsize_sum];
+  while (times) {
 
+
+    times--;
+  }
+  delete [] smallest_location;
 }
 class matrix {
   public:
@@ -93,7 +101,6 @@ ANN::~ANN() {
 ANN::ANN(int input_size, int output_size, int layers_size, int *neurons_size) {
   outputmap = new double[1];
   inputmap = new double[1];
-  weightmap = new double[wsize_sum];
   temp = new double[1];
   temp2 = new double[1];
   nsize = new int[layers_size];
@@ -115,7 +122,8 @@ ANN::ANN(int input_size, int output_size, int layers_size, int *neurons_size) {
   for(i = 0; i < layers_size; i++) {
       nsize_sum += neurons_size[i];
   }
-
+  weightmap = new double[wsize_sum];
+  //
   matrix mtrx;
   memcpy(weightmap, mtrx.initializer(wsize_sum, 1, 1), wsize_sum*sizeof(double));
 }
