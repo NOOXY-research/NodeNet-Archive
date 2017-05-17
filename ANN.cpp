@@ -86,6 +86,39 @@ int matrix::sigmoid() {
   }
   return 0;
 }
+matrix& operator =(const matrix& m1) {
+  int i, j;
+  for(i = 0; i < row; i++) {
+      for(j = 0; j < column; j++) {
+          
+      }
+  }
+  return 0;
+}
+matrix operator +(const matrix& m1, const matrix& m2) {
+
+}
+matrix operator -(const matrix& m1, const matrix& m2) {
+
+}
+matrix operator *(const matrix& m1, const matrix& m2) {
+
+}
+matrix operator /(const matrix& m1, const matrix& m2) {
+
+}
+matrix operator -(const matrix& m1) {
+
+}
+bool operator ==(const matrix& m1, const matrix& m2) {
+
+}
+istream& operator >>(istream& ins,const matrix& m1) {
+
+}
+ostream& operator <<(ostream& ins,const matrix& m1) {
+
+}
 int main() {
   matrix mymatix(3, 2);
   double a[6] = {1, 2, 3, 4, 5, 6};
