@@ -3,9 +3,6 @@
 #include <string.h>//memcpy()
 #include <math.h>//pow()
 using namespace std;
-void training(double& *weight_map, int wsize_sum) {
-
-}
 class matrix {
   public:
   matrix();
