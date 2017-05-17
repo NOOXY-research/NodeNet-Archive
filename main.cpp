@@ -4,15 +4,7 @@
 #include <math.h>//pow()
 using namespace std;
 void training(double& *weight_map, int wsize_sum) {
-  int block,times;
-  double size,*smallest_location;
-  smallest_location=new double[wsize_sum];
-  while (times) {
 
-
-    times--;
-  }
-  delete [] smallest_location;
 }
 class matrix {
   public:
