@@ -5,6 +5,7 @@ using namespace std;
 class matrix {
   public:
     matrix();
+    ~matrix();
     matrix(int row, int column);
     matrix(int row, int column, double value);
     int setmatrix(int row, int column, double* a);
@@ -20,14 +21,18 @@ class matrix {
     friend matrix operator /(const matrix& m1, const int& x1);
     friend matrix operator -(const matrix& m1);
     friend bool operator ==(const matrix& m1, const matrix& m2);
-    friend istream& operator >>(istream& ins,const matrix& m1);
-    friend ostream& operator <<(ostream& ins,const matrix& m1);
   private:
     int row, column;
     double *a;
 };
 matrix::matrix() {
-
+  this->row = 1;
+  this->column = 1;
+  this->a = new double[1];
+  a[0] = 0;
+}
+matrix::~matrix() {
+  delete [] a;
 }
 matrix::matrix(int row, int column) {
   int i, j;
@@ -36,7 +41,7 @@ matrix::matrix(int row, int column) {
   this->column = column;
   for(i = 0; i < row; i++) {
       for(j = 0; j < column; j++) {
-        a[i*column+j] = 0;
+        this->a[i * column + j] = 0;
       }
   }
 }
@@ -47,13 +52,15 @@ matrix::matrix(int row, int column, double value) {
   this->column = column;
   for(i = 0; i < row; i++) {
       for(j = 0; j < column; j++) {
-        a[i*column+j] = value;
+        this->a[i * column + j] = value;
       }
   }
 }
 int matrix::setmatrix(int row, int column, double* a) {
   int i, j;
   this->a = new double[row * column];
+  this->row = row;
+  this->column = column;
   for(i = 0; i < row; i++) {
     for(j = 0; j < column; j++) {
       this->a[i * column + j] = a[i * column + j];
@@ -63,18 +70,18 @@ int matrix::setmatrix(int row, int column, double* a) {
 }
 int matrix::print() {
   int i, j;
-  cout << ">>>" << row << " by " << column << " matrix." << endl;
+  cout << ">>>" << this->row << " by " << this->column << " matrix." << endl;
   cout << ">>>   ";
-  for(j = 0; j < column; j++) {
+  for(j = 0; j < this->column; j++) {
     cout << "c" << j + 1 <<"   ";
   }
   cout << endl;
-  for(i = 0; i < row; i++) {
+  for(i = 0; i < this->row; i++) {
     cout << ">>>r" << i + 1 << " ";
-      for(j = 0; j < column; j++) {
+      for(j = 0; j < this->column; j++) {
         cout << fixed;
         cout << setprecision(2);
-        cout << a[i * column + j] << " ";
+        cout << this->a[i * column + j] << " ";
       }
       cout << endl;
   }
@@ -212,12 +219,46 @@ bool operator ==(const matrix& m1, const matrix& m2) {
   }
   return answer;
 }
+class ANN {
+  public:
+    ANN(int layers_size,int *neurons_size);
+    ANN(int layers_size,int *neurons_size,matrix *weight);
+    int print();
+    int feed();
+    int feed_and_train();
+  private:
+    int layers_size, *neurons_size;
+    matrix *weight;
+};
+ANN::ANN(int layers_size,int *neurons_size) {
+  int i, j, neurons_size_sum = 0;
+  this->layers_size = layers_size;
+  this->neurons_size = new int[layers_size];
+  this->weight = new matrix[layers_size - 1];
+  for(i = 0; i < layers_size; i++) {
+    this->neurons_size[i] = neurons_size[i];
+    if(i < layers_size -1) {
+      matrix new_matrix(neurons_size[i], neurons_size[i + 1], 1);
+      this->weight[i] = new_matrix;
+    }
+  }
+}
+int ANN::print()
+{
+  int i, j;
+  cout<<">>>*ANN info"<<endl;
+  for(i = 0; i < this->layers_size; i++) {
+    cout<<">>>";
+    cout << "N(" <<  i << "): " << this->neurons_size[i]<<endl;
+    if(i < this->layers_size -1) {
+      this->weight[i].print();
+    }
+  }
+  cout<<endl;
+  return 0;
+}
 int main() {
-  matrix mymatix(3, 2);
-  matrix mymatix2(4, 2);
-  double a[6] = {1, 2, 3, 4, 5, 6};
-  mymatix.setmatrix(3, 2, a);
-  mymatix.sigmoid();
-  mymatix2 = mymatix2 + mymatix;
-  mymatix2.print();
+  int neurons_size[4] = {1, 2, 4, 2};
+  ANN myann(4, neurons_size);
+  myann.print();
 }
