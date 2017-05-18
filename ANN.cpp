@@ -441,12 +441,10 @@ int main() {
   cout << ">>>" << (myann.feed(X) - Y.transfer(sigmoid)).length() << endl;
   cout << "***--after_train" << endl;
   double firsterr = (myann.feed(X) - Y.transfer(sigmoid)).length();
-  for (int i = 0; i < ((myann.feed(X) - Y.transfer(sigmoid)).length() / firsterr) * 100; i++)
-    cout << "*";
   int count = 0;
-  while((myann.feed(X) - Y.transfer(sigmoid)).length() > 0.0005) {
-    if(count % 100 == 0) {
-      for (int i = 0; i < ((myann.feed(X) - Y.transfer(sigmoid)).length() / firsterr) * 100; i++)
+  while((myann.feed(X) - Y.transfer(sigmoid)).length() > 0.01) {
+    if(count % 1000 == 0) {
+      for (int i = 0; i < ((myann.feed(X) - Y.transfer(sigmoid)).length() / firsterr) * 80; i++)
         cout << "*";
       cout << endl;
     }
