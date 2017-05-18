@@ -6,6 +6,7 @@
 using namespace std;
 double sigmoid(double x1);
 double dsigmoid(double x1);
+double logit(double x1);
 double sigmoid(double x1) {
   double answer;
   answer = (1.0) / (1 + pow(2.7182818284590452353602874713527, -x1));
@@ -14,6 +15,11 @@ double sigmoid(double x1) {
 double dsigmoid(double x1) {
   double answer;
   answer = (pow(2.7182818284590452353602874713527, -x1)) / pow((1 + pow(2.7182818284590452353602874713527, -x1)), 2);
+  return answer;
+}
+double logit(double x1) {
+  double answer;
+  answer = log(x1 / (1 - (x1)));
   return answer;
 }
 class matrix {
@@ -149,14 +155,14 @@ int matrix::print() {
   cout << ">>>" << this->row << " by " << this->column << " matrix." << endl;
   cout << ">>>   ";
   for(j = 0; j < this->column; j++) {
-    cout << "c" << j + 1 <<"   ";
+    cout << "c" << j + 1 <<"      ";
   }
   cout << endl;
   for(i = 0; i < this->row; i++) {
     cout << ">>>r" << i + 1 << " ";
       for(j = 0; j < this->column; j++) {
         cout << fixed;
-        cout << setprecision(2);
+        cout << setprecision(5);
         cout << this->a[i * this->column + j] << " ";
       }
       cout << endl;
@@ -415,28 +421,51 @@ matrix ANN::feed(matrix input) {
   return a1;
 }
 int main() {
-  int neurons_size[5] = {2, 3, 4, 3};
-  double x[4] = {1, 212, 3, 400}, y[6] = {4, 2, 1, 5, 4, 6};
-  matrix X[1], Y;
-  X[0].setmatrix(2, 2, x);
-  Y.setmatrix(2, 3, y);
+  int neurons_size[5] = {1, 4, 4, 1};
+  double x[10] = {0, 1, 2, 3, 4}, y[10] = {0, 2, 4, 6, 8};
+  matrix X, Y;
+  X.setmatrix(5, 1, x);
+  Y.setmatrix(5, 1, y);
   ANN myann(4, neurons_size);
   cout << "***--before" << endl;
   myann.print();
   cout << "-----out" << endl;
   (Y.transfer(sigmoid)).print();
-  cout << "-----feed out" << endl;
-  (myann.feed(X[0])).print();
+  cout << "-----feed" << endl;
+  (myann.feed(X)).print();
+  cout << "-----out origin" << endl;
+  (Y).print();
+  cout << "-----feed origin" << endl;
+  ((myann.feed(X)).transfer(logit)).print();
   cout << "-----err" << endl;
-  cout << ">>>" << (myann.feed(X[0]) - Y.transfer(sigmoid)).length() << endl;
+  cout << ">>>" << (myann.feed(X) - Y.transfer(sigmoid)).length() << endl;
   cout << "***--after_train" << endl;
-  for(int i = 0; i < 10000 ; i++)
-    myann.feed_and_train(X[0], Y, 10);
+  double firsterr = (myann.feed(X) - Y.transfer(sigmoid)).length();
+  for (int i = 0; i < ((myann.feed(X) - Y.transfer(sigmoid)).length() / firsterr) * 100; i++)
+    cout << "*";
+  int count = 0;
+  while((myann.feed(X) - Y.transfer(sigmoid)).length() > 0.0005) {
+    if(count % 100 == 0) {
+      for (int i = 0; i < ((myann.feed(X) - Y.transfer(sigmoid)).length() / firsterr) * 100; i++)
+        cout << "*";
+      cout << endl;
+    }
+    myann.feed_and_train(X, Y, 5);
+    count ++;
+  }
   myann.print();
   cout << "-----out" << endl;
   (Y.transfer(sigmoid)).print();
-  cout << "-----feed out" << endl;
-  (myann.feed(X[0])).print();
+  cout << "-----feed" << endl;
+  (myann.feed(X)).print();
+  cout << "-----out origin" << endl;
+  (Y).print();
+  cout << "-----feed origin" << endl;
+  ((myann.feed(X)).transfer(logit)).print();
   cout << "-----err" << endl;
-  cout << ">>>" << (myann.feed(X[0]) - Y.transfer(sigmoid)).length() << endl;
+  cout << ">>>" << (myann.feed(X) - Y.transfer(sigmoid)).length() << endl;
+  cout << "-----predict -1 (answer -2)" << endl;
+  double p[1] = {-1};
+  matrix P(1, 1, p);
+  (myann.feed(P).transfer(logit)).print();
 }
