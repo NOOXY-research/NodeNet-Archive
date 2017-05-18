@@ -97,7 +97,7 @@ matrix::matrix(int row, int column) {
   this->column = column;
   for(i = 0; i < this->row; i++) {
       for(j = 0; j < this->column; j++) {
-        this->a[i * this->column + j] = rand() % 10 - rand() % 10;
+        this->a[i * this->column + j] = rand() % 5 - rand() % 5;
       }
   }
 }
@@ -421,12 +421,12 @@ matrix ANN::feed(matrix input) {
   return a1;
 }
 int main() {
-  int neurons_size[5] = {1, 4, 4, 1};
+  int neurons_size[5] = {1, 4, 5, 4, 1};
   double x[10] = {0, 1, 2, 3, 4}, y[10] = {0, 2, 4, 6, 8};
   matrix X, Y;
   X.setmatrix(5, 1, x);
   Y.setmatrix(5, 1, y);
-  ANN myann(4, neurons_size);
+  ANN myann(5, neurons_size);
   cout << "***--before" << endl;
   myann.print();
   cout << "-----out" << endl;
@@ -462,7 +462,7 @@ int main() {
   ((myann.feed(X)).transfer(logit)).print();
   cout << "-----err" << endl;
   cout << ">>>" << (myann.feed(X) - Y.transfer(sigmoid)).length() << endl;
-  cout << "-----predict -1 (answer -2)" << endl;
+  cout << "-----predict 0 (answer 0)" << endl;
   double p[1] = {-1};
   matrix P(1, 1, p);
   (myann.feed(P).transfer(logit)).print();
