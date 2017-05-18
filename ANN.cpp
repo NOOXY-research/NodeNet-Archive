@@ -9,6 +9,9 @@ class matrix {
     matrix(int row, int column);
     matrix(int row, int column, double value);
     int setmatrix(int row, int column, double* a);
+    int setmatrix(double* a);
+    int get_row();
+    int get_column();
     int print();
     int sigmoid();
     matrix& operator =(const matrix& m1);
@@ -67,6 +70,22 @@ int matrix::setmatrix(int row, int column, double* a) {
     }
   }
   return 0;
+}
+int matrix::setmatrix(double* a) {
+  cout << "<>" << endl;
+  int i, j;
+  for(i = 0; i < this->row; i++) {
+    for(j = 0; j < this->column; j++) {
+      this->a[i * this->column + j] = a[i * this->column + j];
+    }
+  }
+  return 0;
+}
+int matrix::get_row() {
+  return this->row;
+}
+int matrix::get_column() {
+  return this->column;
 }
 int matrix::print() {
   int i, j;
@@ -224,7 +243,7 @@ class ANN {
     ANN(int layers_size,int *neurons_size);
     ANN(int layers_size,int *neurons_size,matrix *weight);
     int print();
-    int feed();
+    matrix feed(matrix input);
     int feed_and_train();
   private:
     int layers_size, *neurons_size;
@@ -257,8 +276,21 @@ int ANN::print()
   cout<<endl;
   return 0;
 }
+matrix ANN::feed(matrix input) {
+  int i, j;
+  matrix a1, a2;
+  for(i = 0; i < this->layers_size -1 ; i++) {
+    //a1 = (input * ).sigmoid();
+  }
+}
 int main() {
-  int neurons_size[4] = {1, 2, 4, 2};
+  int neurons_size[4] = {2, 3, 4, 2};
+  double x[4] = {3, 2, 1, 0}, y[2] = {8, 2};
   ANN myann(4, neurons_size);
   myann.print();
+  matrix X;
+  //matrix Y(2, 1);
+  //X.setmatrix(x);
+  //Y.setmatrix(y);
+  //(X * Y).print();
 }
