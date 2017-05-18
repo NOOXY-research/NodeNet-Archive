@@ -1,6 +1,8 @@
 #include <iostream>
 #include <iomanip>//setprecision
 #include <math.h>//pow()
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 using namespace std;
 double sigmoid(double x1);
 double dsigmoid(double x1);
@@ -11,7 +13,7 @@ double sigmoid(double x1) {
 }
 double dsigmoid(double x1) {
   double answer;
-  answer = (pow(2.7182818284590452353602874713527, -x1)) / (1 + pow(2.7182818284590452353602874713527, -x1));
+  answer = (pow(2.7182818284590452353602874713527, -x1)) / pow((1 + pow(2.7182818284590452353602874713527, -x1)), 2);
   return answer;
 }
 class matrix {
@@ -28,6 +30,7 @@ class matrix {
     int get_row();
     int get_column();
     int print();
+    double length();
     matrix transfer(double (*function)(double));
     matrix transpose();
     friend matrix operator +(const matrix& m1, const matrix& m2);
@@ -80,13 +83,14 @@ matrix::~matrix() {
   delete [] a;
 }
 matrix::matrix(int row, int column) {
+  srand (time(NULL));
   int i, j;
   this->a = new double[row * column];
   this->row = row;
   this->column = column;
   for(i = 0; i < this->row; i++) {
       for(j = 0; j < this->column; j++) {
-        this->a[i * this->column + j] = 0;
+        this->a[i * this->column + j] = rand() % 10 - rand() % 10;
       }
   }
 }
@@ -157,6 +161,16 @@ int matrix::print() {
       cout << endl;
   }
   return 0;
+}
+double matrix::length() {
+  double sum = 0;
+  int i, j;
+  for(i = 0; i < this->row; i++) {
+    for(j = 0; j < this->column; j++) {
+      sum += pow(this->a[i * this->column + j], 2);
+    }
+  }
+  return sqrt(sum);
 }
 matrix matrix::transfer(double (*function)(double)) {
   matrix answer(this->row, this->column);
@@ -292,9 +306,9 @@ class ANN {
   public:
     ANN(int layers_size,int *neurons_size);
     ANN(int layers_size,int *neurons_size,matrix *weight);
-    int setweight();
+    int setweight(matrix *weight);
     int print();
-    int feed_and_train(matrix IN, matrix OUT);
+    int feed_and_train(matrix input, matrix output, int speed);
     matrix feed(matrix input);
   private:
     int layers_size, *neurons_size;
@@ -308,7 +322,7 @@ ANN::ANN(int layers_size,int *neurons_size) {
   for(i = 0; i < layers_size; i++) {
     this->neurons_size[i] = neurons_size[i];
     if(i < layers_size -1) {
-      matrix new_matrix(neurons_size[i], neurons_size[i + 1], 1);
+      matrix new_matrix(neurons_size[i], neurons_size[i + 1]);
       this->weight[i] = new_matrix;
     }
   }
@@ -318,14 +332,25 @@ ANN::ANN(int layers_size,int *neurons_size,matrix *weight) {
   this->layers_size = layers_size;
   this->neurons_size = new int[layers_size];
   this->weight = new matrix[layers_size - 1];
-  for(i = 0; i < layers_size; i++) {
+  for(i = 0; i < this->layers_size; i++) {
     this->neurons_size[i] = neurons_size[i];
-    if(i < layers_size -1) {
+    if(i < this->layers_size -1) {
       if (weight[i].get_row() != neurons_size[i] || weight[i].get_column() != neurons_size[i + 1])
         cout << "ann error: weights not fit neurons size" << endl;
       this->weight[i] = weight[i];
     }
   }
+}
+int ANN::setweight(matrix *weight) {
+  int i, j;
+  for(i = 0; i < this->layers_size; i++) {
+    if(i < this->layers_size -1) {
+      if (weight[i].get_row() != this->neurons_size[i] || weight[i].get_column() != this->neurons_size[i + 1])
+        cout << "ann error: weights not fit neurons size" << endl;
+      this->weight[i] = weight[i];
+    }
+  }
+  return 0;
 }
 int ANN::print() {
   int i, j;
@@ -340,6 +365,28 @@ int ANN::print() {
   cout<<endl;
   return 0;
 }
+int ANN::feed_and_train(matrix input, matrix output,int speed) {
+  int i, j;
+  matrix delta[this->layers_size], dj_dweight[this->layers_size - 1], a[this->layers_size], z[this->layers_size];
+  matrix a1, a2;
+  z[0] = input;
+  a1 = input.transfer(sigmoid);
+  for(i = 0; i < this->layers_size -1; i++) {
+    a[i] = a1;
+    z[i + 1] = a1 * weight[i];
+    a2 = (a1 * weight[i]).transfer(sigmoid);
+    a1 = a2;
+  }
+  delta[this->layers_size - 1] = -((output.transfer(sigmoid) - a1) * z[this->layers_size - 1].transfer(dsigmoid));
+  for(i = this->layers_size - 1; i > 0 ; i--) { // i start max layers_size
+    dj_dweight[i - 1] = a[i - 1].transpose() * delta[i];
+    delta[i - 1] = delta[i] * weight[i - 1] * z[i - 1].transfer(dsigmoid);
+  }
+  for(i = 0; i < this->layers_size - 1; i++) {
+    this->weight[i] = this->weight[i] - speed * dj_dweight[i];
+  }
+  return 0;
+}
 matrix ANN::feed(matrix input) {
   int i, j;
   matrix a1, a2;
@@ -352,9 +399,26 @@ matrix ANN::feed(matrix input) {
 }
 int main() {
   int neurons_size[5] = {2, 2};
-  double x[4] = {1, 2, 3, 4};
+  double x[4] = {1, 212, 3, 400};
   matrix X[1];
   X[0].setmatrix(2, 2, x);
-  ANN myann(2, neurons_size, X);
+  ANN myann(2, neurons_size);
+  cout << "***--before" << endl;
   myann.print();
+  cout << "-----out" << endl;
+  (X[0].transfer(sigmoid)).print();
+  cout << "-----feed out" << endl;
+  (myann.feed(X[0])).print();
+  cout << "-----err" << endl;
+  cout << ">>>" << (myann.feed(X[0]) - X[0].transfer(sigmoid)).length() << endl;
+  cout << "***--after_train" << endl;
+   for(int i = 0; i < 1000 ; i++)
+    myann.feed_and_train(X[0], X[0], 1);
+  myann.print();
+  cout << "-----out" << endl;
+  (X[0].transfer(sigmoid)).print();
+  cout << "-----feed out" << endl;
+  (myann.feed(X[0])).print();
+  cout << "-----err" << endl;
+  cout << ">>>" << (myann.feed(X[0]) - X[0].transfer(sigmoid)).length() << endl;
 }
