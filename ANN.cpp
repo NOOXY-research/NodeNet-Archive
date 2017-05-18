@@ -5,6 +5,8 @@ using namespace std;
 class matrix {
   public:
     matrix();
+    matrix(const matrix& m1);
+    matrix& operator =(const matrix& m1);
     ~matrix();
     matrix(int row, int column);
     matrix(int row, int column, double value);
@@ -14,7 +16,6 @@ class matrix {
     int get_column();
     int print();
     int sigmoid();
-    matrix& operator =(const matrix& m1);
     friend matrix operator +(const matrix& m1, const matrix& m2);
     friend matrix operator -(const matrix& m1, const matrix& m2);
     friend matrix operator *(const matrix& m1, const matrix& m2);
@@ -33,6 +34,33 @@ matrix::matrix() {
   this->column = 1;
   this->a = new double[1];
   a[0] = 0;
+}
+matrix& matrix::operator =(const matrix& m1) {
+  if(&m1 == this)
+    return *this;
+  int i, j;
+  this->a = new double[m1.row * m1.column];
+  this->row = m1.row;
+  this->column = m1.column;
+  for(i = 0; i < m1.row; i++) {
+      for(j = 0; j < m1.column; j++) {
+          this->a[i * m1.column + j] = m1.a[i * m1.column + j];
+      }
+  }
+  return *this;
+}
+matrix::matrix(const matrix& m1) {
+  if(&m1 != this) {
+    int i, j;
+    this->a = new double[m1.row * m1.column];
+    this->row = m1.row;
+    this->column = m1.column;
+    for(i = 0; i < m1.row; i++) {
+        for(j = 0; j < m1.column; j++) {
+            this->a[i * m1.column + j] = m1.a[i * m1.column + j];
+        }
+    }
+  }
 }
 matrix::~matrix() {
   delete [] a;
@@ -72,7 +100,6 @@ int matrix::setmatrix(int row, int column, double* a) {
   return 0;
 }
 int matrix::setmatrix(double* a) {
-  cout << "<>" << endl;
   int i, j;
   for(i = 0; i < this->row; i++) {
     for(j = 0; j < this->column; j++) {
@@ -114,19 +141,6 @@ int matrix::sigmoid() {
       }
   }
   return 0;
-}
-matrix& matrix::operator =(const matrix& m1) {
-  if(&m1 == this)
-    return *this;
-  int i, j;
-  this->row = m1.row;
-  this->column = m1.column;
-  for(i = 0; i < m1.row; i++) {
-      for(j = 0; j < m1.column; j++) {
-          this->a[i * m1.column + j] = m1.a[i * m1.column + j];
-      }
-  }
-  return *this;
 }
 matrix operator +(const matrix& m1, const matrix& m2) {
   if (m1.row != m2.row || m1.column != m2.column) {
@@ -288,9 +302,11 @@ int main() {
   double x[4] = {3, 2, 1, 0}, y[2] = {8, 2};
   ANN myann(4, neurons_size);
   myann.print();
-  matrix X;
-  //matrix Y(2, 1);
-  //X.setmatrix(x);
-  //Y.setmatrix(y);
-  //(X * Y).print();
+  // matrix X, Y;
+  // X.setmatrix(2, 2, x);
+  // Y.setmatrix(2, 1, y);
+  // X.print();
+  // Y.print();
+  // X = (X * Y);
+  // X.print();
 }
