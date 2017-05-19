@@ -329,6 +329,7 @@ class ANN {
     ANN(int layers_size,int *neurons_size);
     ANN(int layers_size,int *neurons_size,matrix *weight);
     int setweight(matrix *weight);
+    int ramdomweight();
     int print();
     int train(matrix input, matrix output, double speed);
     int train_pro(matrix input, matrix output, double err, int max_times, double speed);
@@ -373,6 +374,14 @@ int ANN::setweight(matrix *weight) {
         cout << "ann error: weights not fit neurons size" << endl;
       this->weight[i] = weight[i];
     }
+  }
+  return 0;
+}
+int ANN::ramdomweight() {
+  int i, j;
+  for(i = 0; i < this->layers_size - 1; i++) {
+    matrix new_matrix(this->neurons_size[i], this->neurons_size[i + 1]);
+    this->weight[i] = new_matrix;
   }
   return 0;
 }
@@ -488,19 +497,20 @@ int main() {
   X.setmatrix(8, 3, x);
   Y.setmatrix(8, 3, y);
   ANN myann(5, neurons_size);
+  myann.ramdomweight();
   cout << "predict 1 0 1 (answer 0 1 0) count: " << myann.train_pro(X, Y, 0.001, 9999999, 5) << endl;
   double p1[3] = {1, 0, 1};
   matrix P1(1, 3, p1);
   (myann.feed(P1).transfer(logit)).print();
-  cout << "predict 1 1 1 (answer 0 0 0) count: " << endl;
+  cout << "predict 1 1 1 (answer 0 0 0)" << endl;
   double p2[3] = {1, 1, 1};
   matrix P2(1, 3, p2);
   (myann.feed(P2).transfer(logit)).print();
-  cout << "predict 0 1 0 (answer 1 0 1) count: " << endl;
+  cout << "predict 0 1 0 (answer 1 0 1)" << endl;
   double p3[3] = {0, 1, 0};
   matrix P3(1, 3, p3);
   (myann.feed(P3).transfer(logit)).print();
-  cout << "predict 0 0 -1 (answer ?) count: " << endl;
+  cout << "predict 0 0 -1 (answer ?)" << endl;
   double p4[3] = {0, 0, -1};
   matrix P4(1, 3, p4);
   (myann.feed(P4).transfer(logit)).print();
