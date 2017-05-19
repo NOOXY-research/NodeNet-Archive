@@ -421,11 +421,29 @@ matrix ANN::feed(matrix input) {
   return a1;
 }
 int main() {
-  int neurons_size[5] = {1, 4, 5, 4, 1};
-  double x[10] = {0, 1, 2, 3, 4}, y[10] = {0, 2, 4, 6, 8};
+  int neurons_size[5] = {3, 4, 5, 4, 3};
+  double
+  x[24] = {0, 0, 0,
+           0, 0, 1,
+           0, 1, 0,
+           0, 1, 1,
+           1, 0, 0,
+           1, 0, 1,
+           1, 1, 0,
+           1, 1, 1
+           },
+  y[24] = {1, 1, 1,
+           1, 1, 0,
+           1, 0, 1,
+           1, 0, 0,
+           0, 1, 1,
+           0, 1, 0,
+           0, 0, 1,
+           0, 0, 0
+           };
   matrix X, Y;
-  X.setmatrix(5, 1, x);
-  Y.setmatrix(5, 1, y);
+  X.setmatrix(8, 3, x);
+  Y.setmatrix(8, 3, y);
   ANN myann(5, neurons_size);
   cout << "***--before" << endl;
   myann.print();
@@ -442,7 +460,7 @@ int main() {
   cout << "***--after_train" << endl;
   double firsterr = (myann.feed(X) - Y.transfer(sigmoid)).length();
   int count = 0;
-  while((myann.feed(X) - Y.transfer(sigmoid)).length() > 0.01) {
+  while((myann.feed(X) - Y.transfer(sigmoid)).length() > 0.005) {
     if(count % 1000 == 0) {
       for (int i = 0; i < ((myann.feed(X) - Y.transfer(sigmoid)).length() / firsterr) * 80; i++)
         cout << "*";
@@ -462,8 +480,8 @@ int main() {
   ((myann.feed(X)).transfer(logit)).print();
   cout << "-----err" << endl;
   cout << ">>>" << (myann.feed(X) - Y.transfer(sigmoid)).length() << endl;
-  cout << "-----predict 0 (answer 0)" << endl;
-  double p[1] = {-1};
-  matrix P(1, 1, p);
+  cout << "-----predict 1 0 1 (answer 0 1 0)" << endl;
+  double p[3] = {1, 0, 1};
+  matrix P(1, 3, p);
   (myann.feed(P).transfer(logit)).print();
 }
