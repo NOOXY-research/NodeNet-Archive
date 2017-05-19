@@ -330,7 +330,9 @@ class ANN {
     ANN(int layers_size,int *neurons_size,matrix *weight);
     int setweight(matrix *weight);
     int print();
-    int feed_and_train(matrix input, matrix output, double speed);
+    int train(matrix input, matrix output, double speed);
+    int train_pro(matrix input, matrix output, double err, int max_times, double speed);
+    int train_pro_graph(matrix input, matrix output, double err, int max_times, double speed);
     matrix feed(matrix input);
   private:
     int layers_size, *neurons_size;
@@ -376,7 +378,7 @@ int ANN::setweight(matrix *weight) {
 }
 int ANN::print() {
   int i, j;
-  cout<<">>>*ANN info"<<endl;
+  cout<<">>>-----ANN info-----"<<endl;
   for(i = 0; i < this->layers_size; i++) {
     cout<<">>>";
     cout << "N(" <<  i << "): " << this->neurons_size[i]<<endl;
@@ -384,10 +386,9 @@ int ANN::print() {
       this->weight[i].print();
     }
   }
-  cout<<endl;
   return 0;
 }
-int ANN::feed_and_train(matrix input, matrix output,double speed) {
+int ANN::train(matrix input, matrix output,double speed) {
   int i, j;
   matrix delta[this->layers_size], dj_dweight[this->layers_size - 1], a[this->layers_size], z[this->layers_size];
   matrix a1, a2;
@@ -409,6 +410,64 @@ int ANN::feed_and_train(matrix input, matrix output,double speed) {
   }
   speed = speed;
   return 0;
+}
+int ANN::train_pro(matrix input, matrix output, double err, int max_times, double speed) {
+  int count = 0;
+  while((this->feed(input) - output.transfer(sigmoid)).length() > err && count < max_times) {
+    this->train(input, output, speed);
+    count ++;
+  }
+  if (count < max_times) {
+    return count;
+  }
+  else {
+    return -1;
+  }
+}
+int ANN::train_pro_graph(matrix input, matrix output, double err, int max_times, double speed) {
+  cout << ">>>***--before_train--***" << endl;
+  this->print();
+  cout << ">>>-----out sigmoid-----" << endl;
+  (output.transfer(sigmoid)).print();
+  cout << ">>>-----feed sigmoid-----" << endl;
+  (this->feed(input)).print();
+  cout << ">>>-----out origin-----" << endl;
+  (output).print();
+  cout << ">>>-----feed origin-----" << endl;
+  ((this->feed(input)).transfer(logit)).print();
+  cout << ">>>-----err-----" << endl;
+  cout << ">>>" << (this->feed(input) - output.transfer(sigmoid)).length() << endl;
+  cout << ">>>***--after_train--***" << endl;
+  double firsterr = (this->feed(input) - output.transfer(sigmoid)).length();
+  int count = 0;
+  while((this->feed(input) - output.transfer(sigmoid)).length() > err && count < max_times) {
+    if(count % 1000 == 0) {
+      for (int i = 0; i < ((this->feed(input) - output.transfer(sigmoid)).length() / firsterr) * 80; i++)
+        cout << "*";
+      cout << endl;
+    }
+    this->train(input, output, speed);
+    count ++;
+  }
+  this->print();
+  cout << ">>>-----out sigmoid-----" << endl;
+  (output.transfer(sigmoid)).print();
+  cout << ">>>-----feed sigmoid-----" << endl;
+  (this->feed(input)).print();
+  cout << ">>>-----out origin-----" << endl;
+  (output).print();
+  cout << ">>>-----feed origin-----" << endl;
+  ((this->feed(input)).transfer(logit)).print();
+  cout << ">>>-----err-----" << endl;
+  cout << ">>>" << (this->feed(input) - output.transfer(sigmoid)).length() << endl;
+  cout << ">>>-----result-----" << endl;
+  cout << ">>> tries: " << count << endl;
+  if (count < max_times) {
+    return count;
+  }
+  else {
+    return -1;
+  }
 }
 matrix ANN::feed(matrix input) {
   int i, j;
@@ -445,42 +504,7 @@ int main() {
   X.setmatrix(8, 3, x);
   Y.setmatrix(8, 3, y);
   ANN myann(5, neurons_size);
-  cout << "***--before" << endl;
-  myann.print();
-  cout << "-----out" << endl;
-  (Y.transfer(sigmoid)).print();
-  cout << "-----feed" << endl;
-  (myann.feed(X)).print();
-  cout << "-----out origin" << endl;
-  (Y).print();
-  cout << "-----feed origin" << endl;
-  ((myann.feed(X)).transfer(logit)).print();
-  cout << "-----err" << endl;
-  cout << ">>>" << (myann.feed(X) - Y.transfer(sigmoid)).length() << endl;
-  cout << "***--after_train" << endl;
-  double firsterr = (myann.feed(X) - Y.transfer(sigmoid)).length();
-  int count = 0;
-  while((myann.feed(X) - Y.transfer(sigmoid)).length() > 0.005) {
-    if(count % 1000 == 0) {
-      for (int i = 0; i < ((myann.feed(X) - Y.transfer(sigmoid)).length() / firsterr) * 80; i++)
-        cout << "*";
-      cout << endl;
-    }
-    myann.feed_and_train(X, Y, 5);
-    count ++;
-  }
-  myann.print();
-  cout << "-----out" << endl;
-  (Y.transfer(sigmoid)).print();
-  cout << "-----feed" << endl;
-  (myann.feed(X)).print();
-  cout << "-----out origin" << endl;
-  (Y).print();
-  cout << "-----feed origin" << endl;
-  ((myann.feed(X)).transfer(logit)).print();
-  cout << "-----err" << endl;
-  cout << ">>>" << (myann.feed(X) - Y.transfer(sigmoid)).length() << endl;
-  cout << "-----predict 1 0 1 (answer 0 1 0)" << endl;
+  cout << "predict 1 0 1 (answer 0 1 0) count: " << myann.train_pro(X, Y, 0.001, 999999, 5) << endl;
   double p[3] = {1, 0, 1};
   matrix P(1, 3, p);
   (myann.feed(P).transfer(logit)).print();
