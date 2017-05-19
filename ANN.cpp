@@ -482,30 +482,26 @@ matrix ANN::feed(matrix input) {
 int main() {
   int neurons_size[5] = {3, 4, 5, 4, 3};
   double
-  x[24] = {0, 0, 0,
-           0, 0, 1,
-           0, 1, 0,
-           0, 1, 1,
-           1, 0, 0,
-           1, 0, 1,
-           1, 1, 0,
-           1, 1, 1
-           },
-  y[24] = {1, 1, 1,
-           1, 1, 0,
-           1, 0, 1,
-           1, 0, 0,
-           0, 1, 1,
-           0, 1, 0,
-           0, 0, 1,
-           0, 0, 0
-           };
+  x[24] = {0, 0, 0,  0, 0, 1,  0, 1, 0,  0, 1, 1,  1, 0, 0,  1, 0, 1,  1, 1, 0,  1, 1, 1},
+  y[24] = {1, 1, 1,  1, 1, 0,  1, 0, 1,  1, 0, 0,  0, 1, 1,  0, 1, 0,  0, 0, 1,  0, 0, 0};
   matrix X, Y;
   X.setmatrix(8, 3, x);
   Y.setmatrix(8, 3, y);
   ANN myann(5, neurons_size);
-  cout << "predict 1 0 1 (answer 0 1 0) count: " << myann.train_pro(X, Y, 0.001, 999999, 5) << endl;
-  double p[3] = {1, 0, 1};
-  matrix P(1, 3, p);
-  (myann.feed(P).transfer(logit)).print();
+  cout << "predict 1 0 1 (answer 0 1 0) count: " << myann.train_pro(X, Y, 0.001, 9999999, 5) << endl;
+  double p1[3] = {1, 0, 1};
+  matrix P1(1, 3, p1);
+  (myann.feed(P1).transfer(logit)).print();
+  cout << "predict 1 1 1 (answer 0 0 0) count: " << endl;
+  double p2[3] = {1, 1, 1};
+  matrix P2(1, 3, p2);
+  (myann.feed(P2).transfer(logit)).print();
+  cout << "predict 0 1 0 (answer 1 0 1) count: " << endl;
+  double p3[3] = {0, 1, 0};
+  matrix P3(1, 3, p3);
+  (myann.feed(P3).transfer(logit)).print();
+  cout << "predict 0 0 -1 (answer ?) count: " << endl;
+  double p4[3] = {0, 0, -1};
+  matrix P4(1, 3, p4);
+  (myann.feed(P4).transfer(logit)).print();
 }
