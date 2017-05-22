@@ -718,7 +718,8 @@ int manager () {
           cout << "input \"row(number of data amount)\", \"column(number of input layer\'s neuron size)\"" << endl;
           cout << "And then input \"elements\" row after row." << endl << ">>>";
           cin >> FEED;
-          cout << "result:" << endl << myann.feed(FEED);
+          cout << "result:" << endl
+          (myann.feed(FEED)).print();
           break;
         }
         case 'h':
