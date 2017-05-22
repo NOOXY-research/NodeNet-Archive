@@ -63,6 +63,7 @@ matrix& matrix::operator =(const matrix& m1) {
   if(&m1 == this)
     return *this;
   int i, j;
+  delete [] this->a;
   this->a = new double[m1.row * m1.column];
   this->row = m1.row;
   this->column = m1.column;
@@ -76,6 +77,7 @@ matrix& matrix::operator =(const matrix& m1) {
 matrix::matrix(const matrix& m1) {
   if(&m1 != this) {
     int i, j;
+    // delete [] this->a;
     this->a = new double[m1.row * m1.column];
     this->row = m1.row;
     this->column = m1.column;
@@ -125,6 +127,7 @@ matrix::matrix(int row, int column, double* value) {
 }
 int matrix::setmatrix(int row, int column, double* a) {
   int i, j;
+  delete [] this->a;
   this->a = new double[row * column];
   this->row = row;
   this->column = column;
@@ -531,7 +534,16 @@ matrix ANN::feed(matrix input) {
   }
   return a1;
 }
+int test() {
+  while (1) {
+    matrix A[10], B;
+    double b[4] = { 1, 2, 3, 4};
+    B.setmatrix(2, 2, b);
+    A[1] = B + B;
+  }
+}
 int main() {
+  // test();
   int neurons_size[50] = {64, 96, 96, 96, 64};
   double
   x[1000] =
