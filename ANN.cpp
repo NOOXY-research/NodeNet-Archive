@@ -618,22 +618,22 @@ int manager () {
     char cmd;
     bool secmenu = 0;
     ANN myann;
-    cout << "Artificial neural network (ANN) manager. ver 1.0" << endl;
+    cout << "Artificial neural network (ANN) manager. ver 1.0.1" << endl;
     cout << "copyright(c)2017 MAGNET inc." << endl;
     cout << "For more information \"www.nooxy.tk\"." << endl;
-    cout << "1. Create new ANN (c). 2. Load from old (l). 3. recover from latest train(r) 4. Create matrix(.mtrx) (m) 5. exit (e)." << endl;
+    cout << "1. Create new ANN (c). 2. Load from old (l). 3. recover from latest train(r) 4. Create matrix(.mtrx) 5. Print matrix(.mtrx) (p) 6. exit (e)." << endl << ">>>";
     cin >> cmd;
     switch (cmd) {
       case 'c':
       {
         int layers_size;
-        cout << "Input \"ANN's name.\"" << endl;
+        cout << "Input \"ANN's name.\"" << endl << ">>>";
         cin >> ann_name;
-        cout << "Input \"ANN's layers size.\"" << endl;
+        cout << "Input \"ANN's layers size.\"" << endl << ">>>";
         cin >> layers_size;
         int neurons_size[layers_size];
         for(int i = 0; i < layers_size; i++) {
-          cout << "Input \"layer (" << i + 1 << "/" << layers_size << ") neurons size\"." << endl;
+          cout << "Input \"layer (" << i + 1 << "/" << layers_size << ") neurons size\"." << endl << ">>>";
           cin >> neurons_size[i];
         }
         ANN temp(layers_size, neurons_size);
@@ -644,7 +644,7 @@ int manager () {
       }
       case 'l':
       {
-        cout << "Input \"ANN's name\"." << endl;
+        cout << "Input \"ANN's name\"." << endl << ">>>";
         cin >> ann_name;
         myann.load_from_file(ann_name);
         secmenu = 1;
@@ -652,7 +652,7 @@ int manager () {
       }
       case 'r':
       {
-        cout << "Input \"ANN's name\"." << endl;
+        cout << "Input \"ANN's name\"." << endl << ">>>";
         cin >> ann_name;
         myann.load_from_file("latest");
         myann.save_to_file(ann_name);
@@ -663,10 +663,20 @@ int manager () {
       {
         string matrix_name;
         matrix M;
-        cout << "Input \"matrix name(probably \"in\"/\"out\")\", \"row(probably the number of data amount)\", \"column(probably the number of input or output layer\'s neuron size)\"" << endl;
-        cout << "And then input \"elements\" row after row." << endl;
+        cout << "Input \"matrix name(probably \"in\"/\"out\")\", \"row(probably the number of data amount)\", \"column(probably the number of input or output layer\'s neuron size)\"." << endl;
+        cout << "And then input \"elements\" row after row." << endl << ">>>";
         cin >> matrix_name >> M;
         M.save_to_file(matrix_name);
+        break;
+      }
+      case 'p':
+      {
+        string matrix_name;
+        matrix M;
+        cout << "Input \"matrix name(probably \"in\"/\"out\")\"." << endl << ">>>";
+        cin >> matrix_name;
+        M.load_from_file(matrix_name);
+        M.print();
         break;
       }
       case 'e':
@@ -684,7 +694,7 @@ int manager () {
     myann.print();
     while (secmenu) {
       char cmd2;
-      cout <<"1. Train (t). 2. Feed (f). 3.Help (h) 4. save (s) 5. back (b)." << endl;
+      cout <<"1. Train (t). 2. Feed (f). 3.Help (h) 4. save (s) 5. back (b)." << endl << ">>>";
       cin >> cmd2;
       switch (cmd2) {
         case 't':
@@ -696,7 +706,7 @@ int manager () {
           else {
             double speed, min_err;
             int times, loop;
-            cout << "Input \"min err value(0.1)\", \"speed(3)\" , \"max training times (-1 for infinite)\", \"times per loop(2500)\"." << '\n';
+            cout << "Input \"min err value(0.1)\", \"speed(3)\" , \"max training times (-1 for infinite)\", \"times per loop(2500)\"." << '\n'  << ">>>";
             cin >> min_err >> speed >> times >> loop;
             myann.train_pro(IN, OUT, min_err, times, speed, loop);
           }
@@ -705,7 +715,7 @@ int manager () {
         case 'f':
         {
           matrix FEED;
-          cout << "input \"row(number of data amount)\", \"column(number of input layer\'s neuron size)\"" << endl;
+          cout << "input \"row(number of data amount)\", \"column(number of input layer\'s neuron size)\"" << endl  << ">>>";
           cout << "And then input \"elements\" row after row." << endl;
           cin >> FEED;
           cout << "result:" << endl << myann.feed(FEED);
@@ -734,6 +744,7 @@ int manager () {
         }
         case 'b':
         {
+          cout << endl;
           secmenu = 0;
           break;
         }
