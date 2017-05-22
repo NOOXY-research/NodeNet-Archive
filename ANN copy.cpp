@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream> //file
 #include <iomanip>//setprecision
 #include <math.h>//pow()
 #include <stdlib.h>     /* srand, rand */
@@ -50,8 +49,6 @@ class matrix {
     friend matrix operator /(const matrix& m1, const double& x1);
     friend matrix operator -(const matrix& m1);
     friend bool operator ==(const matrix& m1, const matrix& m2);
-    friend ostream& operator<<(ostream &out, const matrix& m1);
-    friend istream& operator>>(istream &in, matrix& m1);
   private:
     int row, column;
     double *a;
@@ -330,28 +327,6 @@ bool operator ==(const matrix& m1, const matrix& m2) {
   }
   return answer;
 }
-ostream& operator<<(ostream &out, const matrix& m1) {
-  int i, j;
-  out << " " << m1.row << " " << m1.column;
-  for(i = 0; i < m1.row; i++) {
-      for(j = 0; j < m1.column; j++) {
-          out << " " << m1.a[i * m1.column + j];
-      }
-  }
-  return out;
-}
-istream& operator>>(istream &in, matrix& m1) {
-  int i, j;
-  in >> m1.row >> m1.column;
-  delete [] m1.a;
-  m1.a = new double [m1.row * m1.column];
-  for(i = 0; i < m1.row; i++) {
-      for(j = 0; j < m1.column; j++) {
-          in >> m1.a[i * m1.column + j];
-      }
-  }
-  return in;
-}
 class ANN {
   public:
     ANN();
@@ -468,40 +443,6 @@ int ANN::print() {
     if(i < this->layers_size -1) {
       this->weight[i].print();
     }
-  }
-  return 0;
-}
-int ANN::save_to_file(string filename) {
-  int i, j;
-  ofstream myfile (filename + ".ann");
-  myfile << this->layers_size;
-  for(i = 0; i < this->layers_size; i++) {
-    myfile << " " << this->neurons_size[i];
-  }
-  for(i = 0; i < this->layers_size - 1; i++) {
-    myfile << this->weight[i];
-  }
-  myfile.close();
-  return 0;
-}
-int ANN::load_from_file(string filename) {
-  int i, j;
-  ifstream myfile (filename + ".ann");
-  if(myfile.is_open()) {
-    delete [] this->neurons_size;
-    delete [] this->weight;
-    myfile >> this->layers_size;
-    this->neurons_size = new int[this->layers_size];
-    this->weight = new matrix[this->layers_size - 1];
-    for(i = 0; i < this->layers_size; i++) {
-      myfile >> this->neurons_size[i];
-    }
-    for(i = 0; i < this->layers_size - 1; i++) {
-      myfile >> this->weight[i];
-    }
-  }
-  else {
-    return -1;
   }
   return 0;
 }
@@ -686,12 +627,7 @@ matrix ANN::feed(matrix input) {
   return a1;
 }
 int test() {
-  double a[4] = {1, 2, 3, 4};
-  matrix A;
-  int ann[4] = {3, 2 ,1 ,3};
-  ANN myann;
-  myann.load_from_file("test");
-  myann.print();
+  
 }
 int main() {
   test();
