@@ -574,7 +574,7 @@ int ANN::train_pro(matrix input, matrix output, double err, int max_times, doubl
         speed =  double( rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
       }
       cout << endl;
-      this->save_to_file("latest");
+      good->save_to_file("latest");
     }
     this->train(input, output, speed);
     count ++;
