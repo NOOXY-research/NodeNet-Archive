@@ -574,7 +574,7 @@ int ANN::train_pro(matrix input, matrix output, double err, int max_times, doubl
         speed =  double( rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
       }
       cout << endl;
-      good->save_to_file("latest");
+      good.save_to_file("latest");
     }
     this->train(input, output, speed);
     count ++;
@@ -718,7 +718,7 @@ int manager () {
           cout << "input \"row(number of data amount)\", \"column(number of input layer\'s neuron size)\"" << endl;
           cout << "And then input \"elements\" row after row." << endl << ">>>";
           cin >> FEED;
-          cout << "result:" << endl
+          cout << "result:" << endl;
           (myann.feed(FEED)).print();
           break;
         }
