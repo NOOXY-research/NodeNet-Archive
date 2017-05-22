@@ -621,7 +621,7 @@ int manager () {
     cout << "Artificial neural network (ANN) manager. ver 1.0.1" << endl;
     cout << "copyright(c)2017 MAGNET inc." << endl;
     cout << "For more information \"www.nooxy.tk\"." << endl;
-    cout << "1. Create new ANN (c). 2. Load from old (l). 3. recover from latest train(r) 4. Create matrix(.mtrx) 5. Print matrix(.mtrx) (p) 6. exit (e)." << endl << ">>>";
+    cout << "1. Create new ANN (c). 2. Load from old (l). 3. recover from latest train (r) 4. Create matrix(.mtrx) (m) 5. Print matrix(.mtrx) (p) 6. exit (e)." << endl << ">>>";
     cin >> cmd;
     switch (cmd) {
       case 'c':
@@ -715,8 +715,8 @@ int manager () {
         case 'f':
         {
           matrix FEED;
-          cout << "input \"row(number of data amount)\", \"column(number of input layer\'s neuron size)\"" << endl  << ">>>";
-          cout << "And then input \"elements\" row after row." << endl;
+          cout << "input \"row(number of data amount)\", \"column(number of input layer\'s neuron size)\"" << endl;
+          cout << "And then input \"elements\" row after row." << endl << ">>>";
           cin >> FEED;
           cout << "result:" << endl << myann.feed(FEED);
           break;
