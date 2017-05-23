@@ -554,28 +554,27 @@ int ANN::train_pro(matrix input, matrix output, double err, int max_times, doubl
   double speed_max = speed;
   // this->train(input, output, speed);
   double good_err = 99999, firsterr = (this->feed(input) - output.transfer(sigmoid)).length();
-  cout << "firsterr: " << firsterr << endl;
   int count = 0;
   while((this->feed(input) - output.transfer(sigmoid)).length() > err && (count < max_times || max_times == -1)) {
     if(count % loop == 0) {
       cout << fixed;
       cout << setprecision(5);
       if ( good_err == (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << "[" << this->feed(input) - output.transfer(sigmoid)).length() << " same ] ";
+        cout << "[" << (this->feed(input) - output.transfer(sigmoid)).length() << " same ] ";
         speed =  double( rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
       }
       if ( good_err > (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << "[" << this->feed(input) - output.transfer(sigmoid)).length() << " ok   ] ";
+        cout << "[" << (this->feed(input) - output.transfer(sigmoid)).length() << " ok-- ] ";
         good_err = (this->feed(input) - output.transfer(sigmoid)).length();
         good = (*this);
       }
       if ( good_err < (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << "[" << this->feed(input) - output.transfer(sigmoid)).length() << " bad  ] ";
+        cout << "[" << (this->feed(input) - output.transfer(sigmoid)).length() << " bad- ] ";
         (*this) = good;
         speed =  double( rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
       }
-      for (int i = 0; i < ((this->feed(input) - output.transfer(sigmoid)).length() / firsterr) * 100; i++) {
-        if(i = 100) {
+      for (int i = 0; i < ((this->feed(input) - output.transfer(sigmoid)).length() / firsterr) * 80; i++) {
+        if(i == 100) {
           break;
         }
         cout << "*";
@@ -625,7 +624,7 @@ int manager () {
     char cmd;
     bool secmenu = 0;
     ANN myann;
-    cout << "Artificial neural network (ANN) manager. ver 1.0.1" << endl;
+    cout << "Artificial neural network (ANN) manager. ver 1.1.0" << endl;
     cout << "copyright(c)2017 MAGNET inc." << endl;
     cout << "For more information \"www.nooxy.tk\"." << endl;
     cout << "1. Create new ANN (c). 2. Load from old (l). 3. recover from latest train (r) 4. Create matrix(.mtrx) (m) 5. Print matrix(.mtrx) (p) 6. exit (e)." << endl << ">>>";
@@ -701,7 +700,7 @@ int manager () {
     myann.print();
     while (secmenu) {
       char cmd2;
-      cout <<"1. Train (t). 2. Feed (f). 3.Help (h) 4. save (s) 5. back (b)." << endl << ">>>";
+      cout <<"1. Train (t). 2.Train by default (d) 3. Feed (f). 4.Help (h) 5. save (s) 6. back (b)." << endl << ">>>";
       cin >> cmd2;
       switch (cmd2) {
         case 't':
@@ -717,6 +716,18 @@ int manager () {
             cin >> min_err >> speed >> times >> loop;
             myann.train_pro(IN, OUT, min_err, times, speed, loop);
           }
+          break;
+        }
+        case 'd':
+        {
+          double min_err;
+          matrix IN, OUT;
+          if (IN.load_from_file("in") || OUT.load_from_file("out")) {
+            cout << "error: \"in.mtrx\" or \"out.mtrx\" not found. Please create it first." << '\n';
+          }
+          cout << "Input \"min err value(0.1)\"." << '\n'  << ">>>";
+          cin >> min_err;
+          myann.train_pro(IN, OUT, min_err, -1, 3, 2500);
           break;
         }
         case 'f':
