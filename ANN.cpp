@@ -171,7 +171,10 @@ int matrix::print() {
       for(j = 0; j < this->column; j++) {
         cout << fixed;
         cout << setprecision(3);
-        cout << this->a[i * this->column + j] << " ";
+        if(this->a[i * this->column + j] > 0) {
+          cout << " ";
+        }
+        cout << this->a[i * this->column + j];
       }
       cout << endl;
   }
@@ -349,13 +352,14 @@ bool operator ==(const matrix& m1, const matrix& m2) {
 }
 ostream& operator<<(ostream &out, const matrix& m1) {
   int i, j;
-  out << " " << m1.row << " " << m1.column;
+  out << " " << m1.row << " " << m1.column << endl;;
   for(i = 0; i < m1.row; i++) {
       for(j = 0; j < m1.column; j++) {
-        cout << fixed;
-        cout << setprecision(10);
+        out << fixed;
+        out << setprecision(20);
         out << " " << m1.a[i * m1.column + j];
       }
+      out << endl;
   }
   return out;
 }
@@ -382,6 +386,7 @@ class ANN {
     int setweight(matrix *weight);
     int randomweight();
     int print();
+    int print_detail();
     int save_to_file(string filename);
     int load_from_file(string filename);
     int train(matrix input, matrix output, double speed);
@@ -475,15 +480,26 @@ int ANN::randomweight() {
   }
   return 0;
 }
-int ANN::print() {
+int ANN::print_detail() {
   int i, j;
-  cout<<">>>-----ANN info-----"<<endl;
+  cout<<">>>-----ANN info detail-----"<<endl;
   for(i = 0; i < this->layers_size; i++) {
     cout<<">>>";
     cout << "N(" <<  i << "): " << this->neurons_size[i]<<endl;
     if(i < this->layers_size -1) {
       this->weight[i].print();
     }
+  }
+  return 0;
+}
+int ANN::print() {
+  int i, j;
+  cout<<">>>-----ANN info-----"<<endl;
+  cout<<">>>";
+  cout << "layers size: " << this->layers_size << endl;
+  for(i = 0; i < this->layers_size; i++) {
+    cout<<">>>";
+    cout << "N(" <<  i << "): " << this->neurons_size[i]<<endl;
   }
   return 0;
 }
@@ -546,7 +562,6 @@ int ANN::train(matrix input, matrix output,double speed) {
   for(i = 0; i < this->layers_size - 1; i++) {
     this->weight[i] = this->weight[i] - speed * dj_dweight[i];
   }
-  speed = speed;
   return 0;
 }
 int ANN::train_pro(matrix input, matrix output, double err, int max_times, double speed, int loop) {
@@ -558,20 +573,20 @@ int ANN::train_pro(matrix input, matrix output, double err, int max_times, doubl
   while((this->feed(input) - output.transfer(sigmoid)).length() > err && (count < max_times || max_times == -1)) {
     if(count % loop == 0) {
       cout << fixed;
-      cout << setprecision(5);
+      cout << setprecision(6);
       if ( good_err == (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << "[" << (this->feed(input) - output.transfer(sigmoid)).length() << " same ] ";
-        speed =  double( rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
+        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " same ] ";
+        speed =  double(rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
       }
       if ( good_err > (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << "[" << (this->feed(input) - output.transfer(sigmoid)).length() << " ok-- ] ";
+        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " good ] ";
         good_err = (this->feed(input) - output.transfer(sigmoid)).length();
         good = (*this);
       }
       if ( good_err < (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << "[" << (this->feed(input) - output.transfer(sigmoid)).length() << " bad- ] ";
+        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " -bad ] ";
         (*this) = good;
-        speed =  double( rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
+        speed =  double(rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
       }
       for (int i = 0; i < ((this->feed(input) - output.transfer(sigmoid)).length() / firsterr) * 80; i++) {
         if(i == 100) {
@@ -618,26 +633,28 @@ matrix ANN::feed(matrix input) {
   }
   return a1;
 }
-int manager () {
+int ann_manager () {
   while(1) {
     string ann_name;
     char cmd;
     bool secmenu = 0;
     ANN myann;
-    cout << "Artificial neural network (ANN) manager. ver 1.1.0" << endl;
+    cout << endl;
+    cout << "Artificial neural network (ANN) manager. ver 1.1.5" << endl;
     cout << "copyright(c)2017 MAGNET inc." << endl;
-    cout << "For more information \"www.nooxy.tk\"." << endl;
-    cout << "1. Create new ANN (c). 2. Load from old (l). 3. recover from latest train (r) 4. Create matrix(.mtrx) (m) 5. Print matrix(.mtrx) (p) 6. exit (e)." << endl << ">>>";
+    cout << "For more information or update ->\"http://www.nooxy.tk\"." << endl;
+    cout << "Create new ANN [c]. Load from old [l]. Recover from latest train [r]. Create matrix(.mtrx) [m]. Print matrix(.mtrx) [p]. Exit [e]." << endl << ">>>";
     cin >> cmd;
     switch (cmd) {
       case 'c':
       {
         int layers_size;
-        cout << "Input \"ANN's name.\"" << endl << ">>>";
+        cout << "Input \"ANN's name.\" to be created." << endl << ">>>";
         cin >> ann_name;
         cout << "Input \"ANN's layers size.\"" << endl << ">>>";
         cin >> layers_size;
         int neurons_size[layers_size];
+        cout << "\"layer (1/" << layers_size << ")\" is input layer and \"layer (" << layers_size << "/" << layers_size << ")\"is output layer." << endl;
         for(int i = 0; i < layers_size; i++) {
           cout << "Input \"layer (" << i + 1 << "/" << layers_size << ") neurons size\"." << endl << ">>>";
           cin >> neurons_size[i];
@@ -650,15 +667,20 @@ int manager () {
       }
       case 'l':
       {
-        cout << "Input \"ANN's name\"." << endl << ">>>";
+        cout << "Input \"ANN's name\" to be loaded." << endl << ">>>";
         cin >> ann_name;
-        myann.load_from_file(ann_name);
-        secmenu = 1;
+        if (myann.load_from_file(ann_name) == -1) {
+          cout << ann_name << ".ann not found." << endl;
+          secmenu = 0;
+        }
+        else {
+          secmenu = 1;
+        }
         break;
       }
       case 'r':
       {
-        cout << "Input \"ANN's name\"." << endl << ">>>";
+        cout << "Input \"ANN's name\" to be recovered." << endl << ">>>";
         cin >> ann_name;
         myann.load_from_file("latest");
         myann.save_to_file(ann_name);
@@ -696,11 +718,13 @@ int manager () {
         break;
       }
     }
-    cout << "Your ANN : " << ann_name << endl;
-    myann.print();
+    if (secmenu) {
+      cout << "Your ANN : " << ann_name << endl;
+      myann.print();
+    }
     while (secmenu) {
       char cmd2;
-      cout <<"1. Train (t). 2.Train by default (d) 3. Feed (f). 4.Help (h) 5. save (s) 6. back (b)." << endl << ">>>";
+      cout <<"Train [t]. Train by default [d]. Feed [f]. Remap weight randomly [r]. Help [h]. Save [s]. Print detail [p]. Back [b]." << endl << ">>>";
       cin >> cmd2;
       switch (cmd2) {
         case 't':
@@ -725,9 +749,11 @@ int manager () {
           if (IN.load_from_file("in") || OUT.load_from_file("out")) {
             cout << "error: \"in.mtrx\" or \"out.mtrx\" not found. Please create it first." << '\n';
           }
-          cout << "Input \"min err value(0.1)\"." << '\n'  << ">>>";
-          cin >> min_err;
-          myann.train_pro(IN, OUT, min_err, -1, 3, 2500);
+          else {
+            cout << "Input \"min err value(0.1)\"." << '\n'  << ">>>";
+            cin >> min_err;
+            myann.train_pro(IN, OUT, min_err, -1, 3, 2500);
+          }
           break;
         }
         case 'f':
@@ -737,7 +763,13 @@ int manager () {
           cout << "And then input \"elements\" row after row." << endl << ">>>";
           cin >> FEED;
           cout << "result:" << endl;
-          (myann.feed(FEED)).print();
+          ((myann.feed(FEED)).transfer(logit)).print();
+          break;
+        }
+        case 'r':
+        {
+          myann.randomweight();
+          cout << ann_name << ".ann has been remapped randomly." << endl;
           break;
         }
         case 'h':
@@ -759,11 +791,16 @@ int manager () {
         case 's':
         {
           myann.save_to_file(ann_name);
+          cout << "Saved to " << ann_name << ".ann" << endl;
+          break;
+        }
+        case 'p':
+        {
+          myann.print_detail();
           break;
         }
         case 'b':
         {
-          cout << endl;
           secmenu = 0;
           break;
         }
@@ -778,5 +815,5 @@ int manager () {
   return 0;
 }
 int main() {
-  manager();
+  ann_manager();
 }
