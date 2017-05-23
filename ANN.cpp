@@ -558,20 +558,27 @@ int ANN::train_pro(matrix input, matrix output, double err, int max_times, doubl
   int count = 0;
   while((this->feed(input) - output.transfer(sigmoid)).length() > err && (count < max_times || max_times == -1)) {
     if(count % loop == 0) {
-      for (int i = 0; i < ((this->feed(input) - output.transfer(sigmoid)).length() / firsterr) * 160; i++)
-        cout << "*";
+      cout << fixed;
+      cout << setprecision(5);
       if ( good_err == (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << " stucked";
+        cout << "[" << this->feed(input) - output.transfer(sigmoid)).length() << " same ] ";
         speed =  double( rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
       }
       if ( good_err > (this->feed(input) - output.transfer(sigmoid)).length()) {
+        cout << "[" << this->feed(input) - output.transfer(sigmoid)).length() << " ok   ] ";
         good_err = (this->feed(input) - output.transfer(sigmoid)).length();
         good = (*this);
       }
       if ( good_err < (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << " bad";
+        cout << "[" << this->feed(input) - output.transfer(sigmoid)).length() << " bad  ] ";
         (*this) = good;
         speed =  double( rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
+      }
+      for (int i = 0; i < ((this->feed(input) - output.transfer(sigmoid)).length() / firsterr) * 100; i++) {
+        if(i = 100) {
+          break;
+        }
+        cout << "*";
       }
       cout << endl;
       good.save_to_file("latest");
