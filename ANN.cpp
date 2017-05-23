@@ -161,9 +161,12 @@ int matrix::get_column() {
 int matrix::print() {
   int i, j;
   cout << ">>>" << this->row << " by " << this->column << " matrix." << endl;
-  cout << ">>>   ";
+  cout << ">>>    ";
   for(j = 0; j < this->column; j++) {
-    cout << "c" << j + 1 <<"    ";
+    cout << "c" << j + 1 <<"   ";
+    if (j + 1 < 10) {
+      cout << " ";
+    }
   }
   cout << endl;
   for(i = 0; i < this->row; i++) {
@@ -640,7 +643,7 @@ int ann_manager () {
     bool secmenu = 0;
     ANN myann;
     cout << endl;
-    cout << "Artificial neural network (ANN) manager. ver 1.1.5" << endl;
+    cout << "Artificial neural network (ANN) manager. ver 1.1.7" << endl;
     cout << "copyright(c)2017 MAGNET inc." << endl;
     cout << "For more information or update ->\"http://www.nooxy.tk\"." << endl;
     cout << "Create new ANN [c]. Load from old [l]. Recover from latest train [r]. Create matrix(.mtrx) [m]. Print matrix(.mtrx) [p]. Exit [e]." << endl << ">>>";
