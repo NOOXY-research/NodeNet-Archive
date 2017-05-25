@@ -174,7 +174,7 @@ int matrix::print() {
       for(j = 0; j < this->column; j++) {
         cout << fixed;
         cout << setprecision(3);
-        if(this->a[i * this->column + j] > 0) {
+        if(this->a[i * this->column + j] >= 0) {
           cout << " ";
         }
         cout << this->a[i * this->column + j];
@@ -385,6 +385,12 @@ class ANN {
     ANN(int layers_size,int *neurons_size,matrix *weight);
     ANN(const ANN& ann1);
     ANN& operator =(const ANN& ann1);
+    friend ANN operator +(const ANN& ann1, const ANN& ann2);
+    friend ANN operator -(const ANN& ann1, const ANN& ann2);
+    friend ANN operator /(const ANN& ann1, double x1);
+    friend ANN operator *(double x1, const ANN& ann1);
+    friend ANN operator *(const ANN& ann1, double x1);
+    friend bool operator ==(const ANN& ann1, const ANN& ann2);
     ~ANN();
     int setweight(matrix *weight);
     int randomweight();
@@ -460,6 +466,79 @@ ANN& ANN::operator =(const ANN& ann1) {
   }
   return *this;
 }
+ANN operator +(const ANN& ann1,const ANN& ann2) {
+  int i, j;
+  ANN answer;
+  if(ann1 == ann2) {
+    answer = ann1;
+    for(i = 0; i < ann1.layers_size; i++) {
+      answer.weight[i] = ann1.weight[i] + ann2.weight[i];
+    }
+  }
+  else {
+    cout << "ann error: operator -" << endl;
+  }
+  return answer;
+}
+ANN operator -(const ANN& ann1,const ANN& ann2) {
+  int i, j;
+  ANN answer;
+  if(ann1 == ann2) {
+    answer = ann1;
+    for(i = 0; i < ann1.layers_size; i++) {
+      answer.weight[i] = ann1.weight[i] - ann2.weight[i];
+    }
+  }
+  else {
+    cout << "ann error: operator -" << endl;
+  }
+  return answer;
+}
+ANN operator /(const ANN& ann1, double x1) {
+  int i, j;
+  ANN answer;
+  answer = ann1;
+  if(x1 == 0) {
+    cout << "ann error: operator /" << endl;
+  }
+  for(i = 0; i < ann1.layers_size; i++) {
+    answer.weight[i] = ann1.weight[i] / x1;
+  }
+  return ann1;
+}
+ANN operator *(double x1,const ANN& ann1) {
+  int i, j;
+  ANN answer;
+  answer = ann1;
+  for(i = 0; i < ann1.layers_size; i++) {
+    answer.weight[i] = ann1.weight[i] * x1;
+  }
+  return ann1;
+}
+ANN operator *(const ANN& ann1, double x1) {
+  int i, j;
+  ANN answer;
+  answer = ann1;
+  for(i = 0; i < ann1.layers_size; i++) {
+    answer.weight[i] = ann1.weight[i] * x1;
+  }
+  return ann1;
+}
+bool operator ==(const ANN& ann1, const ANN& ann2) {
+  int i, j;
+  bool answer = true;
+  if(ann1.layers_size != ann2.layers_size) {
+    answer = false;
+  }
+  else {
+    for(i = 0; i < ann1.layers_size; i++) {
+      if(ann1.neurons_size[i] != ann2.neurons_size[i]) {
+        answer = false;
+      }
+    }
+  }
+  return answer;
+}
 ANN::~ANN () {
   delete [] weight;
   delete [] neurons_size;
@@ -513,6 +592,7 @@ int ANN::save_to_file(string filename) {
   for(i = 0; i < this->layers_size; i++) {
     myfile << " " << this->neurons_size[i];
   }
+  myfile << endl;
   for(i = 0; i < this->layers_size - 1; i++) {
     myfile << this->weight[i];
   }
@@ -604,9 +684,9 @@ int ANN::train_pro(matrix input, matrix output, double err, int max_times, doubl
     count ++;
   }
   this->print();
-  cout << ">>>-----out origin-----" << endl;
+  cout << ">>>-----origin out-----" << endl;
   (output).print();
-  cout << ">>>-----feed origin-----" << endl;
+  cout << ">>>-----feed out-----" << endl;
   ((this->feed(input)).transfer(logit)).print();
   cout << ">>>-----err value-----" << endl;
   cout << fixed;
@@ -643,10 +723,10 @@ int ann_manager () {
     bool secmenu = 0;
     ANN myann;
     cout << endl;
-    cout << "Artificial neural network (ANN) manager. ver 1.1.7" << endl;
+    cout << "Artificial neural network (ANN) manager. ver 1.3.0" << endl;
     cout << "copyright(c)2017 MAGNET inc." << endl;
     cout << "For more information or update ->\"http://www.nooxy.tk\"." << endl;
-    cout << "Create new ANN [c]. Load from old [l]. Recover from latest train [r]. Create matrix(.mtrx) [m]. Print matrix(.mtrx) [p]. Exit [e]." << endl << ">>>";
+    cout << "Create new ANN [c]. Load from old [l]. Recover from latest train [r]. Merge ANN [m]. Create matrix(.mtrx) [M]. Print matrix(.mtrx) [p]. Exit [e]." << endl << ">>>";
     cin >> cmd;
     switch (cmd) {
       case 'c':
@@ -692,6 +772,24 @@ int ann_manager () {
       }
       case 'm':
       {
+        string ann_name, merge_ann_name_1, merge_ann_name_2;
+        ANN temp, ann1, ann2;
+        cout << "Input \"first ann name\"." << endl;
+        cin >> merge_ann_name_1;
+        cout << "Input \"next ann name\"." << endl;
+        cin >> merge_ann_name_2;
+        cout << "Input \"ann name that be merged to\"." << endl;
+        cin >> ann_name;
+        if(ann1.load_from_file(merge_ann_name_1) == -1 || ann2.load_from_file(merge_ann_name_2) == -1) {
+          cout << merge_ann_name_1 << ".ann or " << merge_ann_name_2 << ".ann not found." << endl;
+        }
+        temp = (ann1 + ann2) / 2;
+        temp.save_to_file(ann_name);
+        cout << "ANN is merged to " << ann_name << ".ann" << endl;
+        break;
+      }
+      case 'M':
+      {
         string matrix_name;
         matrix M;
         cout << "Input \"matrix name(probably \"in\"/\"out\")\", \"row(probably the number of data amount)\", \"column(probably the number of input or output layer\'s neuron size)\"." << endl;
@@ -727,10 +825,10 @@ int ann_manager () {
     }
     while (secmenu) {
       char cmd2;
-      cout <<"Train [t]. Train by default [d]. Feed [f]. Remap weight randomly [r]. Help [h]. Save [s]. Print detail [p]. Back [b]." << endl << ">>>";
+      cout <<"Train [a]. Train by default [b]. Feed [c]. Feed by \".mtrx\" [d]. Predict test [e]. Remap weight randomly [f]. Save ANN [s]. Print detail [p]. Return [r]. Help [h]." << endl << ">>>";
       cin >> cmd2;
       switch (cmd2) {
-        case 't':
+        case 'a':
         {
           matrix IN, OUT;
           if (IN.load_from_file("in") || OUT.load_from_file("out")) {
@@ -742,10 +840,12 @@ int ann_manager () {
             cout << "Input \"min err value(0.1)\", \"speed(3)\" , \"max training times (-1 for infinite)\", \"times per loop(2500)\"." << '\n'  << ">>>";
             cin >> min_err >> speed >> times >> loop;
             myann.train_pro(IN, OUT, min_err, times, speed, loop);
+            myann.save_to_file(ann_name);
+            cout << "Saved to " << ann_name << ".ann" << endl;
           }
           break;
         }
-        case 'd':
+        case 'b':
         {
           double min_err;
           matrix IN, OUT;
@@ -756,10 +856,12 @@ int ann_manager () {
             cout << "Input \"min err value(0.1)\"." << '\n'  << ">>>";
             cin >> min_err;
             myann.train_pro(IN, OUT, min_err, -1, 3, 2500);
+            myann.save_to_file(ann_name);
+            cout << "Saved to " << ann_name << ".ann" << endl;
           }
           break;
         }
-        case 'f':
+        case 'c':
         {
           matrix FEED;
           cout << "input \"row(number of data amount)\", \"column(number of input layer\'s neuron size)\"" << endl;
@@ -769,7 +871,36 @@ int ann_manager () {
           ((myann.feed(FEED)).transfer(logit)).print();
           break;
         }
-        case 'r':
+        case 'd':
+        {
+          matrix FEED;
+          string matrix_name;
+          cout << "Input \"matrix name be feeded." << endl << ">>>";
+          cin >> matrix_name;
+          FEED.load_from_file(matrix_name);
+          cout << "result:" << endl;
+          ((myann.feed(FEED)).transfer(logit)).print();
+          break;
+        }
+        case 'e':
+        {
+          double min_err;
+          matrix IN, OUT;
+          if (IN.load_from_file("in_test") || OUT.load_from_file("out_test")) {
+            cout << "error: \"in_test.mtrx\" or \"out_test.mtrx\" not found. Please create it first." << '\n';
+          }
+          else {
+            cout << "-----origin out-----" << endl;
+            OUT.print();
+            cout << "-----feed out-----" << endl;
+            ((myann.feed(IN)).transfer(logit)).print();
+            cout << fixed;
+            cout << setprecision(6);
+            cout << "error value (sigmoid on): " << (myann.feed(IN) - OUT.transfer(sigmoid)).length() << endl;
+          }
+          break;
+        }
+        case 'f':
         {
           myann.randomweight();
           cout << ann_name << ".ann has been remapped randomly." << endl;
@@ -779,13 +910,13 @@ int ann_manager () {
         {
           cout << "You need in.mtrx and out.mtrx to train. Can simply create by tool provide from us from first menu." << endl;
           cout << "Or you can manually create it by text editor. Form showing below." << endl;
-          cout << "\"row(probably the number of data amount)\", \"column(probably the number of input or output layer\'s neuron size)\"" << endl;
+          cout << "\"row(probably the number of data amount)\", \"column(probably the number of input or output layer's neuron size)\"" << endl;
           cout << "And then input \"elements\" row after row." << endl;
           cout << "Beware each thing should seperated by space." << endl;
           cout << "For example 2 * 3 matrix." << endl;
-          cout << "                  input / output neuron size (column\'s size)" << endl;
+          cout << "                  input / output neuron size (column's size)" << endl;
           cout << "                                   1 2" << endl;
-          cout << " amount of data (row\'s size)       3 4" << endl;
+          cout << " amount of data (row's size)       3 4" << endl;
           cout << "                                   5 6" << endl;
           cout << "In .mtrx file should be like" << endl;
           cout << "2 3 1 2 3 4 5 6" << endl;
@@ -802,7 +933,7 @@ int ann_manager () {
           myann.print_detail();
           break;
         }
-        case 'b':
+        case 'r':
         {
           secmenu = 0;
           break;
