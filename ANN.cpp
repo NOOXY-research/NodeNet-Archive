@@ -163,7 +163,7 @@ int matrix::print() {
   cout << ">>>" << this->row << " by " << this->column << " matrix." << endl;
   cout << ">>>    ";
   for(j = 0; j < this->column; j++) {
-    cout << "c" << j + 1 <<"   ";
+    cout << "c" << j + 1 <<"  ";
     if (j + 1 < 10) {
       cout << " ";
     }
@@ -173,7 +173,7 @@ int matrix::print() {
     cout << ">>>r" << i + 1 << " ";
       for(j = 0; j < this->column; j++) {
         cout << fixed;
-        cout << setprecision(3);
+        cout << setprecision(2);
         if(this->a[i * this->column + j] >= 0) {
           cout << " ";
         }
@@ -653,21 +653,51 @@ int ANN::train_pro(matrix input, matrix output, double err, int max_times, doubl
   // this->train(input, output, speed);
   double good_err = 99999, firsterr = (this->feed(input) - output.transfer(sigmoid)).length();
   int count = 0;
+  int use_cache = 0;
+  int cache_count = 0;
+  matrix weight_cache[this->layers_size];
+  good = (*this);
   while((this->feed(input) - output.transfer(sigmoid)).length() > err && (count < max_times || max_times == -1)) {
     if(count % loop == 0) {
+      use_cache = 0;
       cout << fixed;
       cout << setprecision(6);
       if ( good_err == (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " same ] ";
+        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " same  ] ";
         speed =  double(rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
       }
-      if ( good_err > (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " good ] ";
+      else if ( good_err > (this->feed(input) - output.transfer(sigmoid)).length()) {
+        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " good  ] ";
+	int i;
+	// cout << "cache used: " << cache_count << " ";
+	// cache_count = 0;
+	for(i = 0; i < this->layers_size - 1; i++) {
+	  weight_cache[i] = this->weight[i] - good.weight[i];
+	  use_cache = 1;
+	}
+        while(use_cache == 1) {
+          int i;
+          double err_temp = 0;
+          err_temp = ((this->feed(input) - output.transfer(sigmoid)).length());
+          for(i = 0; i < layers_size - 1; i++) {
+            this->weight[i] = this->weight[i] + weight_cache[i];
+          }
+          if((this->feed(input) - output.transfer(sigmoid)).length() >= err_temp) {
+            for(i = 0; i < layers_size - 1; i++) {
+	      this->weight[i] = this->weight[i] - weight_cache[i];
+            }
+            //cout << "bad_cache result: " << (this->feed(input) - output.transfer(sigmoid)).length() << endl;
+	    use_cache = 0;
+          }
+          else {
+            cache_count++;
+          }
+        };
         good_err = (this->feed(input) - output.transfer(sigmoid)).length();
         good = (*this);
       }
-      if ( good_err < (this->feed(input) - output.transfer(sigmoid)).length()) {
-        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " -bad ] ";
+      else if ( good_err < (this->feed(input) - output.transfer(sigmoid)).length()) {
+        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " bad   ] ";
         (*this) = good;
         speed =  double(rand() % (int(speed_max + 1))  - (rand() % 99999) * 0.00001);
       }
@@ -678,6 +708,17 @@ int ANN::train_pro(matrix input, matrix output, double err, int max_times, doubl
         cout << "*";
       }
       cout << endl;
+      if(cache_count > 0) {
+        cout << "[ " << (this->feed(input) - output.transfer(sigmoid)).length() << " boost ] ";
+        cache_count = 0;
+        for (int i = 0; i < ((this->feed(input) - output.transfer(sigmoid)).length() / firsterr) * 80; i++) {
+          if(i == 100) {
+	    break;
+	  }
+	  cout << "*";
+	}
+	cout << endl;
+      }
       good.save_to_file(ann_name + "_latest");
     }
     this->train(input, output, speed);
@@ -855,7 +896,7 @@ int ANN_manager::manage_ANN (ANN& myann, string ann_name) {
         cout << "Input \"min error value per data(0.1)\", \"speed(3)\" , \"max training times (-1 for infinite)\", \"times per loop(2500)\"." << '\n'  << ">>>";
         cin >> min_err >> speed >> times >> loop;
 	min_err = pow(pow(min_err, 2) * IN.get_row(), 0.5);
-	cout << ">>>whole min eroor: " << min_err << endl;
+	cout << ">>>whole min eroor: " << fixed << setprecision(6) << min_err << endl;
         myann.train_pro(IN, OUT, min_err, times, speed, loop, ann_name);
         myann.save_to_file(ann_name);
         cout << "Saved to " << ann_name << ".ann" << endl;
@@ -873,7 +914,7 @@ int ANN_manager::manage_ANN (ANN& myann, string ann_name) {
         cout << "Input \"min error value per data(0.1)\"." << '\n'  << ">>>";
         cin >> min_err;
 	min_err = pow(pow(min_err, 2) * IN.get_row(), 0.5);
-	cout << ">>>whole min error: " << min_err << endl;
+	cout << ">>>whole min error: " << fixed << setprecision(6) << min_err << endl;
         myann.train_pro(IN, OUT, min_err, -1, 3, 2500, ann_name);
         myann.save_to_file(ann_name);
         cout << "Saved to " << ann_name << ".ann" << endl;
