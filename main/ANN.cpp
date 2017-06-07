@@ -230,7 +230,8 @@ int ANN::train(matrix input, matrix output,double speed) {
     return -1;
   }
   int i, j;
-  matrix delta[this->layers_size], dj_dweight[this->layers_size - 1], a[this->layers_size], z[this->layers_size];
+  matrix *delta = new matrix[this->layers_size], *dj_dweight = new matrix[this->layers_size - 1],
+   *a = new matrix[this->layers_size], *z = new matrix[this->layers_size];
   matrix a1;
   z[0] = input;
   a1 = input.transfer(sigmoid);
@@ -247,6 +248,10 @@ int ANN::train(matrix input, matrix output,double speed) {
   for(i = 0; i < this->layers_size - 1; i++) {
     this->weight[i] = this->weight[i] - speed * dj_dweight[i];
   }
+  delete [] delta;
+  delete [] dj_dweight;
+  delete [] a;
+  delete [] z;
   return 0;
 }
 int ANN::train_OBP(matrix input, matrix output,double speed) {
@@ -256,7 +261,8 @@ int ANN::train_OBP(matrix input, matrix output,double speed) {
     return -1;
   }
   int i, j;
-  matrix delta[this->layers_size], dj_dweight[this->layers_size - 1], a[this->layers_size], z[this->layers_size];
+  matrix *delta = new matrix[this->layers_size], *dj_dweight = new matrix[this->layers_size - 1],
+   *a = new matrix[this->layers_size], *z = new matrix[this->layers_size];
   matrix a1;
   z[0] = input;
   a1 = input.transfer(sigmoid);
@@ -276,6 +282,10 @@ int ANN::train_OBP(matrix input, matrix output,double speed) {
     this->weight[i] = this->weight[i] - fliter_max_value(speed * dj_dweight[i], 0.05);
     // cout << (speed * dj_dweight[i]).length() << " " << flush;
   }
+  delete [] delta;
+  delete [] dj_dweight;
+  delete [] a;
+  delete [] z;
   return 0;
 }
 int ANN::train_method_batch(matrix input, matrix output, double err, int max_times, double speed, int loop, string ann_name) {
@@ -287,7 +297,7 @@ int ANN::train_method_batch(matrix input, matrix output, double err, int max_tim
   int use_cache = 0;
   int cache_count = 0;
   double speed_max = speed;
-  matrix weight_cache[this->layers_size];
+  matrix *weight_cache = new matrix[this->layers_size];
 
   // optimize
   // for(i = 0; i < 2; i++){
@@ -396,6 +406,7 @@ int ANN::train_method_batch(matrix input, matrix output, double err, int max_tim
     this->train(input, output, speed);
     count ++;
   }
+  delete [] weight_cache;
   this->print();
   cout << ">>>-----origin out-----" << endl;
   (output).print();
@@ -437,7 +448,6 @@ int ANN::train_method_random(matrix input, matrix output, double err, int max_ti
   int count = 0;
   int use_cache = 0;
   int cache_count = 0;
-  matrix weight_cache[this->layers_size];
   // optimize
   cout << "[ " << fixed << setprecision(6) << firsterr << " first ] ";
   cout << "********************************************************************************" << endl;
