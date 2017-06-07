@@ -746,6 +746,7 @@ int ANN::train_method_batch(matrix input, matrix output, double err, int max_tim
   int count = 0;
   int use_cache = 0;
   int cache_count = 0;
+  double speed_max = speed;
   matrix weight_cache[this->layers_size];
 
   // optimize
@@ -848,6 +849,8 @@ int ANN::train_method_batch(matrix input, matrix output, double err, int max_tim
         cout << "*";
       }
       cout << endl;
+      // (*this) = good;
+      // speed = speed_max * ((rand() % 999) * 0.001 );
       good.save_to_file(ann_name + "_latest");
     }
     this->train(input, output, speed);
