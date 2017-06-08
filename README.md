@@ -1,3 +1,2 @@
-# ANN
-類神經網路
-there still a lots of work on the way. Visit us www.nooxy.tk
+# Node project
+"Node" is a project aims to bulid neural network. There still lots of miles to go. This article might be established some day. Visit us www.nooxy.tk

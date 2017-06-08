@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "cuda_runtime.h"
-#define DATA_SIZE 1048576
+#define DATA_SIZE 1048576 * 128
 
 int data[DATA_SIZE];
 void GenerateNumbers(int *number, int size)
 {
+  srand((time(NULL)));
     for(int i = 0; i < size; i++) {
         number[i] = rand() % 10;
     }
@@ -61,11 +63,12 @@ int main()
    GenerateNumbers(data, DATA_SIZE);
    int* gpudata, *result;
    clock_t* time;
+  printf("start.\n");
    cudaMalloc((void**) &gpudata, sizeof(int) * DATA_SIZE);
    cudaMalloc((void**) &result, sizeof(int));
    cudaMalloc((void**) &time, sizeof(clock_t));
    cudaMemcpy(gpudata, data, sizeof(int) * DATA_SIZE, cudaMemcpyHostToDevice);
-   sumOfSquares<<<1, 1, 0>>>(gpudata, result);
+   sumOfSquares<<<1, 1, 0>>>(gpudata, result, time);
    int sum;
    clock_t time_used;
    cudaMemcpy(&sum, result, sizeof(int), cudaMemcpyDeviceToHost);

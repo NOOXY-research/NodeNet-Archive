@@ -27,7 +27,7 @@ int ANN_manager::launch () {
     cout << "" << endl;
     cout << "PROJECT node. Copyright(c)2017 NOOXY inc. Taiwan." << endl;
     cout << "" << endl;
-    cout << "Artificial neural network (ANN) manager. ver 1.3.0 build 8" << endl;
+    cout << "Artificial neural network (ANN) manager. ver 1.4.0 " << endl;
     cout << "For more information or update ->\"http://www.nooxy.tk\"." << endl;
     cout << "" << endl;
     cout << "<<< Home >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Merge ANN [m]. Create matrix(.mtrx) [M]. Print matrix(.mtrx) [p]. Exit [e]." << endl << ">>>";
