@@ -1,14 +1,9 @@
-#ifndef matrix_cuda_h
-#define matrix_cuda_h
+#ifndef matrix_h
+#define matrix_h
 
 #include <iostream>
 using namespace std;
 
-int cuda_init();
-static void matrix_CUDA_plus();
-static void matrix_CUDA_minus();
-// static void matrix_CUDA_multi(int *m1_row, int *m1_column, double *m1_elem, int *m2_row, int *m2_column, double *m2_elem, double *result);
-static void matrix_CUDA_divi();
 double sigmoid(double x1);
 double dsigmoid(double x1);
 double logit(double x1);
@@ -47,10 +42,9 @@ class matrix {
     friend bool operator ==(const matrix& m1, const matrix& m2);
     friend ostream& operator<<(ostream &out, const matrix& m1);
     friend istream& operator>>(istream &in, matrix& m1);
-
   private:
     int row, column;
     double *a;
 };
 
-#endif //matrix_cuda_h
+#endif //matrix_h

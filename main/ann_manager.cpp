@@ -30,7 +30,7 @@ int ANN_manager::launch () {
     cout << "Artificial neural network (ANN) manager. ver 1.4.0 " << endl;
     cout << "For more information or update ->\"http://www.nooxy.tk\"." << endl;
     cout << "" << endl;
-    cout << "<<< Home >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Merge ANN [m]. Create matrix(.mtrx) [M]. Print matrix(.mtrx) [p]. Exit [e]." << endl << ">>>";
+    cout << "<<< Home >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Merge ANN [m]. Create matrix(.mtrx) [M]. Print matrix(.mtrx) [p]. Enable GPU [g]. Exit [e]." << endl << ">>>";
     cin >> cmd;
     switch (cmd) {
       case 'c':
@@ -110,6 +110,11 @@ int ANN_manager::launch () {
         cin >> matrix_name;
         M.load_from_file(matrix_name);
         M.print();
+        break;
+      }
+      case 'g':
+      {
+        cuda_init();
         break;
       }
       case 'e':
