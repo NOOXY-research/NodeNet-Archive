@@ -27,7 +27,7 @@ int ANN_manager::launch () {
     cout << "" << endl;
     cout << "PROJECT node. Copyright(c)2017 NOOXY inc. Taiwan." << endl;
     cout << "" << endl;
-    cout << "Artificial neural network (ANN) manager. ver 1.4.0 " << endl;
+    cout << "Artificial neural network (ANN) manager. ver 1.4.0 dev" << endl;
     cout << "For more information or update ->\"http://www.nooxy.tk\"." << endl;
     cout << "" << endl;
     cout << "<<< Home >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Merge ANN [m]. Create matrix(.mtrx) [M]. Print matrix(.mtrx) [p]. Enable GPU [g]. Exit [e]." << endl << ">>>";
@@ -57,7 +57,7 @@ int ANN_manager::launch () {
         cout << "Input \"ANN's name\" to be loaded." << endl << ">>>";
         cin >> ann_name;
         if (myann.load_from_file(ann_name) == -1) {
-          cout << ann_name << ".ann not found." << endl;
+          cout << ann_name << ".node not found." << endl;
           secmenu = 0;
         }
         else {
@@ -85,11 +85,11 @@ int ANN_manager::launch () {
         cout << "Input \"ann name that be merged to\"." << endl;
         cin >> ann_name;
         if(ann1.load_from_file(merge_ann_name_1) == -1 || ann2.load_from_file(merge_ann_name_2) == -1) {
-          cout << merge_ann_name_1 << ".ann or " << merge_ann_name_2 << ".ann not found." << endl;
+          cout << merge_ann_name_1 << ".node or " << merge_ann_name_2 << ".node not found." << endl;
         }
         temp = (ann1 + ann2) / 2;
         temp.save_to_file(ann_name);
-        cout << "ANN is merged to " << ann_name << ".ann" << endl;
+        cout << "ANN is merged to " << ann_name << ".node" << endl;
         break;
       }
       case 'M':
@@ -161,7 +161,7 @@ int ANN_manager::manage_ANN (ANN& myann, string ann_name) {
       	cout << ">>>whole min eroor: " << fixed << setprecision(6) << min_err << endl;
         myann.train_method_batch(IN, OUT, min_err, times, speed, loop, ann_name);
         myann.save_to_file(ann_name);
-        cout << "Saved to " << ann_name << ".ann" << endl;
+        cout << "Saved to " << ann_name << ".node" << endl;
       }
       break;
     }
@@ -179,7 +179,7 @@ int ANN_manager::manage_ANN (ANN& myann, string ann_name) {
       	cout << ">>>whole min error: " << fixed << setprecision(6) << min_err << endl;
         myann.train_method_batch(IN, OUT, min_err, -1, 0.01, 100, ann_name);
         myann.save_to_file(ann_name);
-        cout << "Saved to " << ann_name << ".ann" << endl;
+        cout << "Saved to " << ann_name << ".node" << endl;
       }
       break;
     }
@@ -198,7 +198,7 @@ int ANN_manager::manage_ANN (ANN& myann, string ann_name) {
         cout << ">>>whole min eroor: " << fixed << setprecision(6) << min_err << endl;
         myann.train_method_random(IN, OUT, min_err, times, speed, loop, ann_name);
         myann.save_to_file(ann_name);
-        cout << "Saved to " << ann_name << ".ann" << endl;
+        cout << "Saved to " << ann_name << ".node" << endl;
       }
     }
     case 'd':
@@ -248,7 +248,7 @@ int ANN_manager::manage_ANN (ANN& myann, string ann_name) {
     {
       myann.randomweight();
       myann.save_to_file(ann_name);
-      cout << ann_name << ".ann has been remapped randomly." << endl;
+      cout << ann_name << ".node has been remapped randomly." << endl;
       break;
     }
     case 'h':
@@ -270,7 +270,7 @@ int ANN_manager::manage_ANN (ANN& myann, string ann_name) {
     case 's':
     {
       myann.save_to_file(ann_name);
-      cout << "Saved to " << ann_name << ".ann" << endl;
+      cout << "Saved to " << ann_name << ".node" << endl;
       break;
     }
     case 'p':

@@ -190,7 +190,7 @@ int ANN::print() {
 }
 int ANN::save_to_file(string filename) {
   int i, j;
-  ofstream myfile ((filename + ".ann").c_str());
+  ofstream myfile ((filename + ".node").c_str());
   myfile << this->layers_size;
   for(i = 0; i < this->layers_size; i++) {
     myfile << " " << this->neurons_size[i];
@@ -204,7 +204,7 @@ int ANN::save_to_file(string filename) {
 }
 int ANN::load_from_file(string filename) {
   int i, j;
-  ifstream myfile ((filename + ".ann").c_str());
+  ifstream myfile ((filename + ".node").c_str());
   if(myfile.is_open()) {
     delete [] this->neurons_size;
     delete [] this->weight;
