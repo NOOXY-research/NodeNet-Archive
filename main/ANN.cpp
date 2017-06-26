@@ -12,31 +12,39 @@ ANN::ANN () {
   this->layers_size = 1;
   this->neurons_size = new int[1];
   this->weight = new matrix[1];
+  this->bias = new matrix[1];
 }
-ANN::ANN(int layers_size,int *neurons_size) {
+ANN::ANN(int layers_size, int *neurons_size) {
   int i, j, neurons_size_sum = 0;
   this->layers_size = layers_size;
   this->neurons_size = new int[layers_size];
   this->weight = new matrix[layers_size - 1];
+  this->bias = new matrix[layers_size - 1];
   for(i = 0; i < layers_size; i++) {
     this->neurons_size[i] = neurons_size[i];
     if(i < layers_size -1) {
-      matrix new_matrix(neurons_size[i], neurons_size[i + 1]);
-      this->weight[i] = new_matrix;
+      matrix new_matrix1(neurons_size[i], neurons_size[i + 1]);
+      this->weight[i] = new_matrix1;
+      matrix new_matrix2(1, neurons_size[i + 1]);
+      this->bias[i] = new_matrix2;
     }
   }
 }
-ANN::ANN(int layers_size,int *neurons_size,matrix *weight) {
+ANN::ANN(int layers_size, int *neurons_size, matrix *weight, matrix *bias) {
   int i, j, neurons_size_sum = 0;
   this->layers_size = layers_size;
   this->neurons_size = new int[layers_size];
   this->weight = new matrix[layers_size - 1];
+  this->bias = new matrix[layers_size - 1];
   for(i = 0; i < this->layers_size; i++) {
     this->neurons_size[i] = neurons_size[i];
     if(i < this->layers_size -1) {
       if (weight[i].get_row() != neurons_size[i] || weight[i].get_column() != neurons_size[i + 1])
         cout << "ann error: weights not fit neurons size" << endl;
+      if (bias[i].get_row() != 1 || bias[i].get_column() != neurons_size[i + 1])
+        cout << "ann error: bias not fit neurons size" << endl;
       this->weight[i] = weight[i];
+      this->bias[i] = bias[i];
     }
   }
 }
@@ -45,10 +53,12 @@ ANN::ANN(const ANN& ann1) {
   this->layers_size = ann1.layers_size;
   this->neurons_size = new int[ann1.layers_size];
   this->weight = new matrix[ann1.layers_size - 1];
+  this->bias = new matrix[ann1.layers_size - 1];
   for(i = 0; i < this->layers_size; i++) {
     this->neurons_size[i] = ann1.neurons_size[i];
     if(i < this->layers_size -1) {
       this->weight[i] = ann1.weight[i];
+      this->bias[i] = ann1.bias[i];
     }
   }
 }
@@ -58,13 +68,16 @@ ANN& ANN::operator =(const ANN& ann1) {
   int i, j, neurons_size_sum = 0;
   delete [] neurons_size;
   delete [] weight;
+  delete [] bias;
   this->layers_size = ann1.layers_size;
   this->neurons_size = new int[ann1.layers_size];
   this->weight = new matrix[ann1.layers_size - 1];
+  this->bias = new matrix[ann1.layers_size - 1];
   for(i = 0; i < this->layers_size; i++) {
     this->neurons_size[i] = ann1.neurons_size[i];
     if(i < this->layers_size -1) {
       this->weight[i] = ann1.weight[i];
+      this->bias[i] = ann1.bias[i];
     }
   }
   return *this;
@@ -76,6 +89,7 @@ ANN operator +(const ANN& ann1,const ANN& ann2) {
     answer = ann1;
     for(i = 0; i < ann1.layers_size - 1; i++) {
       answer.weight[i] = ann1.weight[i] + ann2.weight[i];
+      answer.bias[i] = ann1.bias[i] + ann2.bias[i];
     }
   }
   else {
@@ -90,6 +104,7 @@ ANN operator -(const ANN& ann1,const ANN& ann2) {
     answer = ann1;
     for(i = 0; i < ann1.layers_size - 1; i++) {
       answer.weight[i] = ann1.weight[i] - ann2.weight[i];
+      answer.bias[i] = ann1.bias[i] - ann2.bias[i];
     }
   }
   else {
@@ -106,6 +121,7 @@ ANN operator /(const ANN& ann1, double x1) {
   }
   for(i = 0; i < ann1.layers_size - 1; i++) {
     answer.weight[i] = ann1.weight[i] / x1;
+    answer.bias[i] = ann1.bias[i] / x1;
   }
   return ann1;
 }
@@ -113,8 +129,9 @@ ANN operator *(double x1,const ANN& ann1) {
   int i, j;
   ANN answer;
   answer = ann1;
-  for(i = 0; i < ann1.layers_size; i++) {
+  for(i = 0; i < ann1.layers_size - 1; i++) {
     answer.weight[i] = ann1.weight[i] * x1;
+    answer.bias[i] = ann1.bias[i] * x1;
   }
   return ann1;
 }
@@ -124,6 +141,7 @@ ANN operator *(const ANN& ann1, double x1) {
   answer = ann1;
   for(i = 0; i < ann1.layers_size - 1; i++) {
     answer.weight[i] = ann1.weight[i] * x1;
+    answer.bias[i] = ann1.bias[i] * x1;
   }
   return ann1;
 }
@@ -144,15 +162,19 @@ bool operator ==(const ANN& ann1, const ANN& ann2) {
 }
 ANN::~ANN () {
   delete [] weight;
+  delete [] bias;
   delete [] neurons_size;
 }
-int ANN::setweight(matrix *weight) {
+int ANN::set(matrix *weight, matrix *bias) {
   int i, j;
   for(i = 0; i < this->layers_size; i++) {
     if(i < this->layers_size -1) {
       if (weight[i].get_row() != this->neurons_size[i] || weight[i].get_column() != this->neurons_size[i + 1])
         cout << "ann error: weights not fit neurons size" << endl;
+        if (bias[i].get_row() != 1 || bias[i].get_column() != this->neurons_size[i + 1])
+          cout << "ann error: bias not fit neurons size" << endl;
       this->weight[i] = weight[i];
+      this->bias[i] = bias[i];
     }
   }
   return 0;
@@ -160,8 +182,10 @@ int ANN::setweight(matrix *weight) {
 int ANN::randomweight() {
   int i, j;
   for(i = 0; i < this->layers_size - 1; i++) {
-    matrix new_matrix(this->neurons_size[i], this->neurons_size[i + 1]);
-    this->weight[i] = new_matrix;
+    matrix new_matrix1(this->neurons_size[i], this->neurons_size[i + 1]);
+    this->weight[i] = new_matrix1;
+    matrix new_matrix2(1, this->neurons_size[i + 1]);
+    this->bias[i] = new_matrix2;
   }
   return 0;
 }
@@ -172,7 +196,10 @@ int ANN::print_detail() {
     cout<<">>>";
     cout << "N(" <<  i << "): " << this->neurons_size[i]<<endl;
     if(i < this->layers_size -1) {
+      cout<<">>>weight"<<endl;
       this->weight[i].print();
+      cout<<">>>bias"<<endl;
+      this->bias[i].print();
     }
   }
   return 0;
@@ -199,6 +226,9 @@ int ANN::save_to_file(string filename) {
   for(i = 0; i < this->layers_size - 1; i++) {
     myfile << this->weight[i];
   }
+  for(i = 0; i < this->layers_size - 1; i++) {
+    myfile << this->bias[i];
+  }
   myfile.close();
   return 0;
 }
@@ -208,14 +238,19 @@ int ANN::load_from_file(string filename) {
   if(myfile.is_open()) {
     delete [] this->neurons_size;
     delete [] this->weight;
+    delete [] this->bias;
     myfile >> this->layers_size;
     this->neurons_size = new int[this->layers_size];
     this->weight = new matrix[this->layers_size - 1];
+    this->bias = new matrix[this->layers_size - 1];
     for(i = 0; i < this->layers_size; i++) {
       myfile >> this->neurons_size[i];
     }
     for(i = 0; i < this->layers_size - 1; i++) {
       myfile >> this->weight[i];
+    }
+    for(i = 0; i < this->layers_size - 1; i++) {
+      myfile >> this->bias[i];
     }
   }
   else {
@@ -235,10 +270,11 @@ int ANN::train(matrix input, matrix output,double speed) {
   matrix a1;
   z[0] = input;
   a1 = input.transfer(sigmoid);
+  matrix bias_formator(input.get_row(), 1, 1);
   for(i = 0; i < this->layers_size -1; i++) {
     a[i] = a1;
-    z[i + 1] = a1 * weight[i];
-    a1 = (a[i] * weight[i]).transfer(sigmoid);
+    z[i + 1] = a1 * weight[i] + bias_formator * bias[i];
+    a1 = (a[i] * weight[i] + bias_formator * bias[i]).transfer(sigmoid);
   }
   delta[this->layers_size - 1] = multi(-(output.transfer(sigmoid) - a1), z[this->layers_size - 1].transfer(dsigmoid));
   for(i = this->layers_size - 1; i > 0 ; i--) { // i start max layers_size
@@ -246,7 +282,10 @@ int ANN::train(matrix input, matrix output,double speed) {
     delta[i - 1] = multi(delta[i] * weight[i - 1].transpose(), z[i - 1].transfer(dsigmoid));
   }
   for(i = 0; i < this->layers_size - 1; i++) {
+    matrix bias_delta_formator(1, input.get_row(), 1);
     this->weight[i] = this->weight[i] - speed * dj_dweight[i];
+    this->bias[i] = this->bias[i] - speed * bias_delta_formator * delta[i + 1];
+    // (speed * bias_delta_formator * delta[i + 1]).print();
   }
   delete [] delta;
   delete [] dj_dweight;
@@ -254,7 +293,7 @@ int ANN::train(matrix input, matrix output,double speed) {
   delete [] z;
   return 0;
 }
-int ANN::train_OBP(matrix input, matrix output,double speed) {
+int ANN::train_OBP(matrix input, matrix output,double speed) {//abandoned
   if (input.get_column() != this->neurons_size[0]) {
     cout << "ann error: neurons size not fit" << endl;
     matrix err(0, 0);
@@ -433,9 +472,10 @@ matrix ANN::feed(matrix input) {
   }
   int i, j;
   matrix a1, a2;
+  matrix bias_formator(input.get_row(), 1, 1);
   a1 = input.transfer(sigmoid);
   for(i = 0; i < this->layers_size -1 ; i++) {
-    a2 = (a1 * this->weight[i]).transfer(sigmoid);
+    a2 = (a1 * this->weight[i] + bias_formator * this->bias[i]).transfer(sigmoid);
     a1 = a2;
   }
   return a1;

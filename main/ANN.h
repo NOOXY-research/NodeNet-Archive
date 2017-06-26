@@ -8,8 +8,8 @@ using namespace std;
 class ANN {
   public:
     ANN();
-    ANN(int layers_size,int *neurons_size);
-    ANN(int layers_size,int *neurons_size,matrix *weight);
+    ANN(int layers_size, int *neurons_size);
+    ANN(int layers_size, int *neurons_size, matrix *weight, matrix *bias);
     ANN(const ANN& ann1);
     ANN& operator =(const ANN& ann1);
     friend ANN operator +(const ANN& ann1, const ANN& ann2);
@@ -19,7 +19,7 @@ class ANN {
     friend ANN operator *(const ANN& ann1, double x1);
     friend bool operator ==(const ANN& ann1, const ANN& ann2);
     ~ANN();
-    int setweight(matrix *weight);
+    int set(matrix *weight, matrix *bias);
     int randomweight();
     int print();
     int print_detail();
@@ -33,6 +33,7 @@ class ANN {
   private:
     int layers_size, *neurons_size;
     matrix *weight;
+    matrix *bias;
 };
 
 #endif //ann_h
