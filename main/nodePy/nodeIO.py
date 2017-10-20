@@ -14,6 +14,7 @@ class RAWReader(object):
         else:
             return None
     # Mock C++ extract operator
+    
 class RAWWriter(object):
     def __init__(self):
         self.SlicedString = []
@@ -30,6 +31,7 @@ class RAWWriter(object):
     def newline(self):
         self.SlicedString.append('\n')
     # Mock C++ extract operator
+
 def getAMatrix(MyRAWReader):
     rowsize = int(MyRAWReader.pop())
     colsize = int(MyRAWReader.pop())
@@ -40,6 +42,8 @@ def getAMatrix(MyRAWReader):
             rowlist.append(float(MyRAWReader.pop()))
         ANSER[row] = rowlist
     return ANSER
+    # Get one numpy matrix by RAWReader
+
 def writeAMatrix(Matrix, MyRAWWriter):
     rowsize = len(Matrix)
     colsize = len(Matrix[0])
@@ -51,3 +55,4 @@ def writeAMatrix(Matrix, MyRAWWriter):
         for colelement in Matrix[row]:
             MyRAWWriter.append(colelement)
         MyRAWWriter.newline()
+    # Write one numpy matrix by RAWReader

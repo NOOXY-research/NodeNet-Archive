@@ -55,6 +55,7 @@ class NeuralNetwork(object):
         # B: Ones(InputDataAmount, 1) X Bias
         # BacksideSum = W + B or InputData
     # Feed data forward
+    
     def loadfromFile(self, Filename):
         MyRAWReader = io.RAWReader()
         MyRAWReader.open(Filename+'.node')
@@ -74,6 +75,7 @@ class NeuralNetwork(object):
             self.Bias.append(io.getAMatrix(MyRAWReader))
         # Get each layer's bias one by one
     # Load Neural Network from .node File
+
     def savetoFile(self, Filename = ''):
         if Filename == '':
             Filename = self.Name
@@ -127,6 +129,7 @@ class TrainTypes(object):
         error = math.sqrt(np.sum((f.sigmoid(OutputData)-A[MyNeuralNetwork.LayersCount-1])**2))
         return error
     # A type of training is called BackPropagation
+
 class Train(object):
 # More advance training management
     def trainbyBatch(MyNeuralNetwork, InputData, OutputData, Error = 0.01, MaxTimes = -1, Speed = 0.1, MyTrainTypes = TrainTypes.BackPropagation, Verbose = 0, VerbosePerLoop = 1000):
