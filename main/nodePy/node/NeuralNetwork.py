@@ -8,9 +8,9 @@ import math
 # Sqrt
 import numpy as np
 # Matrix
-import NNFunction as f
+import node.NNFunction as f
 # Activation function etc.
-import nodeIO as io
+import node.nodeIO as io
 # File related function
 # Import some essential module and function
 
@@ -55,7 +55,7 @@ class NeuralNetwork(object):
         # B: Ones(InputDataAmount, 1) X Bias
         # BacksideSum = W + B or InputData
     # Feed data forward
-    
+
     def loadfromFile(self, Filename):
         MyRAWReader = io.RAWReader()
         MyRAWReader.open(Filename+'.node')
@@ -66,7 +66,7 @@ class NeuralNetwork(object):
         self.Bias = []
         # Get the LayersCount first and Initlalize LayerNeuronsCount, Weight and Bias
         for layer in range(0, self.LayersCount):
-            self.LayerNeuronsCount.append(float(MyRAWReader.pop()))
+            self.LayerNeuronsCount.append(int(MyRAWReader.pop()))
         # Get each layer's neurons count one by one
         for layer in range(0, self.LayersCount-1):
             self.Weight.append(io.getAMatrix(MyRAWReader))
@@ -80,10 +80,11 @@ class NeuralNetwork(object):
         if Filename == '':
             Filename = self.Name
         MyRAWWriter = io.RAWWriter()
-        MyRAWWriter.append(self.LayersCount)
+        MyRAWWriter.append(int(self.LayersCount))
         for layer in range(0, self.LayersCount):
-            MyRAWWriter.append(self.LayerNeuronsCount[layer])
+            MyRAWWriter.append(int(self.LayerNeuronsCount[layer]))
         # Save each layer's neurons count one by one
+        MyRAWWriter.newline()
         for layer in range(0, self.LayersCount-1):
             io.writeAMatrix(self.Weight[layer], MyRAWWriter)
         # Save each layer's weight one by one
@@ -114,11 +115,11 @@ class TrainTypes(object):
             A.append(f.sigmoid(Z[-1]))
             # For variable explianation go NeuralNetwork.feed()
         # Push data forward and collect all Z and A
-        DELTA.insert(0, -np.multiply(f.sigmoid(OutputData)-A[MyNeuralNetwork.LayersCount-1], f.Derivativeofsigmoid(Z[MyNeuralNetwork.LayersCount-1])))
+        DELTA.insert(0, np.multiply(-(f.sigmoid(OutputData)-A[MyNeuralNetwork.LayersCount-1]), f.Derivativeofsigmoid(Z[MyNeuralNetwork.LayersCount-1])))
         for layer in range(MyNeuralNetwork.LayersCount-2, -1, -1):
             DJDW.insert(0, np.dot(np.transpose(A[layer]), DELTA[0]))
             # remark that DELTA[0] is always the latest one
-            DELTA.insert(0, np.dot(DELTA[0], np.transpose(MyNeuralNetwork.Weight[layer]))*f.Derivativeofsigmoid(Z[layer]))
+            DELTA.insert(0, np.multiply(np.dot(DELTA[0], np.transpose(MyNeuralNetwork.Weight[layer])), f.Derivativeofsigmoid(Z[layer])))
             # Delta = Deltafront X transpose(ThisLayerWeight) * DerivativeofActivationFunction(ThisLayerBacksideSum)
             # For variable explianation go NeuralNetwork.feed()
         # Get all tangen of weight relative to cost(error)

@@ -6,7 +6,7 @@ def sigmoid(Z):
     A[where_are_NaNs] = 0
     return A
 def Derivativeofsigmoid(Z):
-    A = np.exp(-Z)/(1+np.exp(-Z))
+    A = np.exp(-Z)/np.power((1+np.exp(-Z)), 2)
     where_are_NaNs = np.isnan(A)
     A[where_are_NaNs] = 0
     return A
