@@ -4,6 +4,8 @@
 # For matrix variable use all upper case
 # The meaning of "error" is equivalent to "cost"
 # Operator 'X' for matrix dot multiplication, '*' for matrix elements multiplication. In annotation.
+import math
+# Sqrt
 import numpy as np
 # Matrix
 import NN_function as f
@@ -11,6 +13,7 @@ import NN_function as f
 # Import some essential module and function
 
 class NeuralNetwork(object):
+# Classical NeuralNetwork object
     def __init__(self, LayersCount = 1, LayerNeuronsCount = [1], Name = "Unamed_Neural_Network"):
         self.LayersCount = LayersCount
         self.LayerNeuronsCount = LayerNeuronsCount
@@ -55,7 +58,8 @@ class NeuralNetwork(object):
         print()
     # Save Neural Network to .node File
 
-class train(object):
+class TrainTypes(object):
+# TrainTypes collection
     def BackPropagation(MyNeuralNetwork, InputData, OutputData, speed = 0.1):
         # "speed" is the training speed, which "weight adjustment" = speed * djdw
         DJDW = []
@@ -75,7 +79,7 @@ class train(object):
             A.append(f.sigmoid(Z[-1]))
             # For variable explianation go NeuralNetwork.feed()
         # Push data forward and collect all Z and A
-        DELTA.insert(0, -np.multiply((f.sigmoid(OutputData)-A[MyNeuralNetwork.LayersCount-1]), f.Derivativeofsigmoid(Z[MyNeuralNetwork.LayersCount-1])))
+        DELTA.insert(0, -np.multiply(f.sigmoid(OutputData)-A[MyNeuralNetwork.LayersCount-1], f.Derivativeofsigmoid(Z[MyNeuralNetwork.LayersCount-1])))
         for layer in range(MyNeuralNetwork.LayersCount-2, -1, -1):
             DJDW.insert(0, np.dot(np.transpose(A[layer]), DELTA[0]))
             # remark that DELTA[0] is always the latest one
@@ -87,6 +91,34 @@ class train(object):
             MyNeuralNetwork.Weight[layer] = MyNeuralNetwork.Weight[layer]-speed*DJDW[layer]
             MyNeuralNetwork.Bias[layer] = MyNeuralNetwork.Bias[layer]-speed*np.dot(np.ones((1, InputData.shape[0])), DELTA[layer+1])
         # Add adjustment to each weight
-
-def mixNeuralNetwork(NN1, NN2):
-    print()
+        error = math.sqrt(np.sum((f.sigmoid(OutputData)-A[MyNeuralNetwork.LayersCount-1])**2))
+        return error
+    # A type of training is called BackPropagation
+class Train(object):
+# More advance training management
+    def trainbyBatch(MyNeuralNetwork, InputData, OutputData, Error = 0.01, MaxTimes = -1, Speed = 0.1, MyTrainTypes = TrainTypes.BackPropagation, Verbose = 0, VerbosePerLoop = 1000):
+        # Parameter explianation:
+        # MyNeuralNetwork: Simply your NeuralNetwork
+        # InputData/OutputData: Simply your data in numpy's matrix type
+        # Error/MaxTimes: The training will stop until its error smaller then Error or reach it MaxTimes(max training times)
+        # Speed: Same as the TrainTypes.BackPropagation one.
+        # MyTrainTypes: You can specify your training type here.
+        # Verbose/VerbosePerLoop: "Verbose" for your verbose level, and "VerbosePerLoop" for Verbose frequency, higher it is, less Verbose frequency.
+        timescount = 0
+        error = 99999
+        while(error > Error and (timescount < MaxTimes or MaxTimes == -1)):
+            error = MyTrainTypes(MyNeuralNetwork, InputData, OutputData, Speed)
+            timescount += 1;
+            if Verbose > 1 and timescount%VerbosePerLoop == 0:
+                print("Train log >>>Tried times: "+str(timescount)+", error: "+str(error))
+        # Train until it reach its goals
+        if Verbose >= 1:
+            print("Train log >>>Result: ")
+            print("Tried times: "+str(timescount)+", error: "+str(error))
+            print("InputData: ")
+            print(InputData)
+            print("OutputData: ")
+            print(OutputData)
+            print("Result output: ")
+            print(MyNeuralNetwork.feed(InputData))
+    # Training batchly
