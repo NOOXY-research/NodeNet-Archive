@@ -75,7 +75,7 @@ class train(object):
             A.append(f.sigmoid(Z[-1]))
             # For variable explianation go NeuralNetwork.feed()
         # Push data forward and collect all Z and A
-        DELTA.insert(0, -np.dot((f.sigmoid(OutputData)-A[MyNeuralNetwork.LayersCount-1]), f.Derivativeofsigmoid(Z[MyNeuralNetwork.LayersCount-1])))
+        DELTA.insert(0, -np.multiply((f.sigmoid(OutputData)-A[MyNeuralNetwork.LayersCount-1]), f.Derivativeofsigmoid(Z[MyNeuralNetwork.LayersCount-1])))
         for layer in range(MyNeuralNetwork.LayersCount-2, -1, -1):
             DJDW.insert(0, np.dot(np.transpose(A[layer]), DELTA[0]))
             # remark that DELTA[0] is always the latest one
