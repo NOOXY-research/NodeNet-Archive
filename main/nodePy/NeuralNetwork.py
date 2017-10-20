@@ -3,6 +3,7 @@
 # For normal variable use lower case
 # For matrix variable use all upper case
 # The meaning of "error" is equivalent to "cost"
+# Operator 'X' for matrix dot multiplication, '*' for matrix elements multiplication. In annotation.
 import numpy as np
 # Matrix
 import NN_function as f
@@ -45,9 +46,9 @@ class NeuralNetwork(object):
         return f.logit(A)
         # Variable explianation
         # A = ActivationFunction(BacksideSum)
-        # W = A*Weight
-        # B = Ones(InputDataAmount, 1)*Bias
-        # BacksideSum = W+B or InputData
+        # W = A X Weight
+        # B = Ones(InputDataAmount, 1) X Bias
+        # BacksideSum = W + B or InputData
     # Feed data forward
 
     def savetoFile(self, FileName):
@@ -62,7 +63,7 @@ class train(object):
         A = []
         Z = []
         # djdw = tangen of weight relative to cost(error), actually "dj/dw"
-        # delta = FrontsideError*DerivativeofActivationFunction(BacksideSum)
+        # delta = FrontsideError X DerivativeofActivationFunction(BacksideSum)
         # a = ActivationFunction(BacksideSum)
         # Z = BacksideSum
         Z.append(InputData)
@@ -79,7 +80,7 @@ class train(object):
             DJDW.insert(0, np.dot(np.transpose(A[layer]), DELTA[0]))
             # remark that DELTA[0] is always the latest one
             DELTA.insert(0, np.dot(DELTA[0], np.transpose(MyNeuralNetwork.Weight[layer]))*f.Derivativeofsigmoid(Z[layer]))
-            # Delta = Deltafront*transpose(ThisLayerWeight)*DerivativeofActivationFunction(ThisLayerBacksideSum)
+            # Delta = Deltafront X transpose(ThisLayerWeight) * DerivativeofActivationFunction(ThisLayerBacksideSum)
             # For variable explianation go NeuralNetwork.feed()
         # Get all tangen of weight relative to cost(error)
         for layer in range(0, MyNeuralNetwork.LayersCount-1):
