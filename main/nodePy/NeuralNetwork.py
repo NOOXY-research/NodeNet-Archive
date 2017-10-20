@@ -2,19 +2,21 @@
 # note:
 # For normal variable use lower case
 # For matrix variable use all upper case
-# The meaning of "error" is equivalent to "cost"
+# The meaning of 'error' is equivalent to 'cost'
 # Operator 'X' for matrix dot multiplication, '*' for matrix elements multiplication. In annotation.
 import math
 # Sqrt
 import numpy as np
 # Matrix
-import NN_function as f
+import NNFunction as f
 # Activation function etc.
+import nodeIO as io
+# File related function
 # Import some essential module and function
 
 class NeuralNetwork(object):
 # Classical NeuralNetwork object
-    def __init__(self, LayersCount = 1, LayerNeuronsCount = [1], Name = "Unamed_Neural_Network"):
+    def __init__(self, LayersCount = 1, LayerNeuronsCount = [1], Name = 'Unamed_Neural_Network'):
         self.LayersCount = LayersCount
         self.LayerNeuronsCount = LayerNeuronsCount
         self.Weight = []
@@ -27,15 +29,15 @@ class NeuralNetwork(object):
     # Initlalize NN structure
 
     def __str__(self):
-        s = "An "+self.Name+"@NeuralNetwork object\nDetail:\n\n"
+        s = 'An '+self.Name+'@NeuralNetwork object\nDetail:\n\n'
         for layer in range(0, self.LayersCount-1):
-            s = s+"*** layer"+str(layer)+" ("+str(self.LayerNeuronsCount[layer])+" Neurons) ***\n"
-            s = s+">>>layer"+str(layer)+" to layer"+str(layer+1)+" Weight\n"
-            s = s+str(self.Weight[layer])+"\n"
-            s = s+">>>layer"+str(layer)+" to layer"+str(layer+1)+" Bias\n"
-            s = s+str(self.Bias[layer])+"\n\n"
+            s = s+'*** layer'+str(layer)+' ('+str(self.LayerNeuronsCount[layer])+' Neurons) ***\n'
+            s = s+'>>>layer'+str(layer)+' to layer'+str(layer+1)+' Weight\n'
+            s = s+str(self.Weight[layer])+'\n'
+            s = s+'>>>layer'+str(layer)+' to layer'+str(layer+1)+' Bias\n'
+            s = s+str(self.Bias[layer])+'\n\n'
         # Print its layer by layer one by one
-        s = s+"*** layer"+str(self.LayersCount)+" ("+str(self.LayerNeuronsCount[self.LayersCount-1])+" Neurons) ***\n"
+        s = s+'*** layer'+str(self.LayersCount)+' ('+str(self.LayerNeuronsCount[self.LayersCount-1])+' Neurons) ***\n'
         # Last layer
         return s
     # Print detail info for Neural Network
@@ -48,25 +50,56 @@ class NeuralNetwork(object):
             A = f.sigmoid(W+B)
         return f.logit(A)
         # Variable explianation
-        # A = ActivationFunction(BacksideSum)
-        # W = A X Weight
-        # B = Ones(InputDataAmount, 1) X Bias
+        # A: ActivationFunction(BacksideSum)
+        # W: A X Weight
+        # B: Ones(InputDataAmount, 1) X Bias
         # BacksideSum = W + B or InputData
     # Feed data forward
-
-    def savetoFile(self, FileName):
-        print()
+    def loadfromFile(self, Filename):
+        MyRAWReader = io.RAWReader()
+        MyRAWReader.open(Filename+'.node')
+        self.Name = Filename;
+        self.LayersCount = int(MyRAWReader.pop())
+        self.LayerNeuronsCount = []
+        self.Weight = []
+        self.Bias = []
+        # Get the LayersCount first and Initlalize LayerNeuronsCount, Weight and Bias
+        for layer in range(0, self.LayersCount):
+            self.LayerNeuronsCount.append(float(MyRAWReader.pop()))
+        # Get each layer's neurons count one by one
+        for layer in range(0, self.LayersCount-1):
+            self.Weight.append(io.getAMatrix(MyRAWReader))
+        # Get each layer's weight one by one
+        for layer in range(0, self.LayersCount-1):
+            self.Bias.append(io.getAMatrix(MyRAWReader))
+        # Get each layer's bias one by one
+    # Load Neural Network from .node File
+    def savetoFile(self, Filename = ''):
+        if Filename == '':
+            Filename = self.Name
+        MyRAWWriter = io.RAWWriter()
+        MyRAWWriter.append(self.LayersCount)
+        for layer in range(0, self.LayersCount):
+            MyRAWWriter.append(self.LayerNeuronsCount[layer])
+        # Save each layer's neurons count one by one
+        for layer in range(0, self.LayersCount-1):
+            io.writeAMatrix(self.Weight[layer], MyRAWWriter)
+        # Save each layer's weight one by one
+        for layer in range(0, self.LayersCount-1):
+            io.writeAMatrix(self.Bias[layer], MyRAWWriter)
+        # Save each layer's bias one by one
+        MyRAWWriter.write(Filename+'.node')
     # Save Neural Network to .node File
 
 class TrainTypes(object):
 # TrainTypes collection
     def BackPropagation(MyNeuralNetwork, InputData, OutputData, speed = 0.1):
-        # "speed" is the training speed, which "weight adjustment" = speed * djdw
+        # 'speed' is the training speed, which 'weight adjustment' = speed * djdw
         DJDW = []
         DELTA = []
         A = []
         Z = []
-        # djdw = tangen of weight relative to cost(error), actually "dj/dw"
+        # djdw = tangen of weight relative to cost(error), actually 'dj/dw'
         # delta = FrontsideError X DerivativeofActivationFunction(BacksideSum)
         # a = ActivationFunction(BacksideSum)
         # Z = BacksideSum
@@ -103,22 +136,22 @@ class Train(object):
         # Error/MaxTimes: The training will stop until its error smaller then Error or reach it MaxTimes(max training times)
         # Speed: Same as the TrainTypes.BackPropagation one.
         # MyTrainTypes: You can specify your training type here.
-        # Verbose/VerbosePerLoop: "Verbose" for your verbose level, and "VerbosePerLoop" for Verbose frequency, higher it is, less Verbose frequency.
+        # Verbose/VerbosePerLoop: 'Verbose' for your verbose level, and 'VerbosePerLoop' for Verbose frequency, higher it is, less Verbose frequency.
         timescount = 0
         error = 99999
         while(error > Error and (timescount < MaxTimes or MaxTimes == -1)):
             error = MyTrainTypes(MyNeuralNetwork, InputData, OutputData, Speed)
             timescount += 1;
             if Verbose > 1 and timescount%VerbosePerLoop == 0:
-                print("Train log >>>Tried times: "+str(timescount)+", error: "+str(error))
+                print('Train log >>>Tried times: '+str(timescount)+', error: '+str(error))
         # Train until it reach its goals
         if Verbose >= 1:
-            print("Train log >>>Result: ")
-            print("Tried times: "+str(timescount)+", error: "+str(error))
-            print("InputData: ")
+            print('Train log >>>Result: ')
+            print('Tried times: '+str(timescount)+', error: '+str(error))
+            print('InputData: ')
             print(InputData)
-            print("OutputData: ")
+            print('OutputData: ')
             print(OutputData)
-            print("Result output: ")
+            print('Result output: ')
             print(MyNeuralNetwork.feed(InputData))
     # Training batchly
