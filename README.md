@@ -5,8 +5,11 @@
 node manager's binary files. They are compiled by g++, and it's target is macos(Darwin) now only.
 ### main
 Source code file for node manager.
+
 There include two type of launguages C++ and python.
-For C++ there are source for matrix(mathematical lib for ann), ann(artificial neuron network library) and node manager(main program).
-And for python, we are contructing now. Not yet to be describe.
+#### For C++ 
+there are source for `matrix(mathematical lib for ann)`, `ann(artificial neuron network library)` and `node manager(main program)`.
+#### And for python
+We are contructing now. Not yet to be describe.
 ### test
 A directory to test some function that not yet to be added to mainline. Or test the ANN etc.
