@@ -11,13 +11,18 @@ def createNeuralNetwork():
     nn = NN.NeuralNetwork(layerscount, layerneuronscount, name)
     nn.savetoFile()
     return nn
+# Create Neural Network and return it
+
 def loadNeuralNetwork():
     name = input('Input NeuralNetwork\'s name to be loaded.\n>>>')
     nn = NN.NeuralNetwork()
     nn.loadfromFile(name)
     return nn
+# Load Neural Network and return it
+
 def recoverNeuralNetwork():
     name = input('Input NeuralNetwork\'s name to be recovered.\n>>>')
     nn = NN.NeuralNetwork()
     nn.loadfromFile(name+'_latest')
     return nn
+# Load latest Neural Network not saved and return it

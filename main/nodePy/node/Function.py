@@ -7,13 +7,15 @@ def sigmoid(Z):
     where_are_NaNs = np.isnan(A)
     A[where_are_NaNs] = 0
     return A
+# A type of activation function
+
 def Derivativeofsigmoid(Z):
     A = np.exp(-Z)/np.power((1+np.exp(-Z)), 2)
     where_are_NaNs = np.isnan(A)
     A[where_are_NaNs] = 0
     return A
+
 def logit(Z):
     A = np.log(Z/(1-Z))
     where_are_NaNs = np.isnan(A)
     return A
-# A type of activation function
