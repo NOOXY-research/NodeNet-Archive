@@ -14,7 +14,7 @@ class RAWReader(object):
         else:
             return None
     # Mock C++ extract operator
-    
+
 class RAWWriter(object):
     def __init__(self):
         self.SlicedString = []

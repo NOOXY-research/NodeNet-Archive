@@ -8,9 +8,9 @@ import math
 # Sqrt
 import numpy as np
 # Matrix
-import node.NNFunction as f
+import node.Function as f
 # Activation function etc.
-import node.nodeIO as io
+import node.IO as io
 # File related function
 # Import some essential module and function
 
