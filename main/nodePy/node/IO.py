@@ -1,4 +1,6 @@
+# IO.py provide Interface to access files. e.g ".node" file.
 import numpy as np
+
 class RAWReader(object):
     def __init__(self):
         self.SlicedString = []

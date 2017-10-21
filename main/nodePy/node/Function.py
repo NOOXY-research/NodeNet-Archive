@@ -1,5 +1,7 @@
+# Function.py provide mathematical function for NeuralNetwork.py
 import numpy as np
 # import numpy mathematical python module
+
 def sigmoid(Z):
     A = 1/(1+np.exp(-Z))
     where_are_NaNs = np.isnan(A)

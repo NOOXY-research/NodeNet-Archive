@@ -1,3 +1,4 @@
+# NeuralNetwork.py provide stuff related to neural network.
 # Author: magneticchen
 # note:
 # For normal variable use lower case
@@ -57,23 +58,27 @@ class NeuralNetwork(object):
     # Feed data forward
 
     def loadfromFile(self, Filename):
-        MyRAWReader = io.RAWReader()
-        MyRAWReader.open(Filename+'.node')
-        self.Name = Filename;
-        self.LayersCount = int(MyRAWReader.pop())
-        self.LayerNeuronsCount = []
-        self.Weight = []
-        self.Bias = []
-        # Get the LayersCount first and Initlalize LayerNeuronsCount, Weight and Bias
-        for layer in range(0, self.LayersCount):
-            self.LayerNeuronsCount.append(int(MyRAWReader.pop()))
-        # Get each layer's neurons count one by one
-        for layer in range(0, self.LayersCount-1):
-            self.Weight.append(io.getAMatrix(MyRAWReader))
-        # Get each layer's weight one by one
-        for layer in range(0, self.LayersCount-1):
-            self.Bias.append(io.getAMatrix(MyRAWReader))
-        # Get each layer's bias one by one
+        try:
+            MyRAWReader = io.RAWReader()
+            MyRAWReader.open(Filename+'.node')
+            self.Name = Filename;
+            self.LayersCount = int(MyRAWReader.pop())
+            self.LayerNeuronsCount = []
+            self.Weight = []
+            self.Bias = []
+            # Get the LayersCount first and Initlalize LayerNeuronsCount, Weight and Bias
+            for layer in range(0, self.LayersCount):
+                self.LayerNeuronsCount.append(int(MyRAWReader.pop()))
+            # Get each layer's neurons count one by one
+            for layer in range(0, self.LayersCount-1):
+                self.Weight.append(io.getAMatrix(MyRAWReader))
+            # Get each layer's weight one by one
+            for layer in range(0, self.LayersCount-1):
+                self.Bias.append(io.getAMatrix(MyRAWReader))
+            # Get each layer's bias one by one
+        except:
+            print('warning: Loading '+Filename+'.node  error!')
+        # Prevent file not exist
     # Load Neural Network from .node File
 
     def savetoFile(self, Filename = ''):
