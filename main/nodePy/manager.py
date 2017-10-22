@@ -1,6 +1,6 @@
 # manager.py provide menus and launch start menu.
 import node.Command as cmd
-# import essentail command modure for menu.
+# Import essentail command modure for menu.
 
 def StartMenu():
     commanddict = {
@@ -9,50 +9,84 @@ def StartMenu():
         'r': cmd.recoverNeuralNetwork,
         'p': cmd.printMatrix,
     }
+    # Command's dictionary
     nncmdtype = ['c', 'l', 'r']
     while True:
+        cmd.clearScreen();
         print('')
         print('')
-        print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP ')
+        print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM')
         print('88Yb88 dP   Yb dP   Yb  YbdP   YbdP  ')
-        print('88 Y88 Yb   dP Yb   dP  dPYb    8P   ')
-        print('88  Y8  YbodP   YbodP  dP  Yb  dP    ')
+        print('88 Y88 Yb   dP Yb   dP  dPYb    88   ')
+        print('88  Y8  YbodP   YbodP  dP  Yb   88  Project node. ')
         print('')
-        print('PROJECT node. Copyright(c)2017 NOOXY inc. Taiwan.')
+        print('Copyright(c)2017 NOOXY inc. Taiwan.')
         print('')
         print('Artificial neural network (ANN) manager. Python ver 0.0.0')
         print('For more information or update ->\'http://www.nooxy.tk\'.')
         print('')
-        print('<<< Home >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Print matrix(.mtrx) [p]. Exit [e].')
+        print('<<< Home Menu >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Print matrix(.mtrx) [p]. Exit [e].')
         command = input('>>>')
-        if command == 'e':
-            return 0
-        elif command in nncmdtype:
-            NNManagementMenu(commanddict[command]())
-        else:
-            commanddict[command]()
+        if command in commanddict:
+            if command == 'e':
+                return 0
+            elif command in nncmdtype:
+                NNManagementMenu(commanddict[command]())
+            else:
+                commanddict[command]()
+# Start menu
+
 def NNManagementMenu(MyNeuralNetwork):
+    def printHelp():
+        print('\nCommand list:')
+        print('[train] Train normallly with custom parameters.')
+        print('[traind] Train with default parameters.')
+        print('[trainr] Train randomly. ')
+        print('[feed] Feed data and get output.')
+        print('[feedm] Feed by ".mtrx" file and get output.')
+        print('[feedt] Feed test file and get output.')
+        print('[remap] Remap neural network\'s weight randomly .')
+        print('[save/s] Save neural network to ".node" file .')
+        print('[print/p] Print neural network detail.')
+        print('[clr] Clear the screen :-).')
+        print('[r] Back to home screen.')
+        print('[h/help] This list.')
     commanddict = {
-        'a':cmd.trainNeuralNetwork,
-        'b':cmd.trainNeuralNetworkbyDefault,
-        'c':cmd.trainNeuralNetworkRandomly,
-        'd':cmd.feedNeuralNetwork,
-        'e':cmd.feedNeuralNetworkbymtrx,
-        'f':cmd.feedNeuralNetworkbyTestmtrx,
-        'g':cmd.remapNeuralNetwork,
-        's':cmd.saveNeuralNetwork,
-        'p':cmd.printNeuralNetwork,
+        'h': printHelp,
+        'help': printHelp,
+        'train': cmd.trainNeuralNetwork,
+        'traind': cmd.trainNeuralNetworkbyDefault,
+        'trainr': cmd.trainNeuralNetworkRandomly,
+        'feed': cmd.feedNeuralNetwork,
+        'feedm': cmd.feedNeuralNetworkbymtrx,
+        'feedt': cmd.feedNeuralNetworkbyTestmtrx,
+        'remap': cmd.remapNeuralNetwork,
+        'save': cmd.saveNeuralNetwork,
+        's': cmd.saveNeuralNetwork,
+        'p': cmd.printNeuralNetwork,
+        'print': cmd.printNeuralNetwork,
+        'clr': cmd.clearScreen,
     }
-    nncmdtype = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 's', 'p']
+    # Command's dictionary
+    nncmdtype = ['train', 'traind', 'trainr', 'feed', 'feedm', 'feedt', 'save', 's', 'p', 'print']
+    # Command type that need NeuralNetwork as Parameter
+    returnnncmdtype = ['remap']
+    # Command type that return NeuralNetwork
     while True:
         print('')
-        print('\n<<< ANN manager @'+MyNeuralNetwork.Name+' >>>')
-        print('Train [a]. Train by default [b]. Train by random [c] Feed [d]. Feed by ".mtrx" [e]. Feed test file [f]. Remap weight randomly [g]. Save ANN [s]. Print detail [p]. Return [r]. Help [h].')
+        print('\n<<< A NeuralNetwork object @'+MyNeuralNetwork.Name+' >>>')
+        print('Type "help" to be helped.')
         command = input('>>>')
-        if command == 'r':
-            return 0
-        elif command in nncmdtype:
-            commanddict[command](MyNeuralNetwork)
-        else:
-            commanddict[command]()
+        if command in commanddict:
+            if command == 'r':
+                return 0
+            elif command in nncmdtype:
+                commanddict[command](MyNeuralNetwork)
+            elif command in returnnncmdtype:
+                MyNeuralNetwork = commanddict[command](MyNeuralNetwork)
+            else:
+                commanddict[command]()
+# Neural network management menu
+
 StartMenu()
+# Launch start menu

@@ -3,6 +3,8 @@ import numpy as np
 import node.NeuralNetwork as NN
 import node.IO as IO
 import math
+import subprocess as sp
+# For clearing the screen
 
 def createNeuralNetwork():
     name = input('Input NeuralNetwork\'s name to be created.\n>>>')
@@ -94,10 +96,17 @@ def feedNeuralNetworkbyTestmtrx(MyNeuralNetwork):
     pass
 
 def remapNeuralNetwork(MyNeuralNetwork):
-    pass
+    MyNeuralNetwork = NN.NeuralNetwork(MyNeuralNetwork.LayersCount, MyNeuralNetwork.LayerNeuronsCount, Name=MyNeuralNetwork.Name)
+    # Use same parameters to create neural network
+    print('Remaped "'+MyNeuralNetwork.Name+'" neural network successfully.')
+    return MyNeuralNetwork
 
 def saveNeuralNetwork(MyNeuralNetwork):
-    pass
+    MyNeuralNetwork.savetoFile()
+    print('Saved to "'+MyNeuralNetwork.Name+'.node".')
 
 def printNeuralNetwork(MyNeuralNetwork):
-    pass
+    print(MyNeuralNetwork)
+
+def clearScreen():
+    sp.call('clear',shell=True)
