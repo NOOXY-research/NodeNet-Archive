@@ -158,7 +158,7 @@ int ANN_manager::manage_ANN (ANN& myann, string ann_name) {
         cout << "Input \"min error value per data(0.1)\", \"speed(0.01)\" , \"max training times (-1 for infinite)\", \"times per loop(100)\"." << '\n'  << ">>>";
         cin >> min_err >> speed >> times >> loop;
       	min_err = pow(pow(min_err, 2) * IN.get_row(), 0.5);
-      	cout << ">>>whole min eroor: " << fixed << setprecision(6) << min_err << endl;
+      	cout << ">>>whole min error: " << fixed << setprecision(6) << min_err << endl;
         myann.train_method_batch(IN, OUT, min_err, times, speed, loop, ann_name);
         myann.save_to_file(ann_name);
         cout << "Saved to " << ann_name << ".node" << endl;

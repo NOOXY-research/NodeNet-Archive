@@ -11,7 +11,7 @@ import numpy as np
 # Matrix
 import node.Function as f
 # Activation function etc.
-import node.IO as io
+import node.IO as IO
 # File related function
 # Import some essential module and function
 
@@ -59,7 +59,7 @@ class NeuralNetwork(object):
 
     def loadfromFile(self, Filename):
         try:
-            MyRAWReader = io.RAWReader()
+            MyRAWReader = IO.RAWReader()
             MyRAWReader.open(Filename+'.node')
             self.Name = Filename;
             self.LayersCount = int(MyRAWReader.pop())
@@ -71,10 +71,10 @@ class NeuralNetwork(object):
                 self.LayerNeuronsCount.append(int(MyRAWReader.pop()))
             # Get each layer's neurons count one by one
             for layer in range(0, self.LayersCount-1):
-                self.Weight.append(io.getAMatrix(MyRAWReader))
+                self.Weight.append(IO.getAMatrix(MyRAWReader))
             # Get each layer's weight one by one
             for layer in range(0, self.LayersCount-1):
-                self.Bias.append(io.getAMatrix(MyRAWReader))
+                self.Bias.append(IO.getAMatrix(MyRAWReader))
             # Get each layer's bias one by one
         except:
             print('warning: Loading '+Filename+'.node  error!')
@@ -84,17 +84,17 @@ class NeuralNetwork(object):
     def savetoFile(self, Filename = ''):
         if Filename == '':
             Filename = self.Name
-        MyRAWWriter = io.RAWWriter()
+        MyRAWWriter = IO.RAWWriter()
         MyRAWWriter.append(int(self.LayersCount))
         for layer in range(0, self.LayersCount):
             MyRAWWriter.append(int(self.LayerNeuronsCount[layer]))
         # Save each layer's neurons count one by one
         MyRAWWriter.newline()
         for layer in range(0, self.LayersCount-1):
-            io.writeAMatrix(self.Weight[layer], MyRAWWriter)
+            IO.writeAMatrix(self.Weight[layer], MyRAWWriter)
         # Save each layer's weight one by one
         for layer in range(0, self.LayersCount-1):
-            io.writeAMatrix(self.Bias[layer], MyRAWWriter)
+            IO.writeAMatrix(self.Bias[layer], MyRAWWriter)
         # Save each layer's bias one by one
         MyRAWWriter.write(Filename+'.node')
     # Save Neural Network to .node File
@@ -138,7 +138,7 @@ class TrainTypes(object):
 
 class Train(object):
 # More advance training management
-    def trainbyBatch(MyNeuralNetwork, InputData, OutputData, Error = 0.01, MaxTimes = -1, Speed = 0.1, MyTrainTypes = TrainTypes.BackPropagation, Verbose = 0, VerbosePerLoop = 1000):
+    def trainbyBatch(MyNeuralNetwork, InputData, OutputData, Error = 0.01, MaxTimes = -1, Speed = 0.1, MyTrainTypes = TrainTypes.BackPropagation, Verbose = 0, VerbosePerLoop = 1000, Backup = True):
         # Parameter explianation:
         # MyNeuralNetwork: Simply your NeuralNetwork
         # InputData/OutputData: Simply your data in numpy's matrix type
@@ -146,6 +146,7 @@ class Train(object):
         # Speed: Same as the TrainTypes.BackPropagation one.
         # MyTrainTypes: You can specify your training type here.
         # Verbose/VerbosePerLoop: 'Verbose' for your verbose level, and 'VerbosePerLoop' for Verbose frequency, higher it is, less Verbose frequency.
+        # Backup: Save .node file per 10*verbose.
         timescount = 0
         error = 99999
         while(error > Error and (timescount < MaxTimes or MaxTimes == -1)):
@@ -153,6 +154,9 @@ class Train(object):
             timescount += 1;
             if Verbose > 1 and timescount%VerbosePerLoop == 0:
                 print('Train log >>>Tried times: '+str(timescount)+', error: '+str(error))
+            if timescount%(10*VerbosePerLoop) == 0:
+                MyNeuralNetwork.savetoFile(MyNeuralNetwork.Name+'_latest')
+            # Backup Neural Network to file
         # Train until it reach its goals
         if Verbose >= 1:
             print('Train log >>>Result: ')
@@ -163,4 +167,5 @@ class Train(object):
             print(OutputData)
             print('Result output: ')
             print(MyNeuralNetwork.feed(InputData))
+            print('')
     # Training batchly

@@ -6,7 +6,10 @@ class RAWReader(object):
         self.SlicedString = []
     # Initialize
     def open(self, Filename):
-        f = open(Filename, 'r')
+        try:
+            f = open(Filename, 'r')
+        except:
+            print('Warning: RAWReader readfile "'+Filename+'" not exist.')
         self.SlicedString = (f.read()).split()
         f.close()
     # Translate file to splited list
@@ -15,7 +18,8 @@ class RAWReader(object):
             return self.SlicedString.pop(0)
         else:
             return None
-    # Mock C++ extract operator
+    # Mock C++ >> operator
+# A reader mock C++ style
 
 class RAWWriter(object):
     def __init__(self):
@@ -30,9 +34,11 @@ class RAWWriter(object):
     # Translate file to splited list
     def append(self, Word):
         self.SlicedString.append(Word)
+    # Mock C++ << operator
     def newline(self):
         self.SlicedString.append('\n')
-    # Mock C++ extract operator
+    # Add a new line
+# A writer mock C++ style
 
 def getAMatrix(MyRAWReader):
     rowsize = int(MyRAWReader.pop())
