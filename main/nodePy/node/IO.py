@@ -50,7 +50,7 @@ def getAMatrix(MyRAWReader):
             rowlist.append(float(MyRAWReader.pop()))
         ANSER[row] = rowlist
     return ANSER
-    # Get one numpy matrix by RAWReader
+# Get one numpy matrix by RAWReader
 
 def writeAMatrix(Matrix, MyRAWWriter):
     rowsize = len(Matrix)
@@ -63,4 +63,4 @@ def writeAMatrix(Matrix, MyRAWWriter):
         for colelement in Matrix[row]:
             MyRAWWriter.append(colelement)
         MyRAWWriter.newline()
-    # Write one numpy matrix by RAWReader
+# Write one numpy matrix by RAWReader

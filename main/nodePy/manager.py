@@ -11,6 +11,7 @@ def StartMenu():
     }
     # Command's dictionary
     nncmdtype = ['c', 'l', 'r']
+    # Command that invoke Neural network management menu
     while True:
         cmd.clearScreen();
         print('')

@@ -85,28 +85,36 @@ def trainNeuralNetworkbyDefault(MyNeuralNetwork):
 
 def trainNeuralNetworkRandomly(MyNeuralNetwork):
     pass
+# Feed data randomly from  batch of data to train the neural network
 
 def feedNeuralNetwork(MyNeuralNetwork):
     pass
+# Feed neural network by manually input.
 
 def feedNeuralNetworkbymtrx(MyNeuralNetwork):
     pass
+# Feed neural network from ".mtrx" file.
 
 def feedNeuralNetworkbyTestmtrx(MyNeuralNetwork):
     pass
+# Feed neural network from "in_test.mtrx". And vertify it by "out_test.mtrx".
 
 def remapNeuralNetwork(MyNeuralNetwork):
     MyNeuralNetwork = NN.NeuralNetwork(MyNeuralNetwork.LayersCount, MyNeuralNetwork.LayerNeuronsCount, Name=MyNeuralNetwork.Name)
     # Use same parameters to create neural network
     print('Remaped "'+MyNeuralNetwork.Name+'" neural network successfully.')
     return MyNeuralNetwork
+# Remap the weight of the neural network
 
 def saveNeuralNetwork(MyNeuralNetwork):
     MyNeuralNetwork.savetoFile()
     print('Saved to "'+MyNeuralNetwork.Name+'.node".')
+# Save the neural network
 
 def printNeuralNetwork(MyNeuralNetwork):
     print(MyNeuralNetwork)
+# Print detail of neural network
 
 def clearScreen():
     sp.call('clear',shell=True)
+# Just simply clear th screen
