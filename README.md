@@ -1,6 +1,7 @@
 # Node project
 "Node" is a project aims to bulid neural network. It is an neural network research project belongs to NOOXY. There still lots of miles to be completed. Article about it might be established some day. Visit us www.nooxy.tk.
 ## Requirement
+- C++
 - Python
 - NumPy
 ## Directory
