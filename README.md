@@ -2,7 +2,7 @@
 "Node" is a project aims to bulid neural network. It is an neural network research project belongs to NOOXY. There still lots of miles to be completed. Article about it might be established some day. Visit us www.nooxy.tk.
 ## Directory
 ### bin
-node manager's binary files. They are compiled by C++ side source code in main directory, and it's build target is mainly macos(Darwin) now only.
+node manager's binary files. They are compiled by C++ side source code in main directory, and it's build target is mainly macos(Darwin) now.
 
 ### main
 Source code file for node manager.
