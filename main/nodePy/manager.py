@@ -13,7 +13,7 @@ def StartMenu():
     nncmdtype = ['c', 'l', 'r']
     # Command that invoke Neural network management menu
     while True:
-        cmd.clearScreen();
+        # cmd.clearScreen();
         print('')
         print('')
         print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM')
@@ -28,10 +28,10 @@ def StartMenu():
         print('')
         print('<<< Home Menu >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Print matrix(.mtrx) [p]. Exit [e].')
         command = input('>>>')
+        if command == 'e':
+            return 0
         if command in commanddict:
-            if command == 'e':
-                return 0
-            elif command in nncmdtype:
+            if command in nncmdtype:
                 NNManagementMenu(commanddict[command]())
             else:
                 commanddict[command]()
@@ -78,15 +78,14 @@ def NNManagementMenu(MyNeuralNetwork):
         print('\n<<< A NeuralNetwork object @'+MyNeuralNetwork.Name+' >>>')
         print('Type "help" to be helped.')
         command = input('>>>')
-        if command in commanddict:
-            if command == 'r':
-                return 0
-            elif command in nncmdtype:
-                commanddict[command](MyNeuralNetwork)
-            elif command in returnnncmdtype:
-                MyNeuralNetwork = commanddict[command](MyNeuralNetwork)
-            else:
-                commanddict[command]()
+        if command == 'r':
+            return 0
+        if command in nncmdtype:
+            commanddict[command](MyNeuralNetwork)
+        elif command in returnnncmdtype:
+            MyNeuralNetwork = commanddict[command](MyNeuralNetwork)
+        else:
+            commanddict[command]()
 # Neural network management menu
 
 StartMenu()
