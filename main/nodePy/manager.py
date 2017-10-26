@@ -80,12 +80,13 @@ def NNManagementMenu(MyNeuralNetwork):
         command = input('>>>')
         if command == 'r':
             return 0
-        if command in nncmdtype:
-            commanddict[command](MyNeuralNetwork)
-        elif command in returnnncmdtype:
-            MyNeuralNetwork = commanddict[command](MyNeuralNetwork)
-        else:
-            commanddict[command]()
+        if command in commanddict:
+            if command in nncmdtype:
+                commanddict[command](MyNeuralNetwork)
+            elif command in returnnncmdtype:
+                MyNeuralNetwork = commanddict[command](MyNeuralNetwork)
+            else:
+                commanddict[command]()
 # Neural network management menu
 
 StartMenu()
