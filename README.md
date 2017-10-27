@@ -6,6 +6,12 @@
 - Python package: NumPy
 - Python package: Matplotlib
 - Python package: CuPy(Optional)
+
+to install Python packages
+```bash
+#!/bin/bash
+sudo python3 -m pip install numpy matplotlib
+```
 ## Directory
 ### bin
 node manager's executable files. They are compiled by C++ side source code in main directory, and it's build target is mainly macos(Darwin) now.
