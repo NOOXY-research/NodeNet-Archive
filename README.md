@@ -6,8 +6,9 @@
 - Python package: NumPy
 - Python package: Matplotlib
 - Python package: CuPy(Optional)
+
 to install Python packages
-```sh
+```bash
 #!/bin/bash
 sudo python3 -m pip install numpy matplotlib
 ```
