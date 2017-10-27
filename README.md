@@ -4,6 +4,7 @@
 - C++
 - Python
 - NumPy
+- Matplotlib
 ## Directory
 ### bin
 node manager's binary files. They are compiled by C++ side source code in main directory, and it's build target is mainly macos(Darwin) now.
