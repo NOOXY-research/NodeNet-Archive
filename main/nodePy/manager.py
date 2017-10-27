@@ -8,6 +8,7 @@ def StartMenu():
         'l': cmd.loadNeuralNetwork,
         'r': cmd.recoverNeuralNetwork,
         'p': cmd.printMatrix,
+        'conf': ConfigMenu,
     }
     # Command's dictionary
     nncmdtype = ['c', 'l', 'r']
@@ -26,9 +27,10 @@ def StartMenu():
         print('Artificial neural network (ANN) manager. Python ver 0.0.0')
         print('For more information or update ->\'http://www.nooxy.tk\'.')
         print('')
-        print('<<< Home Menu >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Print matrix(.mtrx) [p]. Exit [e].')
+        print('<<< Home Menu >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Print matrix(.mtrx) [p]. Configuration [conf]. Exit [e].')
         command = input('>>>')
         if command == 'e':
+            cmd.clearScreen()
             return 0
         if command in commanddict:
             if command in nncmdtype:
@@ -79,6 +81,7 @@ def NNManagementMenu(MyNeuralNetwork):
         print('Type "help" to be helped.')
         command = input('>>>')
         if command == 'r':
+            cmd.clearScreen()
             return 0
         if command in commanddict:
             if command in nncmdtype:
@@ -89,5 +92,23 @@ def NNManagementMenu(MyNeuralNetwork):
                 commanddict[command]()
 # Neural network management menu
 
+def ConfigMenu():
+    commanddict = {
+        'l': cmd.listConfigfileValues,
+        's': cmd.setValuetoConfigfile,
+    }
+    while True:
+        print('')
+        print('\n<<< Configuration Menu >>>\nList All[l]. Set[s]. Return[r]. ')
+        print('')
+        command = input('>>>')
+        if command == 'r':
+            cmd.clearScreen()
+            return 0
+        if command in commanddict:
+            commanddict[command]()
+# Configuration menu
+
+cmd.clearScreen()
 StartMenu()
 # Launch start menu

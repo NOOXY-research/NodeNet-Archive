@@ -5,6 +5,9 @@ import node.IO as IO
 import math
 import subprocess as sp
 # For clearing the screen
+VERBOSE_DEFAULT = 2
+VERBOSE_PER_LOOP_DEFAULT = 10000
+SPEED_DEFAULT = 0.1
 
 def createNeuralNetwork():
     name = input('Input NeuralNetwork\'s name to be created.\n>>>')
@@ -59,7 +62,12 @@ def trainNeuralNetwork(MyNeuralNetwork):
     errorfinal = math.sqrt(math.pow(error, 2)*len(InputData))
     # Translate error per data(row) to whole error
     print('Final error:'+str(errorfinal))
-    NN.Train.trainbyBatch(MyNeuralNetwork, InputData, OutputData, errorfinal, times, speed, VerbosePerLoop=loop, Verbose=2)
+    if IO.getValuefromConfigfile('setting.json', 'Verbose') != None:
+        verbose = int(IO.getValuefromConfigfile('setting.json', 'Verbose'))
+    else:
+        verbose = VERBOSE_DEFAULT
+    # Setting from config file
+    NN.Train.trainbyBatch(MyNeuralNetwork, InputData, OutputData, errorfinal, times, speed, VerbosePerLoop=loop, Verbose=verbose)
     MyNeuralNetwork.savetoFile()
     print('Saved to "'+MyNeuralNetwork.Name+'.node".')
 # Train neural network with specify parameters
@@ -78,7 +86,20 @@ def trainNeuralNetworkbyDefault(MyNeuralNetwork):
     errorfinal = math.sqrt(math.pow(error, 2)*len(InputData))
     # Translate error per data(row) to whole error
     print('Final error:'+str(errorfinal))
-    NN.Train.trainbyBatch(MyNeuralNetwork, InputData, OutputData, errorfinal, Verbose=2)
+    if IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times') != None:
+        loop = int(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times'))
+    else:
+        loop = VERBOSE_PER_LOOP_DEFAULT
+    if IO.getValuefromConfigfile('setting.json', 'Verbose') != None:
+        verbose = int(IO.getValuefromConfigfile('setting.json', 'Verbose'))
+    else:
+        verbose = VERBOSE_DEFAULT
+    if IO.getValuefromConfigfile('setting.json', 'Training_Speed') != None:
+        speed = float(IO.getValuefromConfigfile('setting.json', 'Training_Speed'))
+    else:
+        speed = SPEED_DEFAULT
+    # Setting from config file
+    NN.Train.trainbyBatch(MyNeuralNetwork, InputData, OutputData, errorfinal, Speed=speed, VerbosePerLoop=loop, Verbose=verbose)
     MyNeuralNetwork.savetoFile()
     print('Saved to "'+MyNeuralNetwork.Name+'.node".')
 # Train neural network with default parameters
@@ -118,3 +139,25 @@ def printNeuralNetwork(MyNeuralNetwork):
 def clearScreen():
     sp.call('clear',shell=True)
 # Just simply clear th screen
+
+# Config List
+ConfigDict = {
+    'v': 'Verbose',
+    'Verbose': 'Verbose',
+    'n': 'Loop_per_N_times',
+    's': 'Training_Speed',
+}
+# End of Config List
+
+def setValuetoConfigfile():
+    name = input('Name Code:\n')
+    value = input('Value:\n')
+    IO.setValuetoConfigfile('setting.json', ConfigDict[str(name)], value)
+# Set Config
+
+def listConfigfileValues():
+    print('Config list:')
+    print('[v] Verbose Level. -> '+str(IO.getValuefromConfigfile('setting.json', 'Verbose')))
+    print('[n] Verbose per "N" times. -> '+str(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times')))
+    print('[s] Default training speed. -> '+str(IO.getValuefromConfigfile('setting.json', 'Training_Speed')))
+# List Config

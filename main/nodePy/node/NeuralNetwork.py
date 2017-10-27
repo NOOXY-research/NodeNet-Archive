@@ -13,6 +13,7 @@ import node.Function as f
 # Activation function etc.
 import node.IO as IO
 # File related function
+import node.Graph as Graph
 # Import some essential module and function
 
 class NeuralNetwork(object):
@@ -138,23 +139,28 @@ class TrainTypes(object):
 
 class Train(object):
 # More advance training management
-    def trainbyBatch(MyNeuralNetwork, InputData, OutputData, Error = 0.01, MaxTimes = -1, Speed = 0.1, MyTrainTypes = TrainTypes.BackPropagation, Verbose = 0, VerbosePerLoop = 1000, Backup = True):
+    def trainbyBatch(MyNeuralNetwork, InputData, OutputData, Error = 0.01, MaxTimes = -1, Speed = 0.1, MyTrainTypes = TrainTypes.BackPropagation, Verbose = 0, VerbosePerLoop = 10000, Backup = True):
         # Parameter explianation:
         # MyNeuralNetwork: Simply your NeuralNetwork
         # InputData/OutputData: Simply your data in numpy's matrix type
         # Error/MaxTimes: The training will stop until its error smaller then Error or reach it MaxTimes(max training times)
         # Speed: Same as the TrainTypes.BackPropagation one.
         # MyTrainTypes: You can specify your training type here.
-        # Verbose/VerbosePerLoop: 'Verbose' for your verbose level, and 'VerbosePerLoop' for Verbose frequency, higher it is, less Verbose frequency.
+        # Verbose/VerbosePerLoop: 'Verbose' for your verbose level, and 'VerbosePerLoop' for Verbose frequency and information capture frequency, higher it is, less Verbose frequency.
         # Backup: Save .node file per 10*verbose.
         timescount = 0
         error = 99999
+        errorlogs = []
         while(error > Error and (timescount < MaxTimes or MaxTimes == -1)):
             error = MyTrainTypes(MyNeuralNetwork, InputData, OutputData, Speed)
             timescount += 1;
             if Verbose > 1 and timescount%VerbosePerLoop == 0:
                 print('Train log >>>Tried times: '+str(timescount)+', error: '+str(error))
-            if timescount%(10*VerbosePerLoop) == 0:
+            # Verbose training status
+            if Verbose > 2 and timescount%100 == 0:
+                errorlogs.append(error)
+            # Append error to list
+            if timescount%(VerbosePerLoop) == 0:
                 MyNeuralNetwork.savetoFile(MyNeuralNetwork.Name+'_latest')
             # Backup Neural Network to file
         # Train until it reach its goals
@@ -168,4 +174,6 @@ class Train(object):
             print('Result output: ')
             print(MyNeuralNetwork.feed(InputData))
             print('')
+        if Verbose > 2:
+            Graph.plotByList(errorlogs, 'Training times (*100 times)', 'error', 'NN='+MyNeuralNetwork.Name+', Speed='+str(Speed)+', Target_error='+str(error)+', Tried_times='+str(timescount))
     # Training batchly
