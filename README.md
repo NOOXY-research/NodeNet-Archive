@@ -21,7 +21,7 @@ For launching manager
 ```sh
 python3 manage.py
 ```
-If you need GPU support simply change
+If you need GPU support simply change (for really large size of neural network)
 ```python
 import numpy as np
 ```
