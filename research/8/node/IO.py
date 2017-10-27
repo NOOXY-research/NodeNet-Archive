@@ -52,7 +52,7 @@ def getAMatrix(MyRAWReader):
         matrix.append(rowlist)
     ANSER = np.array(tuple(matrix), dtype=float)
     return ANSER
-# Get one cupy matrix by RAWReader
+# Get one numpy matrix by RAWReader
 
 def writeAMatrix(Matrix, MyRAWWriter):
     rowsize = len(Matrix)
