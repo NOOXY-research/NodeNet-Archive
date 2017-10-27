@@ -22,3 +22,5 @@ python3 manage.py
 ```
 ### test
 A directory to test some function that not yet to be added to mainline. Or test the ANN etc.
+## Gallery
+![alt text](https://github.com/magneticchen/node_project/raw/master/research/gallery/train.png)
