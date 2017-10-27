@@ -5,6 +5,7 @@
 - Python
 - Python package: NumPy
 - Python package: Matplotlib
+- Python package: CuPy(Optional)
 ## Directory
 ### bin
 node manager's executable files. They are compiled by C++ side source code in main directory, and it's build target is mainly macos(Darwin) now.
@@ -19,6 +20,14 @@ We are contructing now. Not yet to be describe.
 For launching manager
 ```sh
 python3 manage.py
+```
+If you need GPU support simply change
+```python
+import numpy as np
+```
+to
+```python
+import cupy as np
 ```
 ### research
 Test the nerual network for finding good model etc.
