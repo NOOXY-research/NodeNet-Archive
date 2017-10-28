@@ -46,20 +46,23 @@ def printMatrix():
 # Print specify matrix file
 
 def trainNeuralNetwork(MyNeuralNetwork):
-    print('Input "min error value per data(0.1)", "speed(0.01)" , "max training times (-1 for infinite)", "times per loop(100)".')
+    print('Input "target error(0.1)", "speed(0.01)" , "max training times (-1 for infinite)"')
     rawinput = input('>>>')
     rawinput = rawinput.split()
     print(rawinput)
     error = float(rawinput[0])
     speed = float(rawinput[1])
     times = int(rawinput[2])
-    loop = int(rawinput[3])
     Datas = IO.getDatas()
     # Get Input/OutputData to matrix
     if IO.getValuefromConfigfile('setting.json', 'Verbose') != None:
         verbose = int(IO.getValuefromConfigfile('setting.json', 'Verbose'))
     else:
         verbose = VERBOSE_DEFAULT
+    if IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times') != None:
+        loop = int(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times'))
+    else:
+        loop = VERBOSE_PER_LOOP_DEFAULT
     # Setting from config file
     TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, times, speed, VerbosePerLoop=loop, Verbose=verbose)
     MyNeuralNetwork.savetoFile()
@@ -67,7 +70,7 @@ def trainNeuralNetwork(MyNeuralNetwork):
 # Train neural network with specify parameters
 
 def trainNeuralNetworkbyDefault(MyNeuralNetwork):
-    print('Input "min error value per data(0.1)".')
+    print('Input "target error(0.1)".')
     rawinput = input('>>>')
     rawinput = rawinput.split()
     error = float(rawinput[0])
@@ -143,10 +146,21 @@ ConfigDict = {
 # End of Config List
 
 def setValuetoConfigfile():
+    print('Config list:')
+    print('[v] Verbose Level. -> '+str(IO.getValuefromConfigfile('setting.json', 'Verbose')))
+    print('[n] Verbose per "N" times. -> '+str(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times')))
+    print('[s] Default training speed. -> '+str(IO.getValuefromConfigfile('setting.json', 'Training_Speed')))
     name = input('Name Code:\n')
     value = input('Value:\n')
     IO.setValuetoConfigfile('setting.json', ConfigDict[str(name)], value)
 # Set Config
+
+def listConfigfileValues():
+    print('Config list:')
+    print('[v] Verbose Level. -> '+str(IO.getValuefromConfigfile('setting.json', 'Verbose')))
+    print('[n] Verbose per "N" times. -> '+str(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times')))
+    print('[s] Default training speed. -> '+str(IO.getValuefromConfigfile('setting.json', 'Training_Speed')))
+# List Config
 
 def printLogo():
     print('')
@@ -159,10 +173,4 @@ def printLogo():
     print('')
     print('Artificial neural network (ANN) manager. Python ver 0.0.0')
     print('For more information or update ->\'http://www.nooxy.tk\'.')
-
-def listConfigfileValues():
-    print('Config list:')
-    print('[v] Verbose Level. -> '+str(IO.getValuefromConfigfile('setting.json', 'Verbose')))
-    print('[n] Verbose per "N" times. -> '+str(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times')))
-    print('[s] Default training speed. -> '+str(IO.getValuefromConfigfile('setting.json', 'Training_Speed')))
-# List Config
+# Print LOGO

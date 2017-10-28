@@ -84,7 +84,10 @@ def NNManagementMenu(MyNeuralNetwork):
             return 0
         if command in commanddict:
             if command in nncmdtype:
-                commanddict[command](MyNeuralNetwork)
+                try:
+                    commanddict[command](MyNeuralNetwork)
+                except(KeyboardInterrupt, SystemExit):
+                    print('\n***YOU INTERRUPT TRAINING. STATE NOT CHANGE.***\n')
             elif command in returnnncmdtype:
                 MyNeuralNetwork = commanddict[command](MyNeuralNetwork)
             else:
