@@ -12,6 +12,20 @@ to install Python packages
 #!/bin/bash
 sudo python3 -m pip install numpy matplotlib
 ```
+to use Nvdia GPU (example: ArchLinux)
+```bash
+#!/bin/bash
+sudo pacman -S cuda
+# Install CUDA
+sudo vim /etc/profile
+# In vim add /opt/cuda/bin to your path
+# finally
+sudo python3 -m pip install cupy
+# if something wrong try
+source /etc/profile
+# or
+sudo reboot now
+```
 ## Directory
 ### bin
 node manager's executable files. They are compiled by C++ side source code in main directory, and it's build target is mainly macos(Darwin) now.
@@ -27,7 +41,7 @@ For launching manager
 ```sh
 python3 manage.py
 ```
-If you need GPU support(for really large size of neural network) simply change all
+If you need Nvidia GPU support(for really large size of neural network) simply change all
 ```python
 import numpy as np
 ```
