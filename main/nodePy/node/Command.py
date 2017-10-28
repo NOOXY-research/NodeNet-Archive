@@ -54,21 +54,14 @@ def trainNeuralNetwork(MyNeuralNetwork):
     speed = float(rawinput[1])
     times = int(rawinput[2])
     loop = int(rawinput[3])
-    rawreader = IO.RAWReader()
-    rawreader.open('in.mtrx')
-    InputData = IO.getAMatrix(rawreader)
-    rawreader.open('out.mtrx')
-    OutputData = IO.getAMatrix(rawreader)
+    Datas = IO.getDatas()
     # Get Input/OutputData to matrix
-    errorfinal = math.sqrt(math.pow(error, 2)*len(InputData))
-    # Translate error per data(row) to whole error
-    print('Final error:'+str(errorfinal))
     if IO.getValuefromConfigfile('setting.json', 'Verbose') != None:
         verbose = int(IO.getValuefromConfigfile('setting.json', 'Verbose'))
     else:
         verbose = VERBOSE_DEFAULT
     # Setting from config file
-    TrainingType.trainbyBatch(MyNeuralNetwork, InputData, OutputData, errorfinal, times, speed, VerbosePerLoop=loop, Verbose=verbose)
+    TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, times, speed, VerbosePerLoop=loop, Verbose=verbose)
     MyNeuralNetwork.savetoFile()
     print('Saved to "'+MyNeuralNetwork.Name+'.node".')
 # Train neural network with specify parameters
@@ -78,15 +71,8 @@ def trainNeuralNetworkbyDefault(MyNeuralNetwork):
     rawinput = input('>>>')
     rawinput = rawinput.split()
     error = float(rawinput[0])
-    rawreader = IO.RAWReader()
-    rawreader.open('in.mtrx')
-    InputData = IO.getAMatrix(rawreader)
-    rawreader.open('out.mtrx')
-    OutputData = IO.getAMatrix(rawreader)
+    Datas = IO.getDatas()
     # Get Input/OutputData to matrix
-    errorfinal = math.sqrt(math.pow(error, 2)*len(InputData))
-    # Translate error per data(row) to whole error
-    print('Final error:'+str(errorfinal))
     if IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times') != None:
         loop = int(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times'))
     else:
@@ -100,7 +86,7 @@ def trainNeuralNetworkbyDefault(MyNeuralNetwork):
     else:
         speed = SPEED_DEFAULT
     # Setting from config file
-    TrainingType.trainbyBatch(MyNeuralNetwork, InputData, OutputData, errorfinal, Speed=speed, VerbosePerLoop=loop, Verbose=verbose)
+    TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, Speed=speed, VerbosePerLoop=loop, Verbose=verbose)
     MyNeuralNetwork.savetoFile()
     print('Saved to "'+MyNeuralNetwork.Name+'.node".')
 # Train neural network with default parameters

@@ -73,7 +73,9 @@ def NNManagementMenu(MyNeuralNetwork):
     # Command type that return NeuralNetwork
     while True:
         print('')
-        print('\n<<< A NeuralNetwork object @'+MyNeuralNetwork.Name+' >>>')
+        print('<<< A NeuralNetwork object @'+MyNeuralNetwork.Name+' >>>')
+        print('layer structure:')
+        print(MyNeuralNetwork.LayerNeuronsCount)
         print('Type "help" to be helped.')
         command = input('>>>')
         if command == 'r':

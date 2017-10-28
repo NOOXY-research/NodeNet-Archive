@@ -74,7 +74,7 @@ class DFF(object):
                 self.Bias.append(IO.getAMatrix(MyRAWReader))
             # Get each layer's bias one by one
         except:
-            print('warning: Loading '+Filename+'.node  error!')
+            print('warning: Loading '+Filename+'.node error!')
         # Prevent file not exist
     # Load Neural Network from .node File
 

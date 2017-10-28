@@ -19,3 +19,6 @@ def logit(Z):
     A = np.log(Z/(1-Z))
     where_are_NaNs = np.isnan(A)
     return A
+
+def MeanSquareError(X, Y):
+    return np.sum(np.sqrt(((X-Y)**2).sum(axis=1, dtype='float')))/len(X)

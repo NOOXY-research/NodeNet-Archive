@@ -43,6 +43,6 @@ def BackPropagation(MyNeuralNetwork, InputData, OutputData, speed = 0.1):
         MyNeuralNetwork.Weight[layer] = MyNeuralNetwork.Weight[layer]-speed*DJDW[layer]
         MyNeuralNetwork.Bias[layer] = MyNeuralNetwork.Bias[layer]-speed*np.dot(np.ones((1, InputData.shape[0])), DELTA[layer+1])
     # Add adjustment to each weight
-    error = math.sqrt(np.sum((f.sigmoid(OutputData)-A[MyNeuralNetwork.LayersCount-1])**2))
+    error = f.MeanSquareError(OutputData, Z[MyNeuralNetwork.LayersCount-1])
     return error
 # A type of training is called BackPropagation for DFF
