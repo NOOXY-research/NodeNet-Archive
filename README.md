@@ -39,7 +39,16 @@ import cupy as np
 Test the nerual network for finding good models etc.
 ### test
 A directory to test some functions that not yet to be added to mainline. 
+## TODO
+- CuPy support [v]
+- More type of neural network training method [x]
+- Validation to stop training [x]
+- Ability to start a project to determine best model [x]
+- Plotling [v]
+- Configuration to save state [v]
+- and more to be added
 ## Gallery
 ![alt text](https://github.com/magneticchen/node_project/raw/master/research/gallery/train.png)
-Input layer 8, Output layer 8. Training Graph.
+Input layer 8 neurons, Output layer 8 neurons. 1 hidden layer. Training Graph.
 ![alt text](https://github.com/magneticchen/node_project/raw/master/research/8/graph/8x10x10x8/Figure_1-1.png)
+Input layer 8 neurons, Output layer 8 neurons. 2 hidden layer. Training Graph.
