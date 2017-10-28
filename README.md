@@ -44,12 +44,27 @@ A directory to test some functions that not yet to be added to mainline.
 - we stop this project temporary
 ### NodePy
 - CuPy compatible [v]
-- More type of neural network training method [x]
+- More types of neural network training method [x]
 - Validation to stop training [x]
 - Ability to start a project to determine best model [x]
 - Plotling [v]
 - Configuration to save state [v]
 - and more to be added
+#### Training method list
+- backpropagation [v]
+- Levenberg-Marquardt backpropagation [x]
+- Backpropagation with classical momentum [x]
+- Backpropagation with Nesterov momentum [x]
+- RMSprop [x]
+- Adagrad [x]
+- Adam [x]
+- Resilient Backpropagation [x]
+- Scaled Conjugate Gradient [x]
+##### Reference
+https://github.com/jorgenkg/python-neural-network/edit/master/README.md
+#### NN models
+- NN classic [v]
+- CNN [x]
 ## Gallery
 ![alt text](https://github.com/magneticchen/node_project/raw/master/research/gallery/train.png)
 Input layer 8 neurons, Output layer 8 neurons. 1 hidden layer. Training Graph.
