@@ -1,5 +1,5 @@
 # Node project
-"Node" is a project aims to bulid neural network. It's oriention is to collect plenty of types of neural networks and provide manager to organize and test it. It is  project belongs to NOOXY. There still lots of miles to be completed. Article about it might be established some day. Visit us www.nooxy.tk.
+"Node" is a project aims to bulid neural network. It's oriention is to collect plenty of types of neural networks and provide manager to organize and test it. It is a project belongs to NOOXY. There still lots of miles to  complete it. Article about it might be established some day. Visit us www.nooxy.tk.
 ## Requirement
 - C++
 - Python
@@ -27,7 +27,7 @@ For launching manager
 ```sh
 python3 manage.py
 ```
-If you need GPU support simply change (for really large size of neural network)
+If you need GPU support(for really large size of neural network) simply change all
 ```python
 import numpy as np
 ```
@@ -36,9 +36,10 @@ to
 import cupy as np
 ```
 ### research
-Test the nerual network for finding good model etc.
+Test the nerual network for finding good models etc.
 ### test
-A directory to test some function that not yet to be added to mainline. 
+A directory to test some functions that not yet to be added to mainline. 
 ## Gallery
 ![alt text](https://github.com/magneticchen/node_project/raw/master/research/gallery/train.png)
 Input layer 8, Output layer 8. Training Graph.
+![alt text](https://github.com/magneticchen/node_project/raw/master/research/8/graph/8x10x10x8/Figure_1-1.png)
