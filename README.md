@@ -43,6 +43,7 @@ A directory to test some functions that not yet to be added to mainline.
 ### NodeC
 - we stop this project temporary
 ### NodePy
+#### Todo
 - CuPy compatible [v]
 - More types of neural network training method [x]
 - Validation to stop training [x]
