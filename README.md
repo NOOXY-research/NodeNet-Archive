@@ -40,6 +40,9 @@ Test the nerual network for finding good models etc.
 ### test
 A directory to test some functions that not yet to be added to mainline. 
 ## TODO
+### NodeC
+- we stop this project temporary
+### NodePy
 - CuPy compatible [v]
 - More type of neural network training method [x]
 - Validation to stop training [x]
