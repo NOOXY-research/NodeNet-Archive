@@ -60,6 +60,7 @@ A directory to test some functions that not yet to be added to mainline.
 #### Todo
 - CuPy compatible [v]
 - More types of neural network training method [x]
+- Validation graph and fucntion [v]
 - Validation to stop training [x]
 - Ability to start a project to determine best model [x]
 - Plotling [v]
