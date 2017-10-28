@@ -37,7 +37,7 @@ def recoverNeuralNetwork():
 # Load latest Neural Network not saved and return it
 
 def printMatrix():
-    name = input('Input matrix\'s name to be recovered. (Read from ".mtrx" file)\n>>>')
+    name = input('Input matrix\'s name to be printed. (Read from ".mtrx" file)\n>>>')
     raw = IO.RAWReader()
     raw.open(name+'.mtrx')
     matrix = IO.getAMatrix(raw)
@@ -133,7 +133,7 @@ def clearScreen():
 def ls():
     print('')
     print('ls:')
-    sp.call('ls',shell=True)
+    sp.call('ls --color',shell=True)
 # Just simply clear th screen
 
 # Config List
@@ -164,10 +164,16 @@ def listConfigfileValues():
 
 def printLogo():
     print('')
-    print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM')
-    print('88Yb88 dP   Yb dP   Yb  YbdP   YbdP  ')
-    print('88 Y88 Yb   dP Yb   dP  dPYb    88   ')
-    print('88  Y8  YbodP   YbodP  dP  Yb   88  Project node. ')
+    try:
+        sp.call('echo -e "\e[1m\e[31m88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM\e[0m"',shell=True)
+        sp.call('echo -e "\e[1m\e[34m88Yb88 dP   Yb dP   Yb  YbdP   YbdP\e[0m"',shell=True)
+        sp.call('echo -e "\e[1m\e[32m88 Y88 Yb   dP Yb   dP  dPYb    88   \e[0m"',shell=True)
+        sp.call('echo -e "\e[1m\e[33m88  Y8  YbodP   YbodP  dP  Yb   88  \e[39mProject node.\e[0m "',shell=True)
+    except:
+        print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM')
+        print('88Yb88 dP   Yb dP   Yb  YbdP   YbdP  ')
+        print('88 Y88 Yb   dP Yb   dP  dPYb    88   ')
+        print('88  Y8  YbodP   YbodP  dP  Yb   88  Project node. ')
     print('')
     print('Copyright(c)2017 NOOXY inc. Taiwan.')
     print('')
