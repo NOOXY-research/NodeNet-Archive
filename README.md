@@ -82,6 +82,6 @@ https://github.com/jorgenkg/python-neural-network/edit/master/README.md
 - CNN [x]
 ## Gallery
 ![alt text](https://github.com/magneticchen/node_project/raw/master/research/gallery/train.png)
-Input layer 8 neurons, Output layer 8 neurons. 1 hidden layer. Training Graph.
+Input layer 8 neurons, Output layer 8 neurons. 1 hidden layer. Training Graph. backpropagation.
 ![alt text](https://github.com/magneticchen/node_project/raw/master/research/8/graph/8x10x10x8/Figure_1-1.png)
-Input layer 8 neurons, Output layer 8 neurons. 2 hidden layer. Training Graph.
+Input layer 8 neurons, Output layer 8 neurons. 2 hidden layer. Training Graph. backpropagation.
