@@ -8,6 +8,7 @@ def StartMenu():
         'l': cmd.loadNeuralNetwork,
         'r': cmd.recoverNeuralNetwork,
         'p': cmd.printMatrix,
+        'ls': cmd.ls,
         'conf': ConfigMenu,
     }
     # Command's dictionary
@@ -16,26 +17,20 @@ def StartMenu():
     while True:
         # cmd.clearScreen();
         print('')
-        print('')
-        print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM')
-        print('88Yb88 dP   Yb dP   Yb  YbdP   YbdP  ')
-        print('88 Y88 Yb   dP Yb   dP  dPYb    88   ')
-        print('88  Y8  YbodP   YbodP  dP  Yb   88  Project node. ')
-        print('')
-        print('Copyright(c)2017 NOOXY inc. Taiwan.')
-        print('')
-        print('Artificial neural network (ANN) manager. Python ver 0.0.0')
-        print('For more information or update ->\'http://www.nooxy.tk\'.')
-        print('')
-        print('<<< Home Menu >>>\nCreate ANN [c]. Load ANN [l]. Recover from latest train [r]. Print matrix(.mtrx) [p]. Configuration [conf]. Exit [e].')
+        print('<<< Home Menu >>>\n[c]reate ANN. [l]oad ANN. [r]ecover ANN. [p]rint matrix(.mtrx). [conf]igure. [ls]. [e]xit.')
         command = input('>>>')
         if command == 'e':
             cmd.clearScreen()
             return 0
         if command in commanddict:
             if command in nncmdtype:
-                NNManagementMenu(commanddict[command]())
+                NN = commanddict[command]()
+                cmd.clearScreen()
+                cmd.printLogo()
+                NNManagementMenu(NN)
             else:
+                cmd.clearScreen()
+                cmd.printLogo()
                 commanddict[command]()
 # Start menu
 
@@ -54,6 +49,7 @@ def NNManagementMenu(MyNeuralNetwork):
         print('[clr] Clear the screen :-).')
         print('[r] Back to home screen.')
         print('[h/help] This list.')
+
     commanddict = {
         'h': printHelp,
         'help': printHelp,
@@ -77,15 +73,21 @@ def NNManagementMenu(MyNeuralNetwork):
     # Command type that return NeuralNetwork
     while True:
         print('')
-        print('\n<<< A NeuralNetwork object @'+MyNeuralNetwork.Name+' >>>')
+        print('<<< A NeuralNetwork object @'+MyNeuralNetwork.Name+' >>>')
+        print('layer structure:')
+        print(MyNeuralNetwork.LayerNeuronsCount)
         print('Type "help" to be helped.')
         command = input('>>>')
         if command == 'r':
             cmd.clearScreen()
+            cmd.printLogo()
             return 0
         if command in commanddict:
             if command in nncmdtype:
-                commanddict[command](MyNeuralNetwork)
+                try:
+                    commanddict[command](MyNeuralNetwork)
+                except(KeyboardInterrupt, SystemExit):
+                    print('\n***YOU INTERRUPT TRAINING. STATE NOT CHANGE.***\n')
             elif command in returnnncmdtype:
                 MyNeuralNetwork = commanddict[command](MyNeuralNetwork)
             else:
@@ -99,16 +101,18 @@ def ConfigMenu():
     }
     while True:
         print('')
-        print('\n<<< Configuration Menu >>>\nList All[l]. Set[s]. Return[r]. ')
+        print('<<< Configuration Menu >>>\n[l]ist All. [s]et. [r]eturn home. ')
         print('')
         command = input('>>>')
         if command == 'r':
             cmd.clearScreen()
+            cmd.printLogo()
             return 0
         if command in commanddict:
             commanddict[command]()
 # Configuration menu
 
 cmd.clearScreen()
+cmd.printLogo()
 StartMenu()
 # Launch start menu

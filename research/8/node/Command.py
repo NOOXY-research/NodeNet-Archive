@@ -1,9 +1,10 @@
 # Command.py for packaged command. And for later assemble use.
 import numpy as np
-import node.NeuralNetwork as NN
+import node.NeuralNetwork.NeuralNetwork as NeuralNetwork
 import node.IO as IO
 import math
 import subprocess as sp
+import node.NeuralNetwork.TrainingType as TrainingType
 # For clearing the screen
 VERBOSE_DEFAULT = 2
 VERBOSE_PER_LOOP_DEFAULT = 10000
@@ -15,28 +16,28 @@ def createNeuralNetwork():
     layerneuronscount = []
     for layer in range(0, layerscount):
         layerneuronscount.append(int(input('Input layer('+str(layer+1)+'\\'+str(layerscount)+')\'s neurons count.\n>>>')))
-    nn = NN.NeuralNetwork(layerscount, layerneuronscount, name)
+    nn = NeuralNetwork.DFF(layerscount, layerneuronscount, name)
     nn.savetoFile()
     return nn
 # Create Neural Network and return it
 
 def loadNeuralNetwork():
     name = input('Input NeuralNetwork\'s name to be loaded.\n>>>')
-    nn = NN.NeuralNetwork()
+    nn = NeuralNetwork.DFF()
     nn.loadfromFile(name)
     return nn
 # Load Neural Network and return it
 
 def recoverNeuralNetwork():
     name = input('Input NeuralNetwork\'s name to be recovered.\n>>>')
-    nn = NN.NeuralNetwork()
+    nn = NeuralNetwork.DFF()
     nn.loadfromFile(name+'_latest')
     nn.Name = name
     return nn
 # Load latest Neural Network not saved and return it
 
 def printMatrix():
-    name = input('Input matrix\'s name to be recovered. (Read from ".mtrx" file)\n>>>')
+    name = input('Input matrix\'s name to be printed. (Read from ".mtrx" file)\n>>>')
     raw = IO.RAWReader()
     raw.open(name+'.mtrx')
     matrix = IO.getAMatrix(raw)
@@ -45,47 +46,35 @@ def printMatrix():
 # Print specify matrix file
 
 def trainNeuralNetwork(MyNeuralNetwork):
-    print('Input "min error value per data(0.1)", "speed(0.01)" , "max training times (-1 for infinite)", "times per loop(100)".')
+    print('Input "target error(0.1)", "speed(0.01)" , "max training times (-1 for infinite)"')
     rawinput = input('>>>')
     rawinput = rawinput.split()
-    print(rawinput)
     error = float(rawinput[0])
     speed = float(rawinput[1])
     times = int(rawinput[2])
-    loop = int(rawinput[3])
-    rawreader = IO.RAWReader()
-    rawreader.open('in.mtrx')
-    InputData = IO.getAMatrix(rawreader)
-    rawreader.open('out.mtrx')
-    OutputData = IO.getAMatrix(rawreader)
+    Datas = IO.getDatas()
     # Get Input/OutputData to matrix
-    errorfinal = math.sqrt(math.pow(error, 2)*len(InputData))
-    # Translate error per data(row) to whole error
-    print('Final error:'+str(errorfinal))
     if IO.getValuefromConfigfile('setting.json', 'Verbose') != None:
         verbose = int(IO.getValuefromConfigfile('setting.json', 'Verbose'))
     else:
         verbose = VERBOSE_DEFAULT
+    if IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times') != None:
+        loop = int(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times'))
+    else:
+        loop = VERBOSE_PER_LOOP_DEFAULT
     # Setting from config file
-    NN.Train.trainbyBatch(MyNeuralNetwork, InputData, OutputData, errorfinal, times, speed, VerbosePerLoop=loop, Verbose=verbose)
+    TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, times, speed, VerbosePerLoop=loop, Verbose=verbose)
     MyNeuralNetwork.savetoFile()
     print('Saved to "'+MyNeuralNetwork.Name+'.node".')
 # Train neural network with specify parameters
 
 def trainNeuralNetworkbyDefault(MyNeuralNetwork):
-    print('Input "min error value per data(0.1)".')
+    print('Input "target error(0.1)".')
     rawinput = input('>>>')
     rawinput = rawinput.split()
     error = float(rawinput[0])
-    rawreader = IO.RAWReader()
-    rawreader.open('in.mtrx')
-    InputData = IO.getAMatrix(rawreader)
-    rawreader.open('out.mtrx')
-    OutputData = IO.getAMatrix(rawreader)
+    Datas = IO.getDatas()
     # Get Input/OutputData to matrix
-    errorfinal = math.sqrt(math.pow(error, 2)*len(InputData))
-    # Translate error per data(row) to whole error
-    print('Final error:'+str(errorfinal))
     if IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times') != None:
         loop = int(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times'))
     else:
@@ -99,7 +88,7 @@ def trainNeuralNetworkbyDefault(MyNeuralNetwork):
     else:
         speed = SPEED_DEFAULT
     # Setting from config file
-    NN.Train.trainbyBatch(MyNeuralNetwork, InputData, OutputData, errorfinal, Speed=speed, VerbosePerLoop=loop, Verbose=verbose)
+    TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, Speed=speed, VerbosePerLoop=loop, Verbose=verbose)
     MyNeuralNetwork.savetoFile()
     print('Saved to "'+MyNeuralNetwork.Name+'.node".')
 # Train neural network with default parameters
@@ -121,7 +110,7 @@ def feedNeuralNetworkbyTestmtrx(MyNeuralNetwork):
 # Feed neural network from "in_test.mtrx". And vertify it by "out_test.mtrx".
 
 def remapNeuralNetwork(MyNeuralNetwork):
-    MyNeuralNetwork = NN.NeuralNetwork(MyNeuralNetwork.LayersCount, MyNeuralNetwork.LayerNeuronsCount, Name=MyNeuralNetwork.Name)
+    MyNeuralNetwork = NeuralNetwork.DFF(MyNeuralNetwork.LayersCount, MyNeuralNetwork.LayerNeuronsCount, Name=MyNeuralNetwork.Name)
     # Use same parameters to create neural network
     print('Remaped "'+MyNeuralNetwork.Name+'" neural network successfully.')
     return MyNeuralNetwork
@@ -140,6 +129,12 @@ def clearScreen():
     sp.call('clear',shell=True)
 # Just simply clear th screen
 
+def ls():
+    print('')
+    print('ls:')
+    sp.call('ls --color',shell=True)
+# Just simply clear th screen
+
 # Config List
 ConfigDict = {
     'v': 'Verbose',
@@ -150,6 +145,10 @@ ConfigDict = {
 # End of Config List
 
 def setValuetoConfigfile():
+    print('Config list:')
+    print('[v] Verbose Level. -> '+str(IO.getValuefromConfigfile('setting.json', 'Verbose')))
+    print('[n] Verbose per "N" times. -> '+str(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times')))
+    print('[s] Default training speed. -> '+str(IO.getValuefromConfigfile('setting.json', 'Training_Speed')))
     name = input('Name Code:\n')
     value = input('Value:\n')
     IO.setValuetoConfigfile('setting.json', ConfigDict[str(name)], value)
@@ -161,3 +160,22 @@ def listConfigfileValues():
     print('[n] Verbose per "N" times. -> '+str(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times')))
     print('[s] Default training speed. -> '+str(IO.getValuefromConfigfile('setting.json', 'Training_Speed')))
 # List Config
+
+def printLogo():
+    print('')
+    try:
+        sp.call('echo -e "\e[1m\e[31m88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM\e[0m"',shell=True)
+        sp.call('echo -e "\e[1m\e[34m88Yb88 dP   Yb dP   Yb  YbdP   YbdP\e[0m"',shell=True)
+        sp.call('echo -e "\e[1m\e[32m88 Y88 Yb   dP Yb   dP  dPYb    88   \e[0m"',shell=True)
+        sp.call('echo -e "\e[1m\e[33m88  Y8  YbodP   YbodP  dP  Yb   88  \e[39mProject node.\e[0m "',shell=True)
+    except:
+        print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM')
+        print('88Yb88 dP   Yb dP   Yb  YbdP   YbdP  ')
+        print('88 Y88 Yb   dP Yb   dP  dPYb    88   ')
+        print('88  Y8  YbodP   YbodP  dP  Yb   88  Project node. ')
+    print('')
+    print('Copyright(c)2017 NOOXY inc. Taiwan.')
+    print('')
+    print('Artificial neural network (ANN) manager. Python ver 0.0.0')
+    print('For more information or update ->\'http://www.nooxy.tk\'.')
+# Print LOGO

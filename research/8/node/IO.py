@@ -52,7 +52,7 @@ def getAMatrix(MyRAWReader):
         matrix.append(rowlist)
     ANSER = np.array(tuple(matrix), dtype=float)
     return ANSER
-# Get one numpy matrix by RAWReader
+# Get one cupy matrix by RAWReader
 
 def writeAMatrix(Matrix, MyRAWWriter):
     rowsize = len(Matrix)
@@ -92,3 +92,18 @@ def setValuetoConfigfile(Filename, ValueTitle, Value):
     f.write(json.dumps(config, sort_keys=True, indent=4))
     f.close()
 # Set specify value from file
+
+def getDatas():
+    try:
+        rawreader = RAWReader()
+        rawreader.open('in.mtrx')
+        InputData = getAMatrix(rawreader)
+        rawreader.open('out.mtrx')
+        OutputData = getAMatrix(rawreader)
+        rawreader.open('in_valid.mtrx')
+        InputValidationData = getAMatrix(rawreader)
+        rawreader.open('out_valid.mtrx')
+        OutputValidationData = getAMatrix(rawreader)
+    except:
+        print('Warning: get data failed.')
+    return [InputData, OutputData, InputValidationData, OutputValidationData]
