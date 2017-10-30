@@ -3,9 +3,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('TkAgg')
 # Ploting
-def plotByList(MyList, xlist=None, xlabel='xlabel', ylabel='ylabel', Title='title', LineTags=[]):
-    if xlist != None:
-        plt.plot(MyList,xlist)
+def plotByList(MyList, xlabel='xlabel', ylabel='ylabel', Title='title', LineTags=[], Xlist=None):
+    if Xlist.any() != None:
+        plt.plot(Xlist, MyList)
     else:
         plt.plot(MyList)
     plt.title(Title)

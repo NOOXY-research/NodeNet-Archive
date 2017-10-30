@@ -224,4 +224,4 @@ def plotNeuralNetwork(MyNeuralNetwork):
     ylist = []
     for x in xlist:
         ylist.append(MyNeuralNetwork.feed(np.array(([x]), dtype=float))[0])
-    Graph.plotByList(xlist, ylist, 'input', 'output', MyNeuralNetwork.Name+'\'s plotting')
+    Graph.plotByList(ylist, 'input', 'output', MyNeuralNetwork.Name+'\'s plotting', Xlist=xlist)
