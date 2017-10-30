@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 matplotlib.use('TkAgg')
 # Ploting
 def plotByList(MyList, xlabel='xlabel', ylabel='ylabel', Title='title', LineTags=[], Xlist=None):
-    if Xlist.any() != None:
+    if Xlist is not None:
         plt.plot(Xlist, MyList)
     else:
         plt.plot(MyList)
