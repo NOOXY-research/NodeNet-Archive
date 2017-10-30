@@ -15,6 +15,9 @@ class RAWReader(object):
         self.SlicedString = (f.read()).split()
         f.close()
     # Translate file to splited list
+    def openString(self, String):
+        self.SlicedString = String.split()
+    # Translate string to splited list
     def pop(self):
         if len(self.SlicedString) > 0:
             return self.SlicedString.pop(0)
@@ -101,10 +104,15 @@ def getDatas():
         InputData = getAMatrix(rawreader)
         rawreader.open('out.mtrx')
         OutputData = getAMatrix(rawreader)
-        rawreader.open('in_valid.mtrx')
-        InputValidationData = getAMatrix(rawreader)
-        rawreader.open('out_valid.mtrx')
-        OutputValidationData = getAMatrix(rawreader)
+        try:
+            rawreader.open('in_valid.mtrx')
+            InputValidationData = getAMatrix(rawreader)
+            rawreader.open('out_valid.mtrx')
+            OutputValidationData = getAMatrix(rawreader)
+        except:
+            InputValidationData = None
+            OutputValidationData = None
+            print('ValidationData not found skipped.')
         return [InputData, OutputData, InputValidationData, OutputValidationData]
     except:
         print('Warning: get data failed.')
@@ -137,3 +145,9 @@ def idx2mtrx(FilenameIn, FilenameOut):
     writeAMatrix(OUT, rawwriter)
     rawwriter.write(FilenameOut+'.mtrx')
     print('saved to'+FilenameOut+'.mtrx')
+
+def printprettyMatrix(Matrix):
+    # np.set_printoptions(threshold=np.nan)
+    np.set_printoptions(precision=3)
+    np.set_printoptions(suppress=True)
+    print(Matrix)

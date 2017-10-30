@@ -5,6 +5,7 @@ import node.IO as IO
 import math
 import subprocess as sp
 import node.NeuralNetwork.TrainingType as TrainingType
+import node.Graph as Graph
 # For clearing the screen
 VERBOSE_DEFAULT = 2
 VERBOSE_PER_LOOP_DEFAULT = 10000
@@ -18,6 +19,7 @@ def createNeuralNetwork():
         layerneuronscount.append(int(input('Input layer('+str(layer+1)+'\\'+str(layerscount)+')\'s neurons count.\n>>>')))
     nn = NeuralNetwork.DFF(layerscount, layerneuronscount, name)
     nn.savetoFile()
+    IO.setValuetoConfigfile('setting.json', 'latestNN', nn.Name)
     return nn
 # Create Neural Network and return it
 
@@ -25,14 +27,30 @@ def loadNeuralNetwork():
     name = input('Input NeuralNetwork\'s name to be loaded.\n>>>')
     nn = NeuralNetwork.DFF()
     nn.loadfromFile(name)
+    IO.setValuetoConfigfile('setting.json', 'latestNN', nn.Name)
     return nn
 # Load Neural Network and return it
+
+def getLatestNeuralNetworkName():
+    return IO.getValuefromConfigfile('setting.json', 'latestNN')
+# Get latest neural network name
+
+def loadLatestNeuralNetwork():
+    name = IO.getValuefromConfigfile('setting.json', 'latestNN')
+    nn = NeuralNetwork.DFF()
+    if name != None:
+        nn.loadfromFile(name)
+    else:
+        print('No latest NeuralNetwork')
+    return nn
+# Load latest Neural Network and return it
 
 def recoverNeuralNetwork():
     name = input('Input NeuralNetwork\'s name to be recovered.\n>>>')
     nn = NeuralNetwork.DFF()
-    nn.loadfromFile(name+'_latest')
+    nn.loadfromFile(name+'_backup')
     nn.Name = name
+    IO.setValuetoConfigfile('setting.json', 'latestNN', nn.Name)
     return nn
 # Load latest Neural Network not saved and return it
 
@@ -41,8 +59,7 @@ def printMatrix():
     raw = IO.RAWReader()
     raw.open(name+'.mtrx')
     matrix = IO.getAMatrix(raw)
-    np.set_printoptions(threshold=np.nan)
-    print(matrix)
+    IO.printprettyMatrix(matrix)
 # Print specify matrix file
 
 def trainNeuralNetwork(MyNeuralNetwork):
@@ -64,8 +81,6 @@ def trainNeuralNetwork(MyNeuralNetwork):
         loop = VERBOSE_PER_LOOP_DEFAULT
     # Setting from config file
     TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, times, speed, VerbosePerLoop=loop, Verbose=verbose)
-    MyNeuralNetwork.savetoFile()
-    print('Saved to "'+MyNeuralNetwork.Name+'.node".')
 # Train neural network with specify parameters
 
 def trainNeuralNetworkbyDefault(MyNeuralNetwork):
@@ -89,25 +104,39 @@ def trainNeuralNetworkbyDefault(MyNeuralNetwork):
         speed = SPEED_DEFAULT
     # Setting from config file
     TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, Speed=speed, VerbosePerLoop=loop, Verbose=verbose)
-    MyNeuralNetwork.savetoFile()
-    print('Saved to "'+MyNeuralNetwork.Name+'.node".')
 # Train neural network with default parameters
 
 def trainNeuralNetworkRandomly(MyNeuralNetwork):
-    pass
+    print('Sorry the function\'s development not completed')
 # Feed data randomly from  batch of data to train the neural network
 
 def feedNeuralNetwork(MyNeuralNetwork):
-    pass
+    # string = input('input "row(number of data amount)", "column(number of input layer\'s neuron size)"\n')
+    # string = string + ' ' + input('And then input "elements" row after row.\n')
+    string= '1 '+str(MyNeuralNetwork.LayerNeuronsCount[0])+' '
+    # Single set of data 1 * input size
+    string = string+input('Input single data set.(split by space and press enter)\n')
+    rawreader = IO.RAWReader()
+    rawreader.openString(string)
+    M = IO.getAMatrix(rawreader)
+    IO.printprettyMatrix(MyNeuralNetwork.feed(M))
 # Feed neural network by manually input.
 
 def feedNeuralNetworkbymtrx(MyNeuralNetwork):
+    name = input('Input .mtrx\'s file name.\n')
+    rawreader = IO.RAWReader()
+    rawreader.open(name+'.mtrx')
+    M = IO.getAMatrix(rawreader)
+    np.set_printoptions(threshold=np.nan)
+    np.set_printoptions(precision=3)
+    np.set_printoptions(suppress=False)
+    IO.printprettyMatrix(MyNeuralNetwork.feed(M))
     pass
 # Feed neural network from ".mtrx" file.
 
-def feedNeuralNetworkbyTestmtrx(MyNeuralNetwork):
-    pass
-# Feed neural network from "in_test.mtrx". And vertify it by "out_test.mtrx".
+# def feedNeuralNetworkbyTestmtrx(MyNeuralNetwork):
+#     pass
+# # Feed neural network from "in_test.mtrx". And vertify it by "out_test.mtrx".
 
 def remapNeuralNetwork(MyNeuralNetwork):
     MyNeuralNetwork = NeuralNetwork.DFF(MyNeuralNetwork.LayersCount, MyNeuralNetwork.LayerNeuronsCount, Name=MyNeuralNetwork.Name)
@@ -145,10 +174,7 @@ ConfigDict = {
 # End of Config List
 
 def setValuetoConfigfile():
-    print('Config list:')
-    print('[v] Verbose Level. -> '+str(IO.getValuefromConfigfile('setting.json', 'Verbose')))
-    print('[n] Verbose per "N" times. -> '+str(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times')))
-    print('[s] Default training speed. -> '+str(IO.getValuefromConfigfile('setting.json', 'Training_Speed')))
+    listConfigfileValues()
     name = input('Name Code:\n')
     value = input('Value:\n')
     IO.setValuetoConfigfile('setting.json', ConfigDict[str(name)], value)
@@ -184,3 +210,18 @@ def idx2mtrx():
     FilenameIn = input('Input input IDX file name\n')
     FilenameOut = input('Input output mtrx filename.\n')
     IO.idx2mtrx(FilenameIn, FilenameOut)
+# translator
+
+def saveNeuralNetworkAs(MyNeuralNetwork):
+    name = input('Input new neural network\'s name.\n')
+    MyNeuralNetwork.savetoFile(name)
+    print('Saved as "'+name+'.node".')
+
+def plotNeuralNetwork(MyNeuralNetwork):
+    xstart = float(input('Input start value of input.\n>>>'))
+    xend = float(input('Input end value of input.\n>>>'))
+    xlist = np.linspace(xstart, xend, num=1000)
+    ylist = []
+    for x in xlist:
+        ylist.append(MyNeuralNetwork.feed(np.array(([x]), dtype=float))[0])
+    Graph.plotByList(xlist, ylist, 'input', 'output', MyNeuralNetwork.Name+'\'s plotting')

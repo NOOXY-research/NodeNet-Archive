@@ -11,8 +11,6 @@ import node.Graph as Graph
 # Import some essential module and function
 import node.NeuralNetwork.LearningAlgorithm as LearningAlgorithm
 
-import node.IO as IO
-
 import node.NeuralNetwork.Function as f
 
 def trainbyBatch(MyNeuralNetwork, Datas, Error = 0.01, MaxTimes = -1, Speed = 0.1, MyLearningAlgorithm = LearningAlgorithm.BackPropagation, Verbose = 0, VerbosePerLoop = 10000, Backup = True):
@@ -31,7 +29,6 @@ def trainbyBatch(MyNeuralNetwork, Datas, Error = 0.01, MaxTimes = -1, Speed = 0.
     # Initlalize Datas
     timescount = 0
     error = 99999
-    validationerror= 99999
     errorlogs = []
     Validationerrorlogs = []
     # errorlogs for pending errors for later Graphing use
@@ -42,30 +39,29 @@ def trainbyBatch(MyNeuralNetwork, Datas, Error = 0.01, MaxTimes = -1, Speed = 0.
         error = MyLearningAlgorithm(MyNeuralNetwork, InputData, OutputData, Speed)
         timescount += 1;
         if Verbose > 1 and timescount%VerbosePerLoop == 0:
-            print('Training log >>>epochs: '+str(timescount)+', error: '+str(error)+', validation error: '+str(validationerror))
+            print('Training log >>>epochs: '+str(timescount)+', error: '+str(error))
         # Verbose training status
         if Verbose > 2:
             errorlogs.append(error)
             if InputValidationData.all() != None:
-                validationerror=f.MeanSquareError(OutputValidationData,MyNeuralNetwork.feed(InputValidationData))
-                Validationerrorlogs.append(validationerror)
+                Validationerrorlogs.append(f.MeanSquareError(OutputValidationData,MyNeuralNetwork.feed(InputValidationData)))
         # Append error to list
         if timescount%(VerbosePerLoop) == 0:
-            MyNeuralNetwork.savetoFile(MyNeuralNetwork.Name+'_backup')
+            MyNeuralNetwork.savetoFile(MyNeuralNetwork.Name+'_latest')
         # Backup Neural Network to file
     # Train until it reach its goals
     if Verbose >= 1:
         print('Train log >>>Result: ')
-        print('Tried times: '+str(timescount)+', error: '+str(error)+', validation error: '+str(validationerror))
-        # print('InputData: ')
-        # IO.printprettyMatrix(InputData)
-        # print('OutputData: ')
-        # IO.printprettyMatrix(OutputData)
-        # print('Result output: ')
-        # IO.printprettyMatrix(MyNeuralNetwork.feed(InputData))
+        print('Tried times: '+str(timescount)+', error: '+str(error))
+        print('InputData: ')
+        print(InputData)
+        print('OutputData: ')
+        print(OutputData)
+        print('Result output: ')
+        print(MyNeuralNetwork.feed(InputData))
         print('')
     if Verbose > 2:
         Graph.plotByList(errorlogs)
         if InputValidationData.all() != None:
-            Graph.plotByList(Validationerrorlogs, 'Epochs', 'error rate', 'NN='+MyNeuralNetwork.Name+', Speed='+str(Speed)+', finalerror='+str(error), LineTags=['Error', 'Validation Error'])
+            Graph.plotByList(Validationerrorlogs, 'Epochs', 'error rate', 'NN='+MyNeuralNetwork.Name+', Speed='+str(Speed)+', Target_error='+str(error), LineTags=['Error', 'Validation Error'])
 # Training batchly

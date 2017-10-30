@@ -12,7 +12,7 @@ import numpy as np
 import node.NeuralNetwork.Function as f
 # Activation function etc.
 
-def BackPropagation(MyNeuralNetwork, InputData, OutputData, speed = 0.1, Maxupdate=10):
+def BackPropagation(MyNeuralNetwork, InputData, OutputData, speed = 0.1):
     # 'speed' is the training speed, which 'weight adjustment' = speed * djdw
     DJDW = []
     DELTA = []
@@ -39,10 +39,6 @@ def BackPropagation(MyNeuralNetwork, InputData, OutputData, speed = 0.1, Maxupda
         # Delta = Deltafront X transpose(ThisLayerWeight) * DerivativeofActivationFunction(ThisLayerBacksideSum)
         # For variable explianation go NeuralNetwork.feed()
     # Get all tangen of weight relative to cost(error)
-    # for layer in range(0, MyNeuralNetwork.LayersCount-1):
-    #     (DJDW[layer])[(DJDW[layer])>Maxupdate] = Maxupdate
-    #     (DJDW[layer])[(DJDW[layer])<-Maxupdate] = -Maxupdate
-    # Apply Maxium weight update
     for layer in range(0, MyNeuralNetwork.LayersCount-1):
         MyNeuralNetwork.Weight[layer] = MyNeuralNetwork.Weight[layer]-speed*DJDW[layer]
         MyNeuralNetwork.Bias[layer] = MyNeuralNetwork.Bias[layer]-speed*np.dot(np.ones((1, InputData.shape[0])), DELTA[layer+1])
