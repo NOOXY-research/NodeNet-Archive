@@ -66,7 +66,7 @@ def recoverNeuralNetwork():
 def printMatrix():
     name = input('Input matrix\'s name to be printed. (Read from ".mtrx" file)\n>>>')
     raw = IO.RAWReader()
-    raw.open(name+'.mtrx')
+    raw.open(p.DATA_PATH+name+'.mtrx')
     matrix = IO.getAMatrix(raw)
     IO.printprettyMatrix(matrix)
 # Print specify matrix file
@@ -134,7 +134,7 @@ def feedNeuralNetwork(MyNeuralNetwork):
 def feedNeuralNetworkbymtrx(MyNeuralNetwork):
     name = input('Input .mtrx\'s file name.\n')
     rawreader = IO.RAWReader()
-    rawreader.open(name+'.mtrx')
+    rawreader.open(p.DATA_PATH+name+'.mtrx')
     M = IO.getAMatrix(rawreader)
     np.set_printoptions(threshold=np.nan)
     np.set_printoptions(precision=3)
