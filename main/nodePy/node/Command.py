@@ -6,10 +6,19 @@ import math
 import subprocess as sp
 import node.NeuralNetwork.TrainingType as TrainingType
 import node.Graph as Graph
+import os
+import node.Parameter as p
 # For clearing the screen
-VERBOSE_DEFAULT = 2
-VERBOSE_PER_LOOP_DEFAULT = 10000
-SPEED_DEFAULT = 0.1
+
+
+def initialize():
+    if not os.path.exists(p.SAVED_PATH):
+        os.makedirs(p.SAVED_PATH)
+    if not os.path.exists(p.DATA_PATH):
+        os.makedirs(p.DATA_PATH)
+
+def haveinitailize():
+    pass
 
 def createNeuralNetwork():
     name = input('Input NeuralNetwork\'s name to be created.\n>>>')
@@ -74,11 +83,11 @@ def trainNeuralNetwork(MyNeuralNetwork):
     if IO.getValuefromConfigfile('setting.json', 'Verbose') != None:
         verbose = int(IO.getValuefromConfigfile('setting.json', 'Verbose'))
     else:
-        verbose = VERBOSE_DEFAULT
+        verbose = p.VERBOSE_DEFAULT
     if IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times') != None:
         loop = int(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times'))
     else:
-        loop = VERBOSE_PER_LOOP_DEFAULT
+        loop = p.VERBOSE_PER_LOOP_DEFAULT
     # Setting from config file
     TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, times, speed, VerbosePerLoop=loop, Verbose=verbose)
 # Train neural network with specify parameters
@@ -93,15 +102,15 @@ def trainNeuralNetworkbyDefault(MyNeuralNetwork):
     if IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times') != None:
         loop = int(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times'))
     else:
-        loop = VERBOSE_PER_LOOP_DEFAULT
+        loop = p.VERBOSE_PER_LOOP_DEFAULT
     if IO.getValuefromConfigfile('setting.json', 'Verbose') != None:
         verbose = int(IO.getValuefromConfigfile('setting.json', 'Verbose'))
     else:
-        verbose = VERBOSE_DEFAULT
+        verbose = p.VERBOSE_DEFAULT
     if IO.getValuefromConfigfile('setting.json', 'Training_Speed') != None:
         speed = float(IO.getValuefromConfigfile('setting.json', 'Training_Speed'))
     else:
-        speed = SPEED_DEFAULT
+        speed = p.SPEED_DEFAULT
     # Setting from config file
     TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, Speed=speed, VerbosePerLoop=loop, Verbose=verbose)
 # Train neural network with default parameters
@@ -158,10 +167,10 @@ def clearScreen():
     sp.call('clear',shell=True)
 # Just simply clear th screen
 
-def ls():
+def list():
     print('')
-    print('ls:')
-    sp.call('ls --color',shell=True)
+    print('Saved NeuralNetwork:')
+    sp.call('ls '+p.SAVED_PATH+' --color',shell=True)
 # Just simply clear th screen
 
 # Config List
@@ -202,7 +211,7 @@ def printLogo():
     print('')
     print('Copyright(c)2017 NOOXY inc. Taiwan.')
     print('')
-    print('Artificial neural network (ANN) manager. Python ver 0.0.0')
+    print('Artificial neural network (ANN) manager. '+p.NODEPY_VERSION)
     print('For more information or update ->\'http://www.nooxy.tk\'.')
 # Print LOGO
 

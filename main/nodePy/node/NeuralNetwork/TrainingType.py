@@ -15,7 +15,10 @@ import node.IO as IO
 
 import node.NeuralNetwork.Function as f
 
-def trainbyBatch(MyNeuralNetwork, Datas, Error = 0.01, MaxTimes = -1, Speed = 0.1, MyLearningAlgorithm = LearningAlgorithm.BackPropagation, Verbose = 0, VerbosePerLoop = 10000, Backup = True):
+import node.Parameter as p
+# Load parameters
+
+def trainbyBatch(MyNeuralNetwork, Datas, Error = 0.01, MaxTimes = -1, Speed = p.SPEED_DEFAULT, MyLearningAlgorithm = LearningAlgorithm.BackPropagation, Verbose = p.VERBOSE_DEFAULT, VerbosePerLoop = p.VERBOSE_PER_LOOP_DEFAULT, Backup = True):
     # Parameter explianation:
     # MyNeuralNetwork: Simply your NeuralNetwork
     # InputData/OutputData: Simply your data in numpy's matrix type

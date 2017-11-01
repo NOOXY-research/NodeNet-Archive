@@ -2,6 +2,8 @@
 import numpy as np
 import json
 import struct
+import node.Parameter as p
+# Load parameters
 
 class RAWReader(object):
     def __init__(self):
@@ -100,14 +102,14 @@ def setValuetoConfigfile(Filename, ValueTitle, Value):
 def getDatas():
     try:
         rawreader = RAWReader()
-        rawreader.open('in.mtrx')
+        rawreader.open(p.DATA_PATH+'in.mtrx')
         InputData = getAMatrix(rawreader)
-        rawreader.open('out.mtrx')
+        rawreader.open(p.DATA_PATH+'out.mtrx')
         OutputData = getAMatrix(rawreader)
         try:
-            rawreader.open('in_valid.mtrx')
+            rawreader.open(p.DATA_PATH+'in_valid.mtrx')
             InputValidationData = getAMatrix(rawreader)
-            rawreader.open('out_valid.mtrx')
+            rawreader.open(p.DATA_PATH+'out_valid.mtrx')
             OutputValidationData = getAMatrix(rawreader)
         except:
             InputValidationData = None

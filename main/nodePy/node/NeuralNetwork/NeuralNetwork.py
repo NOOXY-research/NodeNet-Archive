@@ -11,6 +11,8 @@ import node.NeuralNetwork.Function as f
 # Activation function etc.
 import node.IO as IO
 # File related function
+import node.Parameter as p
+# Load parameters
 
 class DFF(object):
 # Classical NeuralNetwork object
@@ -57,7 +59,7 @@ class DFF(object):
     def loadfromFile(self, Filename):
         try:
             MyRAWReader = IO.RAWReader()
-            MyRAWReader.open(Filename+'.node')
+            MyRAWReader.open(p.SAVED_PATH+Filename+'.node')
             self.Name = Filename;
             self.LayersCount = int(MyRAWReader.pop())
             self.LayerNeuronsCount = []
@@ -93,6 +95,6 @@ class DFF(object):
         for layer in range(0, self.LayersCount-1):
             IO.writeAMatrix(self.Bias[layer], MyRAWWriter)
         # Save each layer's bias one by one
-        MyRAWWriter.write(Filename+'.node')
+        MyRAWWriter.write(p.SAVED_PATH+Filename+'.node')
     # Save Neural Network to .node File
 # Definition of Deep Feedforwrd NeuralNetwork
