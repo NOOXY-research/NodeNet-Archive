@@ -69,8 +69,8 @@ A directory to test some functions that not yet to be added to mainline.
 #### Training method list
 - backpropagation [v]
 - Levenberg-Marquardt backpropagation [x]
-- Backpropagation with classical momentum [next]
-- Backpropagation with Nesterov momentum [x]
+- Backpropagation with classical momentum [v]
+- Backpropagation with Nesterov momentum [next]
 - RMSprop [x]
 - Adagrad [x]
 - Adam [x]
