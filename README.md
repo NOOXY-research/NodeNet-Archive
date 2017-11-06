@@ -59,13 +59,13 @@ A directory to test some functions that not yet to be added to mainline.
 ### NodePy
 #### Todo
 - CuPy compatible [v]
-- More types of neural network training method [x]
+- More types of neural network training method, listed below.
 - Validation graph and fucntion [v]
 - Validation to stop training [x]
 - Ability to start a project to determine best model [x]
 - Plotling [v]
 - Configuration to save state [v]
-- and more to be added
+- more and more to be added
 #### Training method list
 - backpropagation vanilla[v]
 - Levenberg-Marquardt backpropagation [x]
