@@ -10,7 +10,6 @@ import os
 import node.Parameter as p
 # For clearing the screen
 
-
 def initialize():
     if not os.path.exists(p.SAVED_PATH):
         os.makedirs(p.SAVED_PATH)
@@ -70,15 +69,70 @@ def printMatrix():
     matrix = IO.getAMatrix(raw)
     IO.printprettyMatrix(matrix)
 # Print specify matrix file
+def clearScreen():
+    sp.call('clear',shell=True)
+# Just simply clear th screen
 
+def list():
+    print('')
+    print('Saved NeuralNetwork:')
+    sp.call('ls '+p.SAVED_PATH+' --color',shell=True)
+# Just simply clear th screen
+
+# Config List
+ConfigDict = {
+    'v': 'Verbose',
+    'Verbose': 'Verbose',
+    'n': 'Loop_per_N_times',
+}
+# End of Config List
+
+def setValuetoConfigfile():
+    listConfigfileValues()
+    name = input('Name Code:\n>>>')
+    value = input('Value:\n>>>')
+    IO.setValuetoConfigfile('setting.json', ConfigDict[str(name)], value)
+# Set Config
+
+def listConfigfileValues():
+    print('Config list:')
+    print('[v] Verbose Level. -> '+str(IO.getValuefromConfigfile('setting.json', 'Verbose')))
+    print('[n] Verbose per "N" times. -> '+str(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times')))
+# List Config
+
+def printLogo():
+    print('')
+    try:
+        sp.call('echo -e "\e[1m\e[31m88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM\e[0m"',shell=True)
+        sp.call('echo -e "\e[1m\e[34m88Yb88 dP   Yb dP   Yb  YbdP   YbdP\e[0m"',shell=True)
+        sp.call('echo -e "\e[1m\e[32m88 Y88 Yb   dP Yb   dP  dPYb    88   \e[0m"',shell=True)
+        sp.call('echo -e "\e[1m\e[33m88  Y8  YbodP   YbodP  dP  Yb   88  \e[39mProject node.\e[0m "',shell=True)
+    except:
+        print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM')
+        print('88Yb88 dP   Yb dP   Yb  YbdP   YbdP  ')
+        print('88 Y88 Yb   dP Yb   dP  dPYb    88   ')
+        print('88  Y8  YbodP   YbodP  dP  Yb   88  Project node. ')
+    print('')
+    print('Copyright(c)2017 NOOXY inc. Taiwan.')
+    print('')
+    print('Artificial neural network (ANN) manager. '+p.NODEPY_VERSION)
+    print('For more information or update ->\'http://www.nooxy.tk\'.')
+# Print LOGO
+
+def idx2mtrx():
+    FilenameIn = input('Input input IDX file name\n')
+    FilenameOut = input('Input output mtrx filename.\n')
+    IO.idx2mtrx(FilenameIn, FilenameOut)
+# translator
+# ----------------------NeuralNetwork Start----------------------
 def trainNeuralNetwork(MyNeuralNetwork):
-    print('Input "target error(0.1)", "speed(0.01)" , "max training times (-1 for infinite)"')
-    rawinput = input('>>>')
-    rawinput = rawinput.split()
-    error = float(rawinput[0])
-    speed = float(rawinput[1])
-    times = int(rawinput[2])
+    error = float(input('Input target error(0.1)\n>>>'))
+    epochs = int(input('Input max epochs(-1)\n>>>'))
     Datas = IO.getDatas()
+    if IO.getProfile(MyNeuralNetwork) == None:
+        print('You must have training profile first!')
+        editNeuralNetworkProfile(MyNeuralNetwork)
+    Profile = IO.getProfile(MyNeuralNetwork)
     # Get Input/OutputData to matrix
     if IO.getValuefromConfigfile('setting.json', 'Verbose') != None:
         verbose = int(IO.getValuefromConfigfile('setting.json', 'Verbose'))
@@ -89,31 +143,44 @@ def trainNeuralNetwork(MyNeuralNetwork):
     else:
         loop = p.VERBOSE_PER_LOOP_DEFAULT
     # Setting from config file
-    TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, times, speed, VerbosePerLoop=loop, Verbose=verbose)
+    TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, epochs, Profile, verbose, loop)
 # Train neural network with specify parameters
 
-def trainNeuralNetworkbyDefault(MyNeuralNetwork):
-    print('Input "target error(0.1)".')
-    rawinput = input('>>>')
-    rawinput = rawinput.split()
-    error = float(rawinput[0])
-    Datas = IO.getDatas()
-    # Get Input/OutputData to matrix
-    if IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times') != None:
-        loop = int(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times'))
-    else:
-        loop = p.VERBOSE_PER_LOOP_DEFAULT
-    if IO.getValuefromConfigfile('setting.json', 'Verbose') != None:
-        verbose = int(IO.getValuefromConfigfile('setting.json', 'Verbose'))
-    else:
-        verbose = p.VERBOSE_DEFAULT
-    if IO.getValuefromConfigfile('setting.json', 'Training_Speed') != None:
-        speed = float(IO.getValuefromConfigfile('setting.json', 'Training_Speed'))
-    else:
-        speed = p.SPEED_DEFAULT
-    # Setting from config file
-    TrainingType.trainbyBatch(MyNeuralNetwork, Datas, error, Speed=speed, VerbosePerLoop=loop, Verbose=verbose)
-# Train neural network with default parameters
+def printLearningAlgorithmDict():
+    print('[0] BackPropagation')
+    print('[1] BackPropagation with momentum')
+
+def editBackproprogation(MyNeuralNetwork):
+    speed = float(input('Input speed value.\n>>>'))
+    # targeterr = input('Input target error value.\n>>>')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'BackPropagation')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Speed', speed)
+    # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
+
+def editBackproprogationwithMomentum(MyNeuralNetwork):
+    speed = float(input('Input speed value.\n>>>'))
+    momentumrate = float(input('Input momentum rate.\n>>>'))
+    # targeterr = input('Input target error value.\n>>>')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'BackPropagationwithMomentum')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Speed', speed)
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Momentum_Rate', momentumrate)
+    # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
+
+editProfileDict = {
+    '0' : editBackproprogation,
+    '1' : editBackproprogationwithMomentum,
+}
+
+def editNeuralNetworkProfile(MyNeuralNetwork):
+    print('You are editing "'+MyNeuralNetwork.Name+'" neuralnet\'s profile.')
+    os.remove(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json')
+    printLearningAlgorithmDict()
+    LearningAlgorithmType = input('Select prefers LearningAlgorithm by index.\n>>>')
+    editProfileDict[LearningAlgorithmType](MyNeuralNetwork)
+
+def printNeuralNetworkProfile(MyNeuralNetwork):
+    print(MyNeuralNetwork.Name+' neuralnet\'s profile:')
+    print(IO.getProfile(MyNeuralNetwork))
 
 def trainNeuralNetworkRandomly(MyNeuralNetwork):
     print('Sorry the function\'s development not completed')
@@ -143,10 +210,6 @@ def feedNeuralNetworkbymtrx(MyNeuralNetwork):
     pass
 # Feed neural network from ".mtrx" file.
 
-# def feedNeuralNetworkbyTestmtrx(MyNeuralNetwork):
-#     pass
-# # Feed neural network from "in_test.mtrx". And vertify it by "out_test.mtrx".
-
 def remapNeuralNetwork(MyNeuralNetwork):
     MyNeuralNetwork = NeuralNetwork.DFF(MyNeuralNetwork.LayersCount, MyNeuralNetwork.LayerNeuronsCount, Name=MyNeuralNetwork.Name)
     # Use same parameters to create neural network
@@ -162,64 +225,6 @@ def saveNeuralNetwork(MyNeuralNetwork):
 def printNeuralNetwork(MyNeuralNetwork):
     print(MyNeuralNetwork)
 # Print detail of neural network
-
-def clearScreen():
-    sp.call('clear',shell=True)
-# Just simply clear th screen
-
-def list():
-    print('')
-    print('Saved NeuralNetwork:')
-    sp.call('ls '+p.SAVED_PATH+' --color',shell=True)
-# Just simply clear th screen
-
-# Config List
-ConfigDict = {
-    'v': 'Verbose',
-    'Verbose': 'Verbose',
-    'n': 'Loop_per_N_times',
-    's': 'Training_Speed',
-}
-# End of Config List
-
-def setValuetoConfigfile():
-    listConfigfileValues()
-    name = input('Name Code:\n')
-    value = input('Value:\n')
-    IO.setValuetoConfigfile('setting.json', ConfigDict[str(name)], value)
-# Set Config
-
-def listConfigfileValues():
-    print('Config list:')
-    print('[v] Verbose Level. -> '+str(IO.getValuefromConfigfile('setting.json', 'Verbose')))
-    print('[n] Verbose per "N" times. -> '+str(IO.getValuefromConfigfile('setting.json', 'Loop_per_N_times')))
-    print('[s] Default training speed. -> '+str(IO.getValuefromConfigfile('setting.json', 'Training_Speed')))
-# List Config
-
-def printLogo():
-    print('')
-    try:
-        sp.call('echo -e "\e[1m\e[31m88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM\e[0m"',shell=True)
-        sp.call('echo -e "\e[1m\e[34m88Yb88 dP   Yb dP   Yb  YbdP   YbdP\e[0m"',shell=True)
-        sp.call('echo -e "\e[1m\e[32m88 Y88 Yb   dP Yb   dP  dPYb    88   \e[0m"',shell=True)
-        sp.call('echo -e "\e[1m\e[33m88  Y8  YbodP   YbodP  dP  Yb   88  \e[39mProject node.\e[0m "',shell=True)
-    except:
-        print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM')
-        print('88Yb88 dP   Yb dP   Yb  YbdP   YbdP  ')
-        print('88 Y88 Yb   dP Yb   dP  dPYb    88   ')
-        print('88  Y8  YbodP   YbodP  dP  Yb   88  Project node. ')
-    print('')
-    print('Copyright(c)2017 NOOXY inc. Taiwan.')
-    print('')
-    print('Artificial neural network (ANN) manager. '+p.NODEPY_VERSION)
-    print('For more information or update ->\'http://www.nooxy.tk\'.')
-# Print LOGO
-
-def idx2mtrx():
-    FilenameIn = input('Input input IDX file name\n')
-    FilenameOut = input('Input output mtrx filename.\n')
-    IO.idx2mtrx(FilenameIn, FilenameOut)
-# translator
 
 def saveNeuralNetworkAs(MyNeuralNetwork):
     name = input('Input new neural network\'s name.\n')

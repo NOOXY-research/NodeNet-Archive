@@ -1,0 +1,5 @@
+{
+    "LearningAlgorithm": "BackPropagationwithMomentum",
+    "Momentum_Rate": 0.1,
+    "Speed": 0.1
+}

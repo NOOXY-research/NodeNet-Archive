@@ -153,3 +153,14 @@ def printprettyMatrix(Matrix):
     np.set_printoptions(precision=3)
     np.set_printoptions(suppress=True)
     print(Matrix)
+
+def getProfile(MyNeuralNetwork):
+    try:
+        f = open(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'r')
+        profile = json.loads(f.read())
+        f.close()
+        learningalgorithm = profile.pop('LearningAlgorithm')
+        profile.update({'LearningAlgorithm':p.LearningAlgorithmDict[learningalgorithm]})
+        return profile
+    except FileNotFoundError:
+        return None

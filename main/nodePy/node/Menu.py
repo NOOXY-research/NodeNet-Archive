@@ -41,8 +41,8 @@ def StartMenu():
 def NNManagementMenu(MyNeuralNetwork):
     def printHelp():
         print('\nCommand list:')
-        print('[train] Train normallly with custom parameters.')
-        print('[traind] Train with default parameters.')
+        print('[train] Train the neural network  .')
+        print('[edit] Edit neural network profile.')
         print('[trainr] Train randomly. ')
         print('[feed] Feed data and get output.')
         print('[feedm] Feed by ".mtrx" file and get output.')
@@ -60,7 +60,7 @@ def NNManagementMenu(MyNeuralNetwork):
         'h': printHelp,
         'help': printHelp,
         'train': cmd.trainNeuralNetwork,
-        'traind': cmd.trainNeuralNetworkbyDefault,
+        'edit': cmd.editNeuralNetworkProfile,
         'trainr': cmd.trainNeuralNetworkRandomly,
         'feed': cmd.feedNeuralNetwork,
         'feedm': cmd.feedNeuralNetworkbymtrx,
@@ -75,7 +75,7 @@ def NNManagementMenu(MyNeuralNetwork):
         'clr': cmd.clearScreen,
     }
     # Command's dictionary
-    nncmdtype = ['train', 'traind', 'trainr', 'feed', 'feedm', 'feedt', 'save', 's', 'saveas', 'p', 'print', 'plot']
+    nncmdtype = ['train', 'edit', 'trainr', 'feed', 'feedm', 'feedt', 'save', 's', 'saveas', 'p', 'print', 'plot']
     # Command type that need NeuralNetwork as Parameter
     returnnncmdtype = ['remap']
     # Command type that return NeuralNetwork
@@ -84,6 +84,8 @@ def NNManagementMenu(MyNeuralNetwork):
         print('<<< A NeuralNetwork object @'+MyNeuralNetwork.Name+' >>>')
         print('layer structure:')
         print(MyNeuralNetwork.LayerNeuronsCount)
+        cmd.printNeuralNetworkProfile(MyNeuralNetwork)
+        print()
         print('Type "help" to be helped. To save neural network key "save"!')
         command = input('>>>')
         if command == 'r':
