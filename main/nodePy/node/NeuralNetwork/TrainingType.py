@@ -39,12 +39,13 @@ def trainbyBatch(MyNeuralNetwork, Datas, Error = 0.01, MaxEpochs = -1, Profile= 
     validationerrorlogs = []
     learningalgorithm = Profile['LearningAlgorithm']
     learingconfiguration = Profile
+    recursion = None
     # errorlogs for pending errors for later Graphing use
     if Verbose >= 1:
         print(str(len(INPUTDATA))+' samples. Target error: '+str(Error))
         print('training...')
     while(error > Error and (timescount < MaxEpochs or MaxEpochs == -1)):
-        error = learningalgorithm(MyNeuralNetwork, INPUTDATA, OUTPUTDATA, learingconfiguration)
+        error, recursion = learningalgorithm(MyNeuralNetwork, INPUTDATA, OUTPUTDATA, learingconfiguration, recursion)
         timescount += 1;
         if Verbose > 1 and timescount%VerbosePerLoop == 0:
             print('Training log >>>epochs: '+str(timescount)+', error: '+str(error)+', validation error: '+str(validationerror))
