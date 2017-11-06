@@ -42,7 +42,7 @@ def NNManagementMenu(MyNeuralNetwork):
     def printHelp():
         print('\nCommand list:')
         print('[train] Train the neural network  .')
-        print('[edit] Edit neural network profile.')
+        print('[edit] Edit neural network training profile.')
         print('[trainr] Train randomly. ')
         print('[feed] Feed data and get output.')
         print('[feedm] Feed by ".mtrx" file and get output.')

@@ -173,7 +173,10 @@ editProfileDict = {
 
 def editNeuralNetworkProfile(MyNeuralNetwork):
     print('You are editing "'+MyNeuralNetwork.Name+'" neuralnet\'s profile.')
-    os.remove(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json')
+    try:
+        os.remove(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json')
+    except:
+        pass
     printLearningAlgorithmDict()
     LearningAlgorithmType = input('Select prefers LearningAlgorithm by index.\n>>>')
     editProfileDict[LearningAlgorithmType](MyNeuralNetwork)
