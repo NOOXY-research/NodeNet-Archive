@@ -76,7 +76,7 @@ A directory to test some functions that not yet to be added to mainline.
 - Adam [x]
 - Resilient Backpropagation [x]
 - Scaled Conjugate Gradient [x]
-##### Reference
+##### List reference
 https://github.com/jorgenkg/python-neural-network/edit/master/README.md
 #### NN models
 - NN classic [v]
