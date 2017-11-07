@@ -70,10 +70,10 @@ A directory to test some functions that not yet to be added to mainline.
 - backpropagation vanilla[v]
 - Levenberg-Marquardt backpropagation [x]
 - Backpropagation with classical momentum [v]
-- Backpropagation with Nesterov momentum [next]
+- Backpropagation with Nesterov momentum [v]
 - RMSprop [x]
 - Adagrad [x]
-- Adam [x]
+- Adam [next]
 - Resilient Backpropagation [x]
 - Scaled Conjugate Gradient [x]
 ##### List reference
