@@ -64,6 +64,7 @@ A directory to test some functions that not yet to be added to mainline.
 - Validation to stop training [x]
 - Ability to start a project to determine best model [x]
 - Plotling [v]
+- Costomizable activative function, cost function [x]
 - Configuration to save state [v]
 - more and more to be added
 #### Training method list
