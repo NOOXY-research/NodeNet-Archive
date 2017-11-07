@@ -47,7 +47,7 @@ def BackPropagationBase(MyNeuralNetwork, InputData, OutputData, getWeightChange,
     return error
 # A type of training is called BackPropagation for DFF
 
-def BackPropagation(MyNeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion):
+def BackPropagation(MyNeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion = None):
     speed = LearningConfiguration['Speed']
     def getWeightChange(DJDW, LayerIndex):
         return -speed*DJDW[LayerIndex]
@@ -61,6 +61,7 @@ def BackPropagation(MyNeuralNetwork, InputData, OutputData, LearningConfiguratio
 # A type of training is called BackPropagation for DFF
 
 def BackPropagationwithMomentum(MyNeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion = None):
+    # Recursion for providing volume of momentum otherwise after this function ended. The record will disappear.
     speed = LearningConfiguration['Speed']
     momentumrate = LearningConfiguration['Momentum_Rate']
     weightmomentum = []
@@ -69,9 +70,11 @@ def BackPropagationwithMomentum(MyNeuralNetwork, InputData, OutputData, Learning
         for layer in range(0, MyNeuralNetwork.LayersCount-1):
             weightmomentum.append(np.zeros((MyNeuralNetwork.LayerNeuronsCount[layer], MyNeuralNetwork.LayerNeuronsCount[layer+1])))
             biasmomentum.append(np.zeros((1, MyNeuralNetwork.LayerNeuronsCount[layer+1])))
+        # Initlalize momentum with right size
     else:
         weightmomentum = Recursion[0]
         biasmomentum = Recursion[1]
+        # Recover status from Recursion Parameter
     # Initlalize momentum
 
     def getWeightChange(DJDW, LayerIndex):
@@ -82,6 +85,46 @@ def BackPropagationwithMomentum(MyNeuralNetwork, InputData, OutputData, Learning
 
     def getBiasChange(DELTA, LayerIndex):
         biaschange = -speed*np.dot(np.ones((1, InputData.shape[0])), DELTA[LayerIndex+1]) + momentumrate*biasmomentum[LayerIndex]
+        biasmomentum[LayerIndex] = biaschange
+        return biaschange
+    # Apply bias changes
+
+    return BackPropagationBase(MyNeuralNetwork, InputData, OutputData, getWeightChange, getBiasChange), [weightmomentum, biasmomentum]
+# A type of training is called BackPropagation for DFF
+
+def BackPropagationwithNesterovMomentum(MyNeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion = None):
+    # Recursion for providing volume of momentum otherwise after this function ended. The record will disappear.
+    speed = LearningConfiguration['Speed']
+    momentumrate = LearningConfiguration['Momentum_Rate']
+    weightmomentum = []
+    biasmomentum = []
+    first = False
+    if Recursion == None:
+        first = True
+        for layer in range(0, MyNeuralNetwork.LayersCount-1):
+            weightmomentum.append(np.zeros((MyNeuralNetwork.LayerNeuronsCount[layer], MyNeuralNetwork.LayerNeuronsCount[layer+1])))
+            biasmomentum.append(np.zeros((1, MyNeuralNetwork.LayerNeuronsCount[layer+1])))
+        # Initlalize momentum with right size
+    else:
+        weightmomentum = Recursion[0]
+        biasmomentum = Recursion[1]
+        # Recover status from Recursion Parameter
+    # Initlalize momentum
+
+    def getWeightChange(DJDW, LayerIndex):
+        if first == True:
+            weightchange = -momentumrate*speed*DJDW[LayerIndex]
+        else:
+            weightchange = -speed*DJDW[LayerIndex] + momentumrate*weightmomentum[LayerIndex]
+        weightmomentum[LayerIndex] = weightchange
+        return weightchange
+    # Apply weight changes
+
+    def getBiasChange(DELTA, LayerIndex):
+        if first == True:
+            biaschange = -momentumrate*speed*np.dot(np.ones((1, InputData.shape[0])), DELTA[LayerIndex+1])
+        else:
+            biaschange = -speed*np.dot(np.ones((1, InputData.shape[0])), DELTA[LayerIndex+1]) + momentumrate*biasmomentum[LayerIndex]
         biasmomentum[LayerIndex] = biaschange
         return biaschange
     # Apply bias changes

@@ -10,6 +10,7 @@ VERBOSE_DEFAULT = 2
 LearningAlgorithmDict = {
 'BackPropagation' : LA.BackPropagation,
 'BackPropagationwithMomentum' : LA.BackPropagationwithMomentum,
+'BackPropagationwithNesterovMomentum' : LA.BackPropagationwithNesterovMomentum,
 }
 # General
 
