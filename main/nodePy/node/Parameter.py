@@ -1,7 +1,7 @@
 # Parameter.py shares variables that be refered globally
 import node.NeuralNetwork.LearningAlgorithm as LA
 
-NODEPY_VERSION = 'Python aphla 1.1.2'
+NODEPY_VERSION = 'Python aphla 1.1.3'
 VERBOSE_PER_LOOP_DEFAULT = 10000
 SAVED_PATH = 'saved/'
 DATA_PATH = 'data/'
