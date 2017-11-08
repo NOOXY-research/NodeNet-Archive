@@ -2,26 +2,55 @@ table = {'A': 'O', 'B': '@', 'N': ' ', 1: 'O', -1: '@', 0: ' '}
 
 class ReversiUtility(object):
     def printKey(Key):
-        sublocation = 0
+        col = 0
         for location in Key:
             print(table[location]+' ', end='')
-            if sublocation == 7:
+            if col == 7:
                 print('')
-                sublocation = 0
+                col = 0
             else:
-                sublocation += 1
+                col += 1
 
     def printMapping(Mapping):
         print('')
-        sublocation = 0
-        print('|----------------|\n|', end = '')
+        col = 0
+        row = 0
+        print('  0 1 2 3 4 5 6 7')
+        print(' |----------------|\n0|', end = '')
         for location in Mapping:
             print(table[location]+' ', end='')
-            if sublocation == 7:
-                print('|\n|', end = '')
-                sublocation = 0
+            if col == 7:
+                if row < 7:
+                    print('|\n'+str(row+1)+'|', end = '')
+                else:
+                    print('|\n |',end='')
+                row += 1
+                col = 0
             else:
-                sublocation += 1
+                col += 1
+        print('----------------|')
+        print('')
+
+    def printMappingwithDropPoint(Mapping, DropPoint):
+        print('')
+        col = 0
+        row = 0
+        print('  0 1 2 3 4 5 6 7')
+        print(' |----------------|\n0|', end = '')
+        for location in Mapping:
+            if DropPoint[0] == row and DropPoint[1] == col:
+                print('X ', end='')
+            else:
+                print(table[location]+' ', end='')
+            if col == 7:
+                if row < 7:
+                    print('|\n'+str(row+1)+'|', end = '')
+                else:
+                    print('|\n |',end='')
+                row += 1
+                col = 0
+            else:
+                col += 1
         print('----------------|')
         print('')
 
@@ -98,21 +127,28 @@ class ReversiUtility(object):
                 newmapping.append(Mapping[row*8+(7-col)])
         return newmapping
 
-    def reverseMapping(Mapping):
-        newmapping = []
-        for location in Mapping:
-            newmapping.append(location*-1)
-        return newmapping
+    def turnDropPoint90degree(DropPoint):
+        pass
+
+    def mirrorDropPointXaxis(DropPoint):
+        pass
+
+    def mirrorDropPointYaxis(DropPoint):
+        pass
+
+    def reverseDropPoint(DropPoint):
+        pass
 
 class ReversiRecord(object):
     def __init__(self):
         self.MappingList = []
         self.TurnList = []
+        self.DropPointList = []
         self.Winner = 0
     def printRecord(self):
         for x in range(len(self.MappingList)):
-            print('It\'s '+table[self.TurnList[x]]+'\'s turn. In this mapping.')
-            ReversiUtility.printMapping(self.MappingList[x])
+            print('It\'s '+table[self.TurnList[x]]+'\'s turn. In this mapping. It drop '+str(self.DropPointList[x]))
+            ReversiUtility.printMappingwithDropPoint(self.MappingList[x], self.DropPointList[x])
         print('Winer is '+table[self.Winner])
     def loadfromFile(self, Filename):
         f = open(Filename, 'r')
@@ -121,14 +157,28 @@ class ReversiRecord(object):
         for location in rawstring.split():
             if ('A' in location) or ('B' in location) or ('N' in location):
                 self.MappingList.append(ReversiUtility.convertKeytoMapping(location))
-        for location in rawstring.split():
-            if ('user' in location) :
+        for location in range(len(rawstring.split())):
+            if ('user' in rawstring.split()[location]) :
                 self.TurnList.append(1)
-            elif  ('com' in location):
+                self.DropPointList.append((int(rawstring.split()[location+1]), int(rawstring.split()[location+2])))
+            elif  ('com' in rawstring.split()[location]):
                 self.TurnList.append(-1)
+                self.DropPointList.append((int(rawstring.split()[location+1]), int(rawstring.split()[location+2])))
         if 'win' in rawstring:
             self.Winner = -1
         elif 'lose' in rawstring:
             self.Winner = 1
         else:
             self.Winner = 0
+
+class ReversiDropsRecord(object):
+    def __init__(self):
+        self.DropsRecordDict = {}
+    def appendDropRecord(self, Mapping, DropPoint):
+        self.DropsRecordDict.update({Mapping, self.DropsRecordDict[Mapping]+[DropPoint,]})
+    def expand(self):
+        pass
+    def dumptomtrx(self):
+        pass
+# Every record format [] : [(),(),()]
+#              mapping^    ^list of drop points
