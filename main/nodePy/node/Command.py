@@ -148,8 +148,9 @@ def trainNeuralNetwork(MyNeuralNetwork):
 
 def printLearningAlgorithmDict():
     print('[0] BackPropagation')
-    print('[1] BackPropagation with momentum')
-    print('[2] BackPropagation with Nesterov momentum')
+    print('[1] Classical Momentum')
+    print('[2] Nesterov Momentum')
+    print('[3] AdaGrad')
 
 def editBackproprogation(MyNeuralNetwork):
     speed = float(input('Input speed value.\n>>>'))
@@ -158,32 +159,41 @@ def editBackproprogation(MyNeuralNetwork):
     IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Speed', speed)
     # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
 
-def editBackproprogationwithMomentum(MyNeuralNetwork):
+def editClassicalMomentum(MyNeuralNetwork):
     speed = float(input('Input speed value.\n>>>'))
     momentumrate = float(input('Input momentum rate.\n>>>'))
     # targeterr = input('Input target error value.\n>>>')
-    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'BackPropagationwithMomentum')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'ClassicalMomentum')
     IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Speed', speed)
     IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Momentum_Rate', momentumrate)
     # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
 
-def editBackproprogationwithNesterovMomentum(MyNeuralNetwork):
+def editNesterovMomentum(MyNeuralNetwork):
     speed = float(input('Input speed value.\n>>>'))
     momentumrate = float(input('Input momentum rate.\n>>>'))
     # targeterr = input('Input target error value.\n>>>')
-    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'BackPropagationwithNesterovMomentum')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'NesterovMomentum')
     IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Speed', speed)
     IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Momentum_Rate', momentumrate)
+    # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
+
+def editAdaGrad(MyNeuralNetwork):
+    speed = float(input('Input speed value.\n>>>'))
+    # targeterr = input('Input target error value.\n>>>')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'AdaGrad')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Speed', speed)
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Epsilon', p.PROFILE_DEFAULT['Epsilon'])
     # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
 
 editProfileDict = {
     '0' : editBackproprogation,
-    '1' : editBackproprogationwithMomentum,
-    '2' : editBackproprogationwithNesterovMomentum,
+    '1' : editClassicalMomentum,
+    '2' : editNesterovMomentum,
+    '3' : editAdaGrad,
 }
 
 def editNeuralNetworkProfile(MyNeuralNetwork):
-    print('You are editing "'+MyNeuralNetwork.Name+'" neuralnet\'s profile.')
+    print('You are editing "'+MyNeuralNetwork.Name+'" neuralnet\'s training profile.')
     try:
         os.remove(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json')
     except:
@@ -193,7 +203,7 @@ def editNeuralNetworkProfile(MyNeuralNetwork):
     editProfileDict[LearningAlgorithmType](MyNeuralNetwork)
 
 def printNeuralNetworkProfile(MyNeuralNetwork):
-    print(MyNeuralNetwork.Name+' neuralnet\'s profile:')
+    print(MyNeuralNetwork.Name+' neuralnet\'s training profile:')
     print(IO.getProfile(MyNeuralNetwork))
 
 def trainNeuralNetworkRandomly(MyNeuralNetwork):

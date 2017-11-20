@@ -35,7 +35,7 @@ class ReversiUtility(object):
         print('')
         col = 0
         row = 0
-        print('  0 1 2 3 4 5 6 7')
+        print('  0 1 2 3 4 5 6 7 Y')
         print(' |----------------|\n0|', end = '')
         for location in Mapping:
             if DropPoint[0] == row and DropPoint[1] == col:
@@ -46,7 +46,7 @@ class ReversiUtility(object):
                 if row < 7:
                     print('|\n'+str(row+1)+'|', end = '')
                 else:
-                    print('|\n |',end='')
+                    print('|\nX|',end='')
                 row += 1
                 col = 0
             else:
@@ -128,16 +128,22 @@ class ReversiUtility(object):
         return newmapping
 
     def turnDropPoint90degree(DropPoint):
-        pass
+        newdrop = ()
+        newdrop += (DropPoint[1],)
+        newdrop += (DropPoint[0],)
+        return newdrop
 
     def mirrorDropPointXaxis(DropPoint):
-        pass
+        newdrop = ()
+        newdrop += (7-DropPoint[0],)
+        newdrop += (DropPoint[1],)
+        return newdrop
 
     def mirrorDropPointYaxis(DropPoint):
-        pass
-
-    def reverseDropPoint(DropPoint):
-        pass
+        newdrop = ()
+        newdrop += (DropPoint[0],)
+        newdrop += (7-DropPoint[1],)
+        return newdrop
 
 class ReversiRecord(object):
     def __init__(self):
@@ -176,7 +182,9 @@ class ReversiDropsRecord(object):
         self.DropsRecordDict = {}
     def appendDropRecord(self, Mapping, DropPoint):
         self.DropsRecordDict.update({Mapping, self.DropsRecordDict[Mapping]+[DropPoint,]})
-    def expand(self):
+    def extractDropRecord(self):
+        pass
+    def swallowWinnerbyReversiRecord(self):
         pass
     def dumptomtrx(self):
         pass

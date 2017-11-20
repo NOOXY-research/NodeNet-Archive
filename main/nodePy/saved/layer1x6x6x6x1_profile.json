@@ -1,5 +1,0 @@
-{
-    "LearningAlgorithm": "BackPropagationwithNesterovMomentum",
-    "Momentum_Rate": 0.8,
-    "Speed": 0.01
-}
