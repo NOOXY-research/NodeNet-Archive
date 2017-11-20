@@ -73,7 +73,7 @@ A directory to test some functions that not yet to be added to mainline.
 - Backpropagation with classical momentum [v]
 - Backpropagation with Nesterov momentum [v]
 - RMSprop [x]
-- Adagrad [x]
+- Adagrad [v]
 - Adam [next]
 - Resilient Backpropagation [x]
 - Scaled Conjugate Gradient [x]
