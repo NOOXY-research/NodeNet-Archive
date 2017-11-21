@@ -151,6 +151,9 @@ def printLearningAlgorithmDict():
     print('[1] Classical Momentum')
     print('[2] Nesterov Momentum')
     print('[3] AdaGrad')
+    print('[4] ')
+    print('[5] RMSprop')
+    print('[6] Adam')
 
 def editBackproprogation(MyNeuralNetwork):
     speed = float(input('Input speed value.\n>>>'))
@@ -185,11 +188,36 @@ def editAdaGrad(MyNeuralNetwork):
     IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Epsilon', p.PROFILE_DEFAULT['Epsilon'])
     # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
 
+def editRMSprop(MyNeuralNetwork):
+    speed = float(input('Input speed value('+str(p.PROFILE_DEFAULT['Speed'])+').\n>>>'))
+    decayrate = float(input('Input decay rate('+str(p.PROFILE_DEFAULT['DecayRate'])+').\n>>>'))
+    # targeterr = input('Input target error value.\n>>>')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'RMSprop')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Speed', speed)
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'DecayRate', decayrate)
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Epsilon', p.PROFILE_DEFAULT['Epsilon'])
+    # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
+
+def editAdam(MyNeuralNetwork):
+    speed = float(input('Input speed value('+str(p.PROFILE_DEFAULT['Speed'])+').\n>>>'))
+    beta1 = float(input('Input Beta1(decay rate)('+str(p.PROFILE_DEFAULT['Beta1'])+').\n>>>'))
+    beta2 = float(input('Input Beta2(decay rate)('+str(p.PROFILE_DEFAULT['Beta2'])+').\n>>>'))
+    # targeterr = input('Input target error value.\n>>>')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'Adam')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Speed', speed)
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Beta1', beta1)
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Beta2', beta2)
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Epsilon', p.PROFILE_DEFAULT['Epsilon'])
+    # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
+
 editProfileDict = {
     '0' : editBackproprogation,
     '1' : editClassicalMomentum,
     '2' : editNesterovMomentum,
     '3' : editAdaGrad,
+    '4' : editAdaGrad,
+    '5' : editRMSprop,
+    '6' : editAdam,
 }
 
 def editNeuralNetworkProfile(MyNeuralNetwork):

@@ -166,13 +166,85 @@ def AdaGrad(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursi
     return BackPropagationBase(NeuralNetwork, InputData, OutputData, getWeightChange, getBiasChange), [weightsquaresum, biassquaresum]
 # A type of training is called AdaGrad for DFF
 
-def Adam(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion = None):
-    pass
-
 def Adadelta(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion = None):
     # Recursion for providing volume of momentum otherwise after this function ended. The record will disappear.
     pass
 
 def RMSprop(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion = None):
-    # Recursion for providing volume of momentum otherwise after this function ended. The record will disappear.
-    pass
+        # Recursion for providing volume of momentum otherwise after this function ended. The record will disappear.
+        speed = LearningConfiguration['Speed']
+        epsilon = LearningConfiguration['Epsilon']
+        decayrate = LearningConfiguration['DecayRate']
+        weightsquaresum = []
+        biassquaresum = []
+        # Nessasary parameters for AdaGrad
+
+        if Recursion == None:
+            for layer in range(0, NeuralNetwork.LayersCount-1):
+                weightsquaresum.append(np.zeros((NeuralNetwork.LayerNeuronsCount[layer], NeuralNetwork.LayerNeuronsCount[layer+1])))
+                biassquaresum.append(np.zeros((1, NeuralNetwork.LayerNeuronsCount[layer+1])))
+            # Initlalize squaresum with right size
+        else:
+            weightsquaresum = Recursion[0]
+            biassquaresum = Recursion[1]
+            # Recover status from Recursion Parameter
+        # Initlalize squaresum
+
+        def getWeightChange(DJDW, LayerIndex):
+            weightsquaresum[LayerIndex] = (decayrate)*weightsquaresum[LayerIndex] + (1-decayrate)*np.power(DJDW[LayerIndex], 2 )
+            weightchange = -speed*DJDW[LayerIndex]/(np.sqrt(weightsquaresum[LayerIndex])+epsilon)
+            return weightchange
+        # Apply weight changes
+
+        def getBiasChange(DELTA, LayerIndex):
+            biasgradient = np.dot(np.ones((1, InputData.shape[0])), DELTA[LayerIndex+1])
+            biassquaresum[LayerIndex] = (decayrate)*biassquaresum[LayerIndex] + (1-decayrate)*np.power(biasgradient, 2 )
+            biaschange = -speed*biasgradient/(np.sqrt(biassquaresum[LayerIndex])+epsilon)
+            return biaschange
+        # Apply bias changes
+        return BackPropagationBase(NeuralNetwork, InputData, OutputData, getWeightChange, getBiasChange), [weightsquaresum, biassquaresum]
+    # A type of training is called RMSprop for DFF
+
+def Adam(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion = None):
+        # Recursion for providing volume of momentum otherwise after this function ended. The record will disappear.
+        speed = LearningConfiguration['Speed']
+        epsilon = LearningConfiguration['Epsilon']
+        beta1 = LearningConfiguration['Beta1']
+        beta2 = LearningConfiguration['Beta2']
+        weightm = []
+        biasm = []
+        weightv = []
+        biasv = []
+        # Nessasary parameters for AdaGrad
+
+        if Recursion == None:
+            for layer in range(0, NeuralNetwork.LayersCount-1):
+                weightm.append(np.zeros((NeuralNetwork.LayerNeuronsCount[layer], NeuralNetwork.LayerNeuronsCount[layer+1])))
+                biasm.append(np.zeros((1, NeuralNetwork.LayerNeuronsCount[layer+1])))
+                weightv.append(np.zeros((NeuralNetwork.LayerNeuronsCount[layer], NeuralNetwork.LayerNeuronsCount[layer+1])))
+                biasv.append(np.zeros((1, NeuralNetwork.LayerNeuronsCount[layer+1])))
+            # Initlalize squaresum with right size
+        else:
+            weightm = Recursion[0]
+            biasm = Recursion[1]
+            weightv = Recursion[2]
+            biasv = Recursion[3]
+            # Recover status from Recursion Parameter
+        # Initlalize squaresum
+
+        def getWeightChange(DJDW, LayerIndex):
+            weightm[LayerIndex] = (beta1)*weightm[LayerIndex] + (1-beta1)*DJDW[LayerIndex]
+            weightv[LayerIndex] = (beta2)*weightv[LayerIndex] + (1-beta2)*np.power(DJDW[LayerIndex], 2 )
+            weightchange = -speed*weightm[LayerIndex]/(np.sqrt(weightv[LayerIndex])+epsilon)
+            return weightchange
+        # Apply weight changes
+
+        def getBiasChange(DELTA, LayerIndex):
+            biasgradient = np.dot(np.ones((1, InputData.shape[0])), DELTA[LayerIndex+1])
+            biasm[LayerIndex] = (beta1)*biasm[LayerIndex] + (1-beta1)*biasgradient
+            biasv[LayerIndex] = (beta2)*biasv[LayerIndex] + (1-beta2)*np.power(biasgradient, 2 )
+            biaschange = -speed*biasgradient/(np.sqrt(biasv[LayerIndex])+epsilon)
+            return biaschange
+        # Apply bias changes
+        return BackPropagationBase(NeuralNetwork, InputData, OutputData, getWeightChange, getBiasChange), [weightm, biasm, weightv, biasv]
+    # A type of training is called RMSprop for DFF
