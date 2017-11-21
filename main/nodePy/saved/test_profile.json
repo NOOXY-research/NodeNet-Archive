@@ -1,5 +1,7 @@
 {
-    "LearningAlgorithm": "NesterovMomentum",
-    "Momentum_Rate": 0.8,
+    "Beta1": 0.9,
+    "Beta2": 0.999,
+    "Epsilon": 1e-08,
+    "LearningAlgorithm": "Adam",
     "Speed": 0.01
 }

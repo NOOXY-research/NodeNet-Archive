@@ -203,7 +203,7 @@ def RMSprop(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursi
             return biaschange
         # Apply bias changes
         return BackPropagationBase(NeuralNetwork, InputData, OutputData, getWeightChange, getBiasChange), [weightsquaresum, biassquaresum]
-    # A type of training is called RMSprop for DFF
+# A type of training is called RMSprop for DFF
 
 def Adam(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion = None):
         # Recursion for providing volume of momentum otherwise after this function ended. The record will disappear.
@@ -247,4 +247,4 @@ def Adam(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion 
             return biaschange
         # Apply bias changes
         return BackPropagationBase(NeuralNetwork, InputData, OutputData, getWeightChange, getBiasChange), [weightm, biasm, weightv, biasv]
-    # A type of training is called RMSprop for DFF
+# A type of training is called Adam for DFF
