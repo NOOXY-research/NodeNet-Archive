@@ -72,9 +72,9 @@ A directory to test some functions that not yet to be added to mainline.
 - Levenberg-Marquardt backpropagation [x]
 - Backpropagation with classical momentum [v]
 - Backpropagation with Nesterov momentum [v]
-- RMSprop [x]
+- RMSprop [v]
 - Adagrad [v]
-- Adam [next]
+- Adam [v]
 - Resilient Backpropagation [x]
 - Scaled Conjugate Gradient [x]
 ##### List reference
