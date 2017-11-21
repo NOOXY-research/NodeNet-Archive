@@ -74,11 +74,10 @@ A directory to test some functions that not yet to be added to mainline.
 - Backpropagation with Nesterov momentum [v]
 - RMSprop [v]
 - Adagrad [v]
+- Adadelta [x]
 - Adam [v]
 - Resilient Backpropagation [x]
 - Scaled Conjugate Gradient [x]
-##### List reference
-https://github.com/jorgenkg/python-neural-network/edit/master/README.md
 #### NN models
 - NN classic [v]
 - CNN [x]
