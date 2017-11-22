@@ -1,5 +1,5 @@
-# Node project
-"Node" is a project aims to bulid neural network. It's oriention is to collect plenty of types of neural networks and provide manager to organize and test it, and the neural network libary can work without needs of manager isolatedly. It is a project belongs to NOOXY. There still lots of miles to  complete it. Article about it might be established some day. Visit us www.nooxy.tk.
+# NodeNet
+"NodeNet" is a project aims to bulid neural network. It's oriention is to collect plenty of types of neural networks and provide manager to organize and test it, and the neural network libary can work without needs of manager isolatedly. It is a project belongs to NOOXY. There still lots of miles to  complete it. Article about it might be established some day. Visit us www.nooxy.tk.
 ## Requirement
 - C++
 - Python
@@ -54,9 +54,9 @@ Test the nerual network for finding good models etc.
 ### test
 A directory to test some functions that not yet to be added to mainline. 
 ## TODO
-### NodeC
+### NodeNetC
 - we stop this project temporary
-### NodePy
+### NodeNetPy
 #### Todo
 - CuPy compatible [v]
 - More types of neural network training method, listed below.
