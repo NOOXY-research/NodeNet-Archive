@@ -294,7 +294,48 @@ class ReversiDropsRecord(object):
                 self.addDrop(False, maptranslation, [MyReversiRecord.DropPointList[x],])
     def dumptomtrx(self):
         finalinputmapping = []
+        finaloutputmappingnp = []
+        for x in range(len(self.WinMappings)):
+            if self.WinMappings[x] not in finalinputmapping:
+                finalinputmapping.append(self.WinMappings[x])
+        for x in range(len(self.LoseMappings)):
+            if self.LoseMappings[x] not in finalinputmapping:
+                finalinputmapping.append(self.LoseMappings[x])
+        # Finish input
+        for x in range(len(finalinputmapping)):
+            finaloutputmappingnp.append(np.zeros(64))
+        # Initialize output
+        for x in range(len(self.WinMappings)):
+            addmap = np.zeros(64)
+            for y in self.WinDrops[x]:
+                addmap[y[0]*7+y[1]] += 1
+            finaloutputmappingnp[finalinputmapping.index(self.WinMappings[x])] += addmap
+        # Win output render
+        for x in range(len(self.LoseMappings)):
+            addmap = np.zeros(64)
+            for y in self.LoseDrops[x]:
+                addmap[y[0]*7+y[1]] += -1
+            finaloutputmappingnp[finalinputmapping.index(self.LoseMappings[x])] += addmap
+        # Lose output render
+        for x in range(len(finaloutputmappingnp)):
+            count = 0
+            devidemap = np.zeros(64)
+            if finalinputmapping[x] in self.WinMappings:
+                for y in self.WinDrops[self.WinMappings.index(finalinputmapping[x])]:
+                    devidemap[y[0]*7+y[1]] += 1
+            if finalinputmapping[x] in self.LoseMappings:
+                for y in self.LoseDrops[self.LoseMappings.index(finalinputmapping[x])]:
+                    devidemap[y[0]*7+y[1]] += 1
+            finaloutputmappingnp[x] = (finaloutputmappingnp[x]/devidemap)*5
+            where_are_NaNs = np.isnan(finaloutputmappingnp[x])
+            (finaloutputmappingnp[x])[where_are_NaNs] = 0
+        # Finalize render with normalization
         finaloutputmapping = []
+        for x in finaloutputmappingnp:
+            finaloutputmapping.append(x.tolist())
         InputData = io.RAWWriter()
-        io.writeAMatrix(np.array(tuple(self.WinMappings)), InputData)
+        io.writeAMatrix(np.array(tuple(finalinputmapping)), InputData)
         InputData.write('in.mtrx')
+        OutputData = io.RAWWriter()
+        io.writeAMatrix(np.array(tuple(finaloutputmapping)), OutputData)
+        OutputData.write('out.mtrx')

@@ -20,7 +20,7 @@ def StartMenu():
         # cmd.clearScreen();
         print('')
         print('<<< Home Menu >>>')
-        print('[c]reate. [o]pen. [l]atest('+cmd.getLatestNeuralNetworkName()+'). [r]ecover. NeuralNetwork')
+        print('[c]reate. [o]pen. [l]atest('+str(cmd.getLatestNeuralNetworkName())+'). [r]ecover. NeuralNetwork')
         print('[p]rint matrix(.mtrx). [conf]igure. [list]. [e]xit.')
         command = input('>>>')
         if command == 'e':

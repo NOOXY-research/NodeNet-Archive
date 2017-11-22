@@ -114,7 +114,7 @@ int ANN_manager::launch () {
       }
       case 'g':
       {
-        cuda_init();
+        //cuda_init();
         break;
       }
       case 'e':

@@ -52,9 +52,8 @@ def trainbyBatch(MyNeuralNetwork, Datas, Error = 0.01, MaxEpochs = -1, Profile= 
         # Verbose training status
         if Verbose > 2:
             errorlogs.append(error)
-            if INPUTVALIDATIONDATA.all() != None:
-                validationerror=f.MeanSquareError(OUTPUTVALIDATIONDATA,MyNeuralNetwork.feed(INPUTVALIDATIONDATA))
-                validationerrorlogs.append(validationerror)
+            validationerror=f.MeanSquareError(OUTPUTVALIDATIONDATA,MyNeuralNetwork.feed(INPUTVALIDATIONDATA))
+            validationerrorlogs.append(validationerror)
         # Append error to list
         if (timescount%(VerbosePerLoop) == 0) and Backup == True:
             MyNeuralNetwork.savetoFile(MyNeuralNetwork.Name+'_backup')
@@ -72,6 +71,5 @@ def trainbyBatch(MyNeuralNetwork, Datas, Error = 0.01, MaxEpochs = -1, Profile= 
         print('')
     if Verbose > 2:
         Graph.plotByList(errorlogs)
-        if INPUTVALIDATIONDATA.all() != None:
-            Graph.plotByList(validationerrorlogs, 'Epochs', 'error rate', 'NN='+MyNeuralNetwork.Name+', Profile='+str(Profile)+', finalerror='+str(error), LineTags=['Error', 'Validation Error'])
+        Graph.plotByList(validationerrorlogs, 'Epochs', 'error rate', 'NN='+MyNeuralNetwork.Name+', Profile='+str(Profile)+', finalerror='+str(error), LineTags=['Error', 'Validation Error'])
 # Training batchly

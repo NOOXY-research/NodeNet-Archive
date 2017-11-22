@@ -128,6 +128,7 @@ def idx2mtrx():
 def trainNeuralNetwork(MyNeuralNetwork):
     error = float(input('Input target error(0.1)\n>>>'))
     epochs = int(input('Input max epochs(-1)\n>>>'))
+    print('Getting Datas...')
     Datas = IO.getDatas()
     if IO.getProfile(MyNeuralNetwork) == None:
         print('You must have training profile first!')
