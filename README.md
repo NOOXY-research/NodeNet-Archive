@@ -1,5 +1,5 @@
-# Node project
-"Node" is a project aims to bulid neural network. It's oriention is to collect plenty of types of neural networks and provide manager to organize and test it, and the neural network libary can work without needs of manager isolatedly. It is a project belongs to NOOXY. There still lots of miles to  complete it. Article about it might be established some day. Visit us www.nooxy.tk.
+# NodeNet
+"NodeNet" is a project aims to bulid neural network. It's oriention is to collect plenty of types of neural networks and provide manager to organize and test it, and the neural network libary can work without needs of manager isolatedly. It is a project belongs to NOOXY. There still lots of miles to  complete it. Article about it might be established some day. Visit us www.nooxy.tk.
 ## Requirement
 - C++
 - Python
@@ -54,17 +54,17 @@ Test the nerual network for finding good models etc.
 ### test
 A directory to test some functions that not yet to be added to mainline. 
 ## TODO
-### NodeC
+### NodeNetC
 - we stop this project temporary
-### NodePy
+### NodeNetPy
 #### Todo
 - CuPy compatible [v]
 - More types of neural network training method, listed below.
 - Validation graph and fucntion [v]
 - Validation to stop training [x]
-- Ability to start a project to determine best model [x]
-- Plotling [v]
-- Costomizable activative function, cost function [x]
+- Ability to start a project to determine best model automatically [x]
+- Plotting [v]
+- Costomizable activation function, cost function [x]
 - Configuration to save state [v]
 - more and more to be added
 #### Training method list
@@ -79,8 +79,10 @@ A directory to test some functions that not yet to be added to mainline.
 - Resilient Backpropagation [x]
 - Scaled Conjugate Gradient [x]
 #### NN models
-- NN classic [v]
-- CNN [x]
+- Deep feed forward [v]
+- Convolutional neural network [x]
+#### What's next?
+- We are planning to design neural network with network protocol feature.
 ## Gallery
 ![alt text](https://github.com/magneticchen/node_project/raw/master/research/8/graph/8x10x10x8/Figure_1-1.png)
 Input layer 8 neurons, Output layer 8 neurons. 2 hidden layer. Training Graph. backpropagation.
