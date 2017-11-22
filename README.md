@@ -62,9 +62,9 @@ A directory to test some functions that not yet to be added to mainline.
 - More types of neural network training method, listed below.
 - Validation graph and fucntion [v]
 - Validation to stop training [x]
-- Ability to start a project to determine best model [x]
-- Plotling [v]
-- Costomizable activative function, cost function [x]
+- Ability to start a project to determine best model automatically [x]
+- Plotting [v]
+- Costomizable activation function, cost function [x]
 - Configuration to save state [v]
 - more and more to be added
 #### Training method list
@@ -79,8 +79,10 @@ A directory to test some functions that not yet to be added to mainline.
 - Resilient Backpropagation [x]
 - Scaled Conjugate Gradient [x]
 #### NN models
-- NN classic [v]
-- CNN [x]
+- Deep feed forward [v]
+- Convolutional neural network [x]
+#### What's next?
+- We are planning to design neural network with network protocol feature.
 ## Gallery
 ![alt text](https://github.com/magneticchen/node_project/raw/master/research/8/graph/8x10x10x8/Figure_1-1.png)
 Input layer 8 neurons, Output layer 8 neurons. 2 hidden layer. Training Graph. backpropagation.
