@@ -66,7 +66,7 @@ A directory to test some functions that not yet to be added to mainline.
 - Ability to start a project to determine best model automatically [x]
 - Plotting [v]
 - Costomizable activation function, cost function [x]
-- Configuration to save state [v]
+- Save learning profile [v]
 - more and more to be added
 #### Training method list
 - backpropagation vanilla[v]
