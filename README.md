@@ -58,6 +58,7 @@ A directory to test some functions that not yet to be added to mainline.
 - we stop this project temporary
 ### NodeNetPy
 #### Todo
+- Normalization ability [x]
 - CuPy compatible [v]
 - More types of neural network training method, listed below.
 - Validation graph and fucntion [v]
