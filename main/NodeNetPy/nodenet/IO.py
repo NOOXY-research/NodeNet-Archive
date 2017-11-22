@@ -2,7 +2,7 @@
 import numpy as np
 import json
 import struct
-import node.Parameter as p
+import nodenet.Parameter as p
 # Load parameters
 
 class RAWReader(object):

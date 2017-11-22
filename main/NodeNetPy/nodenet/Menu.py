@@ -1,5 +1,5 @@
 # manager.py provide menus and launch start menu.
-import node.Command as cmd
+import nodenet.Command as cmd
 # Import essentail command modure for menu.
 
 def StartMenu():

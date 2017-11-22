@@ -9,7 +9,7 @@ import math
 # Sqrt
 import numpy as np
 # Matrix
-import node.NeuralNetwork.Function as f
+import nodenet.NeuralNetwork.Function as f
 # Activation function etc.
 
 def BackPropagationBase(NeuralNetwork, InputData, OutputData, getWeightChange, getBiasChange):

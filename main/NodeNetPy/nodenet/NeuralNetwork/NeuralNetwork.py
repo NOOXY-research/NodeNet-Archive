@@ -7,11 +7,11 @@
 # Operator 'X' for matrix dot multiplication, '*' for matrix elements multiplication. In annotation.
 import numpy as np
 # Matrix
-import node.NeuralNetwork.Function as f
+import nodenet.NeuralNetwork.Function as f
 # Activation function etc.
-import node.IO as IO
+import nodenet.IO as IO
 # File related function
-import node.Parameter as p
+import nodenet.Parameter as p
 # Load parameters
 
 class DFF(object):

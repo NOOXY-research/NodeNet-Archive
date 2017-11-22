@@ -7,15 +7,15 @@
 # Operator 'X' for matrix dot multiplication, '*' for matrix elements multiplication. In annotation.
 import numpy as np
 # Matrix
-import node.Graph as Graph
+import nodenet.Graph as Graph
 # Import some essential module and function
-import node.NeuralNetwork.LearningAlgorithm as LearningAlgorithm
+import nodenet.NeuralNetwork.LearningAlgorithm as LearningAlgorithm
 
-import node.IO as IO
+import nodenet.IO as IO
 
-import node.NeuralNetwork.Function as f
+import nodenet.NeuralNetwork.Function as f
 
-import node.Parameter as p
+import nodenet.Parameter as p
 # Load parameters
 
 def trainbyBatch(MyNeuralNetwork, Datas, Error = 0.01, MaxEpochs = -1, Profile= p.PROFILE_DEFAULT, Verbose = p.VERBOSE_DEFAULT, VerbosePerLoop = p.VERBOSE_PER_LOOP_DEFAULT, Backup = p.BACKUP_DEFAULT):

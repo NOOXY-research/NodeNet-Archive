@@ -1,5 +1,5 @@
-import node.Menu as Menu
-import node.Command as cmd
+import nodenet.Menu as Menu
+import nodenet.Command as cmd
 
 cmd.initialize()
 cmd.clearScreen()

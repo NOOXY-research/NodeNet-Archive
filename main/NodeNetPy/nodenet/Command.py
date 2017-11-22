@@ -1,13 +1,13 @@
 # Command.py for packaged command. And for later assemble use.
 import numpy as np
-import node.NeuralNetwork.NeuralNetwork as NeuralNetwork
-import node.IO as IO
+import nodenet.NeuralNetwork.NeuralNetwork as NeuralNetwork
+import nodenet.IO as IO
 import math
 import subprocess as sp
-import node.NeuralNetwork.TrainingType as TrainingType
-import node.Graph as Graph
+import nodenet.NeuralNetwork.TrainingType as TrainingType
+import nodenet.Graph as Graph
 import os
-import node.Parameter as p
+import nodenet.Parameter as p
 # For clearing the screen
 
 def initialize():
@@ -106,16 +106,16 @@ def printLogo():
         sp.call('echo -e "\e[1m\e[31m88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM\e[0m"',shell=True)
         sp.call('echo -e "\e[1m\e[34m88Yb88 dP   Yb dP   Yb  YbdP   YbdP\e[0m"',shell=True)
         sp.call('echo -e "\e[1m\e[32m88 Y88 Yb   dP Yb   dP  dPYb    88   \e[0m"',shell=True)
-        sp.call('echo -e "\e[1m\e[33m88  Y8  YbodP   YbodP  dP  Yb   88  \e[39mProject node.\e[0m "',shell=True)
+        sp.call('echo -e "\e[1m\e[33m88  Y8  YbodP   YbodP  dP  Yb   88  \e[39m NodeNet.\e[0m "',shell=True)
     except:
         print('88b 88  dP\'Yb   dP\'Yb  Yb  dP Yb  dP  TM')
         print('88Yb88 dP   Yb dP   Yb  YbdP   YbdP  ')
         print('88 Y88 Yb   dP Yb   dP  dPYb    88   ')
-        print('88  Y8  YbodP   YbodP  dP  Yb   88  Project node. ')
+        print('88  Y8  YbodP   YbodP  dP  Yb   88   nodenet. ')
     print('')
     print('Copyright(c)2017 NOOXY inc. Taiwan.')
     print('')
-    print('Artificial neural network (ANN) manager. '+p.NODEPY_VERSION)
+    print('NodeNet (NeuralNetwork) manager. '+p.NODENETPY_VERSION)
     print('For more information or update ->\'http://www.nooxy.tk\'.')
 # Print LOGO
 
