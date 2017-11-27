@@ -207,57 +207,59 @@ class ReversiValueRecord(object):
     def extractDropRecord(self):
         WinMappingsDelta   =  self.WinMappings.copy()
         LoseMappingsDelta  =  self.LoseMappings.copy()
+        WinMappingsCountsDelta   =  self.WinMappingsCounts.copy()
+        LoseMappingsCountsDelta  =  self.LoseMappingsCounts.copy()
 
         for x in range(len(WinMappingsDelta)):
             mappingcache = ReversiUtility.rotateMapping90degree(WinMappingsDelta[x])
-            self.addMap(True, mappingcache)
+            self.addMap(True, mappingcache, WinMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(True, mappingcache)
+            self.addMap(True, mappingcache, WinMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(True, mappingcache)
+            self.addMap(True, mappingcache, WinMappingsCountsDelta[x])
 
         for x in range(len(LoseMappingsDelta)):
             mappingcache = ReversiUtility.rotateMapping90degree(LoseMappingsDelta[x])
-            self.addMap(False, mappingcache)
+            self.addMap(False, mappingcache, LoseMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(False, mappingcache)
+            self.addMap(False, mappingcache, LoseMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(False, mappingcache)
+            self.addMap(False, mappingcache, LoseMappingsCountsDelta[x])
 
         # Rotate
         for x in range(len(WinMappingsDelta)):
             mappingcache = ReversiUtility.mirrorMappingXaxis(WinMappingsDelta[x])
-            self.addMap(True, mappingcache)
+            self.addMap(True, mappingcache, WinMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(True, mappingcache)
+            self.addMap(True, mappingcache, WinMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(True, mappingcache)
+            self.addMap(True, mappingcache, WinMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(True, mappingcache)
+            self.addMap(True, mappingcache, WinMappingsCountsDelta[x])
 
         for x in range(len(LoseMappingsDelta)):
             mappingcache = ReversiUtility.mirrorMappingXaxis(LoseMappingsDelta[x])
-            self.addMap(False, mappingcache)
+            self.addMap(False, mappingcache, LoseMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(False, mappingcache)
+            self.addMap(False, mappingcache, LoseMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(False, mappingcache)
+            self.addMap(False, mappingcache, LoseMappingsCountsDelta[x])
             mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
-            self.addMap(False, mappingcache)
+            self.addMap(False, mappingcache, LoseMappingsCountsDelta[x])
         # Mirror X + Rotate
         # Mirror Y + Rotate same as x no need
 
-    def addMap(self, Win, Mapping):
+    def addMap(self, Win, Mapping, Count):
         if Win:
             if Mapping not in self.WinMappings:
                 self.WinMappings.append(Mapping)
                 self.WinMappingsCounts.append(0)
-            self.WinMappingsCounts[self.WinMappings.index(Mapping)] += 1
+            self.WinMappingsCounts[self.WinMappings.index(Mapping)] += Count
         else:
             if Mapping not in self.LoseMappings:
                 self.LoseMappings.append(Mapping)
                 self.LoseMappingsCounts.append(0)
-            self.LoseMappingsCounts[self.LoseMappings.index(Mapping)] += 1
+            self.LoseMappingsCounts[self.LoseMappings.index(Mapping)] += Count
 
     def swallowbyReversiRecord(self, MyReversiRecord):
         for x in range(len(MyReversiRecord.TurnList)-1):
@@ -266,9 +268,9 @@ class ReversiValueRecord(object):
             else:
                 maptranslation = MyReversiRecord.MappingList[x+1]
             if MyReversiRecord.TurnList[x] == MyReversiRecord.Winner:
-                self.addMap(True, maptranslation)
+                self.addMap(True, maptranslation, 1)
             else:
-                self.addMap(False, maptranslation)
+                self.addMap(False, maptranslation, 1)
 
     def dumptomtrx(self):
         finalinputmapping = deque([])
