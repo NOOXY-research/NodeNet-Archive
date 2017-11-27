@@ -15,6 +15,7 @@ LearningAlgorithmDict = {
 'Adadelta' : LA.Adadelta,
 'RMSprop' : LA.RMSprop,
 'Adam' : LA.Adam,
+'Test1' : LA.test1,
 }
 # General
 

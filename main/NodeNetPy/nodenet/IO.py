@@ -3,11 +3,13 @@ import numpy as np
 import json
 import struct
 import nodenet.Parameter as p
+from collections import deque
 # Load parameters
 
 class RAWReader(object):
     def __init__(self):
         self.SlicedString = []
+        self.SlicedStringdeque = deque([])
     # Initialize
     def open(self, Filename):
         try:
@@ -15,14 +17,16 @@ class RAWReader(object):
         except:
             print('Warning: RAWReader readfile "'+Filename+'" not exist.')
         self.SlicedString = (f.read()).split()
+        self.SlicedStringdeque = deque(self.SlicedString)
         f.close()
     # Translate file to splited list
     def openString(self, String):
         self.SlicedString = String.split()
+        self.SlicedStringdeque = deque(self.SlicedString)
     # Translate string to splited list
     def pop(self):
-        if len(self.SlicedString) > 0:
-            return self.SlicedString.pop(0)
+        if len(self.SlicedStringdeque) > 0:
+            return self.SlicedStringdeque.popleft()
         else:
             return None
     # Mock C++ >> operator
@@ -102,13 +106,19 @@ def setValuetoConfigfile(Filename, ValueTitle, Value):
 def getDatas():
     try:
         rawreader = RAWReader()
+        print('Getting in.mtrx ...')
         rawreader.open(p.DATA_PATH+'in.mtrx')
+        print('Converting in.mtrx ...')
         InputData = getAMatrix(rawreader)
+        print('Getting out.mtrx ...')
         rawreader.open(p.DATA_PATH+'out.mtrx')
+        print('Converting out.mtrx ...')
         OutputData = getAMatrix(rawreader)
         try:
+            print('Getting in_valid.mtrx ...')
             rawreader.open(p.DATA_PATH+'in_valid.mtrx')
             InputValidationData = getAMatrix(rawreader)
+            print('Getting out_valid.mtrx ...')
             rawreader.open(p.DATA_PATH+'out_valid.mtrx')
             OutputValidationData = getAMatrix(rawreader)
         except:

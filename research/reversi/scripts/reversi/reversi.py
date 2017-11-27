@@ -1,5 +1,6 @@
 import reversi.IO as io
 import numpy as np
+from collections import deque
 table = {'A': 'O', 'B': '@', 'N': ' ', 1: 'O', -1: '@', 0: ' '}
 
 class ReversiUtility(object):
@@ -195,7 +196,114 @@ class ReversiRecord(object):
         else:
             self.Winner = 0
 
-class ReversiDropsRecord(object):
+class ReversiValueRecord(object):
+    # Default perspective is 1
+    def __init__(self):
+        self.WinMappings = []
+        self.LoseMappings = []
+        self.WinMappingsCounts = []
+        self.LoseMappingsCounts = []
+
+    def extractDropRecord(self):
+        WinMappingsDelta   =  self.WinMappings.copy()
+        LoseMappingsDelta  =  self.LoseMappings.copy()
+
+        for x in range(len(WinMappingsDelta)):
+            mappingcache = ReversiUtility.rotateMapping90degree(WinMappingsDelta[x])
+            self.addMap(True, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(True, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(True, mappingcache)
+
+        for x in range(len(LoseMappingsDelta)):
+            mappingcache = ReversiUtility.rotateMapping90degree(LoseMappingsDelta[x])
+            self.addMap(False, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(False, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(False, mappingcache)
+
+        # Rotate
+        for x in range(len(WinMappingsDelta)):
+            mappingcache = ReversiUtility.mirrorMappingXaxis(WinMappingsDelta[x])
+            self.addMap(True, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(True, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(True, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(True, mappingcache)
+
+        for x in range(len(LoseMappingsDelta)):
+            mappingcache = ReversiUtility.mirrorMappingXaxis(LoseMappingsDelta[x])
+            self.addMap(False, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(False, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(False, mappingcache)
+            mappingcache = ReversiUtility.rotateMapping90degree(mappingcache)
+            self.addMap(False, mappingcache)
+        # Mirror X + Rotate
+        # Mirror Y + Rotate same as x no need
+
+    def addMap(self, Win, Mapping):
+        if Win:
+            if Mapping not in self.WinMappings:
+                self.WinMappings.append(Mapping)
+                self.WinMappingsCounts.append(0)
+            self.WinMappingsCounts[self.WinMappings.index(Mapping)] += 1
+        else:
+            if Mapping not in self.LoseMappings:
+                self.LoseMappings.append(Mapping)
+                self.LoseMappingsCounts.append(0)
+            self.LoseMappingsCounts[self.LoseMappings.index(Mapping)] += 1
+
+    def swallowbyReversiRecord(self, MyReversiRecord):
+        for x in range(len(MyReversiRecord.TurnList)-1):
+            if MyReversiRecord.TurnList[x] == -1:
+                maptranslation = ReversiUtility.reverseMapping(MyReversiRecord.MappingList[x+1])
+            else:
+                maptranslation = MyReversiRecord.MappingList[x+1]
+            if MyReversiRecord.TurnList[x] == MyReversiRecord.Winner:
+                self.addMap(True, maptranslation)
+            else:
+                self.addMap(False, maptranslation)
+
+    def dumptomtrx(self):
+        finalinputmapping = deque([])
+        finaloutputvalues = deque([])
+        print('rendering data...')
+        for x in range(len(self.WinMappings)):
+            if self.WinMappings[x] not in finalinputmapping:
+                finalinputmapping.append(self.WinMappings[x])
+                finaloutputvalues.append([self.WinMappingsCounts[x]])
+
+        for x in range(len(self.LoseMappings)):
+            if self.LoseMappings[x] not in finalinputmapping:
+                finalinputmapping.append(self.LoseMappings[x])
+                finaloutputvalues.append([0])
+        for x in range(len(finalinputmapping)):
+            location = (finaloutputvalues[x])[0]
+            base = None
+            if finalinputmapping[x] in self.LoseMappings:
+                base = (location+self.LoseMappingsCounts[self.LoseMappings.index(finalinputmapping[x])])
+            else:
+                base = location
+            (finaloutputvalues[x])[0] = location / base
+            # print(location)
+            # input()
+
+        # Finish input
+        print('saving data...')
+        InputData = io.RAWWriter()
+        io.writeAMatrix(np.array(tuple(finalinputmapping)), InputData)
+        InputData.write('in_value.mtrx')
+        OutputData = io.RAWWriter()
+        io.writeAMatrix(np.array(tuple(finaloutputvalues)), OutputData)
+        OutputData.write('out_value.mtrx')
+    # Value
+class ReversiPolicyDropsRecord(object):
     # Default perspective is 1
     def __init__(self):
         self.WinDrops = []
@@ -283,7 +391,7 @@ class ReversiDropsRecord(object):
             self.LoseDrops[self.LoseMappings.index(Mapping)] = self.LoseDrops[self.LoseMappings.index(Mapping)] + Drops
 
     def swallowbyReversiRecord(self, MyReversiRecord):
-        for x in range(len(MyReversiRecord.TurnList)):
+        for x in range(len(MyReversiRecord.TurnList)-1):
             if MyReversiRecord.TurnList[x] == -1:
                 maptranslation = ReversiUtility.reverseMapping(MyReversiRecord.MappingList[x])
             else:
@@ -292,40 +400,52 @@ class ReversiDropsRecord(object):
                 self.addDrop(True, maptranslation, [MyReversiRecord.DropPointList[x],])
             else:
                 self.addDrop(False, maptranslation, [MyReversiRecord.DropPointList[x],])
+
     def dumptomtrx(self):
-        finalinputmapping = []
-        finaloutputmappingnp = []
+        finalinputmapping = deque([])
+        finaloutputmappingnp = deque([])
+        MappingsIndex = deque([])
+        print('rendering input data...')
         for x in range(len(self.WinMappings)):
             if self.WinMappings[x] not in finalinputmapping:
                 finalinputmapping.append(self.WinMappings[x])
+                MappingsIndex.append([x, -1])
         for x in range(len(self.LoseMappings)):
             if self.LoseMappings[x] not in finalinputmapping:
                 finalinputmapping.append(self.LoseMappings[x])
+                MappingsIndex.append([-1, x])
+            else:
+                (MappingsIndex[finalinputmapping.index(self.LoseMappings[x])])[1] = x
         # Finish input
         for x in range(len(finalinputmapping)):
             finaloutputmappingnp.append(np.zeros(64))
         # Initialize output
+        print('rendering win data...')
         for x in range(len(self.WinMappings)):
             addmap = np.zeros(64)
             for y in self.WinDrops[x]:
-                addmap[y[0]*7+y[1]] += 1
+                addmap[y[0]*8+y[1]] += 1
             finaloutputmappingnp[finalinputmapping.index(self.WinMappings[x])] += addmap
         # Win output render
-        for x in range(len(self.LoseMappings)):
-            addmap = np.zeros(64)
-            for y in self.LoseDrops[x]:
-                addmap[y[0]*7+y[1]] += -1
-            finaloutputmappingnp[finalinputmapping.index(self.LoseMappings[x])] += addmap
+        print('rendering lose data...')
+        # for x in range(len(self.LoseMappings)):
+        #     addmap = np.zeros(64)
+        #     for y in self.LoseDrops[x]:
+        #         addmap[y[0]*8+y[1]] += -1
+        #     finaloutputmappingnp[finalinputmapping.index(self.LoseMappings[x])] += addmap
         # Lose output render
+        print('finalizing data...')
+
         for x in range(len(finaloutputmappingnp)):
             count = 0
             devidemap = np.zeros(64)
-            if finalinputmapping[x] in self.WinMappings:
-                for y in self.WinDrops[self.WinMappings.index(finalinputmapping[x])]:
-                    devidemap[y[0]*7+y[1]] += 1
-            if finalinputmapping[x] in self.LoseMappings:
-                for y in self.LoseDrops[self.LoseMappings.index(finalinputmapping[x])]:
-                    devidemap[y[0]*7+y[1]] += 1
+            if (MappingsIndex[x])[0] != -1:
+                for y in self.WinDrops[(MappingsIndex[x])[0]]:
+                    devidemap[y[0]*8+y[1]] += 1
+            if (MappingsIndex[x])[1] != -1:
+                for y in self.LoseDrops[(MappingsIndex[x])[1]]:
+                    devidemap[y[0]*8+y[1]] += 1
+
             finaloutputmappingnp[x] = (finaloutputmappingnp[x]/devidemap)*5
             where_are_NaNs = np.isnan(finaloutputmappingnp[x])
             (finaloutputmappingnp[x])[where_are_NaNs] = 0
@@ -333,9 +453,11 @@ class ReversiDropsRecord(object):
         finaloutputmapping = []
         for x in finaloutputmappingnp:
             finaloutputmapping.append(x.tolist())
+        print('saving data...')
         InputData = io.RAWWriter()
         io.writeAMatrix(np.array(tuple(finalinputmapping)), InputData)
-        InputData.write('in.mtrx')
+        InputData.write('in_policy.mtrx')
         OutputData = io.RAWWriter()
         io.writeAMatrix(np.array(tuple(finaloutputmapping)), OutputData)
-        OutputData.write('out.mtrx')
+        OutputData.write('out_policy.mtrx')
+    # Classify

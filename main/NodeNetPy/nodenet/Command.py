@@ -130,6 +130,7 @@ def trainNeuralNetwork(MyNeuralNetwork):
     epochs = int(input('Input max epochs(-1)\n>>>'))
     print('Getting Datas...')
     Datas = IO.getDatas()
+    print('Datas getted')
     if IO.getProfile(MyNeuralNetwork) == None:
         print('You must have training profile first!')
         editNeuralNetworkProfile(MyNeuralNetwork)
@@ -211,6 +212,12 @@ def editAdam(MyNeuralNetwork):
     IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'Epsilon', p.PROFILE_DEFAULT['Epsilon'])
     # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
 
+def editTest1(MyNeuralNetwork):
+
+    # targeterr = input('Input target error value.\n>>>')
+    IO.setValuetoConfigfile(p.SAVED_PATH+MyNeuralNetwork.Name+'_profile.json', 'LearningAlgorithm', 'Test1')
+    # IO.setValuetoConfigfile(MyNeuralNetwork.Name+'_profile.json', 'Target_Error', targeterr)
+
 editProfileDict = {
     '0' : editBackproprogation,
     '1' : editClassicalMomentum,
@@ -219,6 +226,7 @@ editProfileDict = {
     '4' : editAdaGrad,
     '5' : editRMSprop,
     '6' : editAdam,
+    '7' : editTest1,
 }
 
 def editNeuralNetworkProfile(MyNeuralNetwork):

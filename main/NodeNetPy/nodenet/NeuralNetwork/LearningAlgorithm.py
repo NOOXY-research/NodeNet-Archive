@@ -223,19 +223,23 @@ def Adam(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion 
                 biasm.append(np.zeros((1, NeuralNetwork.LayerNeuronsCount[layer+1])))
                 weightv.append(np.zeros((NeuralNetwork.LayerNeuronsCount[layer], NeuralNetwork.LayerNeuronsCount[layer+1])))
                 biasv.append(np.zeros((1, NeuralNetwork.LayerNeuronsCount[layer+1])))
+                t = 1
             # Initlalize squaresum with right size
         else:
             weightm = Recursion[0]
             biasm = Recursion[1]
             weightv = Recursion[2]
             biasv = Recursion[3]
+            t = Recursion[4] + 1
             # Recover status from Recursion Parameter
         # Initlalize squaresum
 
         def getWeightChange(DJDW, LayerIndex):
             weightm[LayerIndex] = (beta1)*weightm[LayerIndex] + (1-beta1)*DJDW[LayerIndex]
             weightv[LayerIndex] = (beta2)*weightv[LayerIndex] + (1-beta2)*np.power(DJDW[LayerIndex], 2 )
-            weightchange = -speed*weightm[LayerIndex]/(np.sqrt(weightv[LayerIndex])+epsilon)
+            weightmfinal = weightm[LayerIndex] / (1 - beta1**t )
+            weightvfinal = weightv[LayerIndex] / (1 - beta2**t )
+            weightchange = -speed*weightmfinal/(np.sqrt(weightvfinal)+epsilon)
             return weightchange
         # Apply weight changes
 
@@ -243,8 +247,74 @@ def Adam(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion 
             biasgradient = np.dot(np.ones((1, InputData.shape[0])), DELTA[LayerIndex+1])
             biasm[LayerIndex] = (beta1)*biasm[LayerIndex] + (1-beta1)*biasgradient
             biasv[LayerIndex] = (beta2)*biasv[LayerIndex] + (1-beta2)*np.power(biasgradient, 2 )
-            biaschange = -speed*biasgradient/(np.sqrt(biasv[LayerIndex])+epsilon)
+            biasmfinal = biasm[LayerIndex] / (1 - beta1**t )
+            biasvfinal = biasv[LayerIndex] / (1 - beta2**t )
+            biaschange = -speed*biasmfinal/(np.sqrt(biasvfinal)+epsilon)
             return biaschange
         # Apply bias changes
-        return BackPropagationBase(NeuralNetwork, InputData, OutputData, getWeightChange, getBiasChange), [weightm, biasm, weightv, biasv]
+        return BackPropagationBase(NeuralNetwork, InputData, OutputData, getWeightChange, getBiasChange), [weightm, biasm, weightv, biasv, t]
 # A type of training is called Adam for DFF
+
+def test1(NeuralNetwork, InputData, OutputData, LearningConfiguration, Recursion = None):
+    # 'Speed' is the training speed, which 'weight adjustment' = speed * djdw
+    DJDW = []
+    DELTA = []
+    BETA = []
+    A = []
+    Z = []
+    RATE = 10
+    maskvalue = 0.001
+    times = 0
+    if Recursion != None:
+        times = Recursion[0]+1
+    # djdw = tangen of weight relative to cost(error), actually 'dj/dw'
+    # delta = FrontsideError X DerivativeofActivationFunction(BacksideSum)
+    # a = ActivationFunction(BacksideSum)
+    # Z = BacksideSum
+    Z.append(InputData)
+    A.append(f.sigmoid(Z[-1]))
+    for layer in range(0, NeuralNetwork.LayersCount-1):
+        W = np.dot(A[-1], NeuralNetwork.Weight[layer])
+        B = np.dot(np.ones((InputData.shape[0],1)), NeuralNetwork.Bias[layer])
+        Z.append(W+B)
+        A.append(f.sigmoid(Z[-1]))
+        # For variable explianation go NeuralNetwork.feed()
+    # Push data forward and collect all Z and A
+    BETA.insert(0, -RATE*(f.sigmoid(OutputData)-A[NeuralNetwork.LayersCount-1]))
+    DELTA.insert(0, np.multiply(-(f.sigmoid(OutputData)-A[NeuralNetwork.LayersCount-1]), f.Derivativeofsigmoid(Z[NeuralNetwork.LayersCount-1])))
+    for layer in range(NeuralNetwork.LayersCount-2, -1, -1):
+        DJDW.insert(0, np.dot(np.transpose(A[layer]), DELTA[0]))
+        # remark that DELTA[0] is always the latest one
+        BETA.insert(0, np.dot(DELTA[0], np.transpose(NeuralNetwork.Weight[layer])))
+        DELTA.insert(0, np.multiply(BETA[0], f.Derivativeofsigmoid(Z[layer])))
+        # Delta = Deltafront X transpose(ThisLayerWeight) * DerivativeofActivationFunction(ThisLayerBacksideSum)
+        # For variable explianation go NeuralNetwork.feed()
+    # Get all tangen of weight relative to cost(error)
+    for layer in range(0, NeuralNetwork.LayersCount-1):
+        # if times>32:
+        #     print(np.sqrt(np.dot(np.ones((1, DELTA[layer+1].shape[0])), np.power(DELTA[layer+1], 2))), (DJDW[layer].shape[0], 1))
+        #     print(np.dot(np.ones((1, DELTA[layer+1].shape[0])), np.power(DELTA[layer+1], 2)))
+        biasgradient = np.dot(np.ones((1, InputData.shape[0])), DELTA[layer+1])
+        WeightChange = RATE*-np.multiply((1/(DJDW[layer])), (np.tile(np.sqrt(np.dot(np.ones((1, BETA[layer+1].shape[0])), np.power(BETA[layer+1], 2))), (DJDW[layer].shape[0], 1))))
+        BiasChange = RATE*-np.multiply((1/(biasgradient)), (np.tile(np.sqrt(np.dot(np.ones((1, BETA[layer+1].shape[0])), np.power(BETA[layer+1], 2))), (biasgradient.shape[0], 1))))
+        Mask = WeightChange>maskvalue
+        WeightChange[Mask] = maskvalue
+        Mask = BiasChange>maskvalue
+        BiasChange[Mask] = maskvalue
+        Mask = WeightChange<-maskvalue
+        WeightChange[Mask] = -maskvalue
+        Mask = BiasChange<-maskvalue
+        BiasChange[Mask] = -maskvalue
+        # WeightChange = 0.001*DJDW[layer]
+        # BiasChange = 0.001*biasgradient
+        # print('layer : '+str(layer))
+        # print(np.tile(np.sqrt(np.dot(np.ones((1, BETA[layer+1].shape[0])), np.power(BETA[layer+1], 2))), (DJDW[layer].shape[0], 1)))
+        # print((1/(DJDW[layer])))
+        # print(WeightChange)
+        # input()
+        NeuralNetwork.Weight[layer] = NeuralNetwork.Weight[layer] + WeightChange
+        NeuralNetwork.Bias[layer] = NeuralNetwork.Bias[layer] + BiasChange
+    # Add adjustment to each weight
+    error = f.MeanSquareError(OutputData, Z[NeuralNetwork.LayersCount-1])
+    return error, [times]
+# A type of training is called BackPropagation for DFF
