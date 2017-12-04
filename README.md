@@ -67,6 +67,9 @@ A directory to test some functions that not yet to be added to mainline.
 - Plotting [v]
 - Costomizable activation function, cost function [x]
 - Save learning profile [v]
+- Merge validation data to one file [x]
+- Mini batch training [x]
+- Apps API [x]
 - more and more to be added
 #### Training method list
 - backpropagation vanilla[v]
