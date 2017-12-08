@@ -8,14 +8,14 @@ number = int(input('Input number of file.\n>>>'))
 if number ==-1:
     number = len(files)
 myreversirecord = ReversiRecord()
-myreversidropsrecord = ReversiDropsRecord()
+reversipolicyhandler = ReversiPolicyHandler()
 print('loading files...')
 for x in range(number):
     print('loading files('+str(x)+'/'+str(number)+')...')
     filename = files[x]
     myreversirecord.loadfromFile(filename)
-    myreversidropsrecord.swallowbyReversiRecord(myreversirecord)
+    reversipolicyhandler.swallowReversiRecord(myreversirecord)
 print('extrating...')
-myreversidropsrecord.extractDropRecord()
+reversipolicyhandler.extractDropPoints()
 print('saving...')
-myreversidropsrecord.dumptomtrx1()
+reversipolicyhandler.dumptomtrx()
