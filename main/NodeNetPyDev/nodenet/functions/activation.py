@@ -3,7 +3,7 @@
 # "activation.py" provide activation function for neuralnet.
 # Copyright 2018 NOOXY. All Rights Reserved.
 
-import numpy as np
+from nodenet.imports.commons import *
 
 # Sigmoid
 def sigmoid(signal, derivative=False):
@@ -13,7 +13,7 @@ def sigmoid(signal, derivative=False):
 
     if derivative:
         # Return derivation of the activation function
-        return np.multiply(signal, 1 - signal)
+        return np.multiply(signal, 1-signal)
     else:
         # Return the activation signal
         return signal
@@ -21,8 +21,8 @@ def sigmoid(signal, derivative=False):
 # Softmax 1 dimension
 def softmax1D(signal, derivative=False):
     # Exp all elements
-    exp_signal = np.exp(signal - np.max(signal, axis=-1, keepdims=True))
-    signal = exp_signal / np.sum(exp_signal, axis=-1, keepdims=True)
+    exp_signal = np.exp(signal-np.max(signal, axis=-1, keepdims=True))
+    signal = exp_signal/np.sum(exp_signal, axis=-1, keepdims=True)
 
     if derivative:
         # Return derivation of the activation function
@@ -66,7 +66,7 @@ def symmetric_elliot(signal, derivative=False):
         return s/abs_signal**2
     else:
         # Return the activation signal
-        return (signal*s) abs_signal
+        return (signal*s)/abs_signal
 
 # ReLU
 def ReLU(signal, derivative=False):

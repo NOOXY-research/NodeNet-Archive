@@ -34,7 +34,7 @@ rmsprop = {
 }
 
 adam = {
-    'learning_rate' : 0.01,
+    'learning_rate' : 0.001,
     'epsilon' : 10e-8,
     'beta1' : 0.9,
     'beta2' : 0.999,

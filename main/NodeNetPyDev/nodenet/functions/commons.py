@@ -1,6 +1,8 @@
-# nodenet/layers/convertor.py
+# nodenet/function/commons.py
 # Description:
-# "convertor.py" provide convert layers.
+# "commons.py" provide general function for neuralnet.
 # Copyright 2018 NOOXY. All Rights Reserved.
 
 from nodenet.imports.commons import *
+
+# 

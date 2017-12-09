@@ -3,21 +3,29 @@
 # "nodes.py" provide node layers.
 # Copyright 2018 NOOXY. All Rights Reserved.
 
-import numpy as np
+from nodenet.imports.commons import *
+import nodenet.functions as func
 
 # Vector Nodes input: 2D vector, output: 2D vector
-class Vector(object):
-    def __init__(self, nodes_size, activatior):
+class NodesVector(object):
+    def __init__(self, nodes_size, activatior=func.sigmoid):
         self.nodes_size = nodes_size
         self.activator = activatior
         self.latest_input_signal = None
-        self.latest_sensitivity_map - None
+        self.latest_sensitivity_map = None
+        self.dropout = False
+        self.dropout_mask = None
 
     def __str__(self):
-        string = 'VectorNodes('+str(self.nodes_size)+', '+str(self.activator)+')'
+        string = ''
+        string += 'VectorNodes('+str(self.nodes_size)+', '+str(self.activator)+')'
+        return string
 
-    def forward(self, input_signal):
-        self.latest_input_signal = input_signal
+    __repr__ = __str__
+
+    def forward(self, input_signal, trace=False):
+        if trace:
+            self.latest_input_signal = input_signal
         return self.activator(input_signal)
 
     def update_gradient(self, input_sensitivity_map):
@@ -26,9 +34,9 @@ class Vector(object):
     def get_sensitivity_map(self):
         return self.latest_sensitivity_map
 
-    def backward(self, input_sensitivity_map, **kwargs):
+    def backward(self, input_sensitivity_map, *args):
         self.update_gradient(input_sensitivity_map)
         return self.get_sensitivity_map()
 
-class Tensor(object):
+class NodesTensor(object):
     pass

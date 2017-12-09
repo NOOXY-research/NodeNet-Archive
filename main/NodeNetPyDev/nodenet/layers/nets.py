@@ -3,11 +3,11 @@
 # "fullyconnectednet.py" provide net layers.
 # Copyright 2018 NOOXY. All Rights Reserved.
 
-import numpy as np
+from nodenet.imports.commons import *
 
 # Fully Connected Net input: 2D vector, output: 2D vector
 class FullyConnected1D(object):
-    def __init__(self, front_nodes_size, back_nodes_size, has_bias=True, ramdom_max_num=1e-4):
+    def __init__(self, front_nodes_size=0, back_nodes_size=0, has_bias=True, ramdom_max_num=1e-0):
         # Copy property
         self.front_nodes_size = front_nodes_size
         self.back_nodes_size = back_nodes_size
@@ -26,13 +26,18 @@ class FullyConnected1D(object):
         self.latest_input_signal = None
         self.latest_sensitivity_map = None
 
-    def __str__():
+    def __str__(self):
         string = ''
         string += 'FullyConnectedNet1D('+str(self.front_nodes_size)+'x'+str(self.back_nodes_size)+')'
         return string
 
-    def forward(self, input_signal):
-        self.latest_input_signal = input_signal
+    __repr__ = __str__
+
+    setup = __init__
+
+    def forward(self, input_signal, trace=False):
+        if trace:
+            self.latest_input_signal = input_signal
         weight_output =  np.dot(input_signal, self.weights)
         output_signal = None
         if self.has_bias == True:
@@ -46,19 +51,19 @@ class FullyConnected1D(object):
         self.latest_sensitivity_map = np.dot(input_sensitivity_map, np.transpose(self.weights))
         self.weights_grad = np.dot(np.transpose(self.latest_input_signal), input_sensitivity_map)
         if self.has_bias == True:
-            self.bias_grad = np.dot(np.ones((1, input_sensitivity_map[0])), input_sensitivity_map)
+            self.bias_grad = np.dot(np.ones((1, input_sensitivity_map.shape[0])), input_sensitivity_map)
 
     def update_weight_and_bias(self, learning_algorithm, learning_configuration):
-        weight_update, self.weight_learning_cache = self.weight+learning_algorithm(self.weights_grad, learning_configuration, self.weights_learning_cache)
-        self.weight += weight_update
+        weight_update, self.weight_learning_cache = learning_algorithm(self.weights_grad, learning_configuration, self.weights_learning_cache)
+        self.weights += weight_update
         if self.has_bias == True:
-            bias_update, self.bias_learning_cache = self.bias+learning_algorithm(self.bias_grad, learning_configuration, self.bias_learning_cache)
+            bias_update, self.bias_learning_cache = learning_algorithm(self.bias_grad, learning_configuration, self.bias_learning_cache)
             self.bias += bias_update
 
     def get_sensitivity_map(self):
         return self.latest_sensitivity_map
 
-    def backward(self, input_sensitivity_map, learning_algorithm, learning_configuration, **kwargs):
+    def backward(self, input_sensitivity_map, learning_algorithm, learning_configuration, *args):
         self.update_gradient(input_sensitivity_map)
         self.update_weight_and_bias(learning_algorithm, learning_configuration)
         return self.get_sensitivity_map()
